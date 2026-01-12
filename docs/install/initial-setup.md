@@ -1,17 +1,17 @@
-# Initial setup overview
+# 初始设置概述
 
-The following diagram outlines the installation and setup steps:
+以下图表概述了安装和设置步骤：
 
 ![image](../_images/setup.png)
 
-After you [installed Percona Backup for MongoDB](../installation.md) on **every** server with the `mongod` node that is not an arbiter node, complete the following setup steps:
+在**每个**带有 `mongod` 节点（非仲裁节点）的服务器上[安装 Percona Backup for MongoDB](../installation.md) 后，完成以下设置步骤：
 
-1. [Configure authentication in MongoDB](configure-authentication.md).
+1. [在 MongoDB 中配置身份验证](configure-authentication.md)。
 
-2. [Configure the remote backup storage](backup-storage.md).
+2. [配置远程备份存储](backup-storage.md)。
 
-3. [Start `pbm-agent` process](start-pbm-agent.md).
+3. [启动 `pbm-agent` 进程](start-pbm-agent.md)。
 
-## Next steps
+## 下一步
 
-[Configure authentication :material-arrow-right:](configure-authentication.md){.md-button}
+[配置身份验证 :material-arrow-right:](configure-authentication.md){.md-button}

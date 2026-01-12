@@ -1,11 +1,11 @@
 # MkDocs configuration for builds with material theme
 
 site_name: Percona Backup for MongoDB
-site_description: documentation
+site_description: 文档
 site_author: Percona LLC
 copyright: >
-  <a href="https://www.percona.com/about">Percona LLC</a> and/or its affiliates © 2025
-  — <a href="#" onclick="Osano.cm.showDrawer('osano-cm-dom-info-dialog-open')">Cookie Preferences</a>
+  <a href="https://www.percona.com/about">Percona LLC</a> 和/或其附属公司 © 2025
+  — <a href="#" onclick="Osano.cm.showDrawer('osano-cm-dom-info-dialog-open')">Cookie 偏好设置</a>
 repo_name: percona/pbm-docs
 repo_url: https://github.com/percona/pbm-docs
 edit_uri: edit/main/docs/
@@ -28,21 +28,21 @@ theme:
     - media: "(prefers-color-scheme)"
       toggle:
         icon: material/brightness-auto
-        name: Color theme set to Automatic. Click to change
+        name: 颜色主题设置为自动。点击更改
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: custom
       accent: custom
       toggle:
         icon: material/brightness-7
-        name: Color theme set to Light Mode. Click to change
+        name: 颜色主题设置为浅色模式。点击更改
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: custom
       accent: custom
       toggle:
         icon: material/brightness-4
-        name: Color theme set to Dark Mode. Click to change
+        name: 颜色主题设置为深色模式。点击更改
 
 # Theme features
 
@@ -86,7 +86,7 @@ markdown_extensions:
   attr_list: {}
   toc:
     permalink: True
-    title: On this page
+    title: 本页内容
     toc_depth: 5
   admonition: {}
   footnotes: {}
@@ -156,11 +156,11 @@ plugins:
 
   print-site:
       add_to_navigation: false
-      print_page_title: 'Percona Backup for MongoDB documentation'
+      print_page_title: 'Percona Backup for MongoDB 文档'
       add_print_site_banner: false
       # Table of contents
       add_table_of_contents: true
-      toc_title: 'Table of Contents'
+      toc_title: '目录'
       toc_depth: 2
       # Content-related
       add_full_urls: false
@@ -174,54 +174,54 @@ plugins:
       enabled: true
 
 nav:
-  - Home: index.md
+  - 首页: index.md
   - get-help.md
-  - Get started:
-      - Quickstart: installation.md
-      - 1. Install:
-         - System-requirements: system-requirements.md
-         - From repositories: install/repos.md
-         - Download tarballs: install/tarball.md
-         - Build from source: install/source.md
-         - Run in Docker: install/docker.md
-      - 2. Set up and configure:
-        - Initial setup: install/initial-setup.md
+  - 快速开始:
+      - 快速入门: installation.md
+      - 1. 安装:
+         - 系统要求: system-requirements.md
+         - 从仓库安装: install/repos.md
+         - 下载压缩包: install/tarball.md
+         - 从源代码构建: install/source.md
+         - 在 Docker 中运行: install/docker.md
+      - 2. 设置和配置:
+        - 初始设置: install/initial-setup.md
         - install/configure-authentication.md
         - install/backup-storage.md
-        - Start the pbm-agent process: install/start-pbm-agent.md
-  - Backup and restore:
-        - Backup and restore types: features/backup-types.md
-        - Logical:
-          - Overview: features/logical.md
-          - Make a logical backup : "usage/start-backup.md"
-          - Restore from a logical backup: usage/restore.md
-        - Physical:
-          - Overview: features/physical.md
-          - Make a physical backup: usage/backup-physical.md
-          - Restore from a physical backup: usage/restore-physical.md
-        - Incremental:
-          - Overview: features/incremental-backup.md
-          - Make an incremental backup: usage/backup-incremental.md
-          - Restore from an incremental backup: usage/restore-incremental.md
-        - Selective:
-          - Overview: features/selective-backup.md
-          - Make a selective backup: usage/backup-selective.md
-          - Make a selective restore: usage/restore-selective.md
-        - Snapshot-based:
-          - Overview: features/snapshots.md
-          - Make a snapshot-based backup: usage/backup-external.md
-          - Restore from a snapshot-based backup: usage/restore-external.md
-        - Point-in-time recovery:
-          - Overview: features/point-in-time-recovery.md
-          - From logical backup: usage/pitr-tutorial.md
-          - From physical backup: usage/pitr-physical.md
-          - From selective backup: usage/pitr-selective.md
-        - Backups in sharded clusters: features/backup-sharding.md
+        - 启动 pbm-agent 进程: install/start-pbm-agent.md
+  - 备份和恢复:
+        - 备份和恢复类型: features/backup-types.md
+        - 逻辑备份:
+          - 概述: features/logical.md
+          - 创建逻辑备份 : "usage/start-backup.md"
+          - 从逻辑备份恢复: usage/restore.md
+        - 物理备份:
+          - 概述: features/physical.md
+          - 创建物理备份: usage/backup-physical.md
+          - 从物理备份恢复: usage/restore-physical.md
+        - 增量备份:
+          - 概述: features/incremental-backup.md
+          - 创建增量备份: usage/backup-incremental.md
+          - 从增量备份恢复: usage/restore-incremental.md
+        - 选择性备份:
+          - 概述: features/selective-backup.md
+          - 创建选择性备份: usage/backup-selective.md
+          - 执行选择性恢复: usage/restore-selective.md
+        - 基于快照的备份:
+          - 概述: features/snapshots.md
+          - 创建基于快照的备份: usage/backup-external.md
+          - 从基于快照的备份恢复: usage/restore-external.md
+        - 时间点恢复:
+          - 概述: features/point-in-time-recovery.md
+          - 从逻辑备份恢复: usage/pitr-tutorial.md
+          - 从物理备份恢复: usage/pitr-physical.md
+          - 从选择性备份恢复: usage/pitr-selective.md
+        - 分片集群中的备份: features/backup-sharding.md
         - features/restore-new-env.md
         - features/restore-remapping.md
-        - Known limitations for backups and restores: features/known-limitations.md
-  - Manage backups:
-        - List backups: usage/list-backup.md
+        - 备份和恢复的已知限制: features/known-limitations.md
+  - 管理备份:
+        - 列出备份: usage/list-backup.md
         - usage/describe-backup.md
         - usage/schedule-backup.md
         - usage/cancel-backup.md
@@ -231,10 +231,10 @@ nav:
         - usage/compression.md
         - usage/oplog-replay.md
         - usage/logs.md
-        - Backup management via PMM: pmm.md
-  - Storage:
-      - Remote backup storage overview: details/storage-configuration.md
-      - AWS storage: details/s3-storage.md
+        - 通过 PMM 管理备份: pmm.md
+  - 存储:
+      - 远程备份存储概述: details/storage-configuration.md
+      - AWS 存储: details/s3-storage.md
       - details/minio.md
       - details/gcs.md
       - details/azure.md
@@ -243,43 +243,43 @@ nav:
       - details/endpoint-map.md
       - features/multi-storage.md
       - features/split-merge-backup.md
-  - PBM commands: reference/pbm-commands.md
-  - Configuration file:
-      - Percona Backup for MongoDB configuration in a cluster: reference/config.md
+  - PBM 命令: reference/pbm-commands.md
+  - 配置文件:
+      - 集群中的 Percona Backup for MongoDB 配置: reference/config.md
       - reference/configuration-options.md
       - reference/pitr-options.md
       - reference/backup-options.md
       - reference/restore-options.md
       - reference/logging-options.md
-  - Administer PBM:
+  - 管理 PBM:
       - manage/overview.md
-      - 'PBM configuration via pipelines': 'manage/configure-remotely.md'
-      - 'Automate access to S3 buckets for PBM': 'manage/automate-s3-access.md'
+      - '通过管道配置 PBM': 'manage/configure-remotely.md'
+      - '为 PBM 自动化 S3 存储桶访问': 'manage/automate-s3-access.md'
       - manage/logpath.md
       - manage/start-agent-with-config.md
       - manage/change-nodes.md
-      - 'Upgrade PBM': 'manage/upgrading.md'
-      - 'Remove PBM': 'manage/uninstalling.md'
-  - Compatibility with MongoDB:
+      - '升级 PBM': 'manage/upgrading.md'
+      - '移除 PBM': 'manage/uninstalling.md'
+  - 与 MongoDB 的兼容性:
     - details/versions.md
-    - Comparison with MongoDB: 'features/comparison.md'
+    - 与 MongoDB 的比较: 'features/comparison.md'
     - details/deployments.md
-  - Troubleshooting & FAQ:
-      - Overview: troubleshoot/index.md
-      - 'Diagnose PBM': 'troubleshoot/troubleshooting.md'
-      - 'Check status': 'troubleshoot/status.md'
-      - 'Diagnostics report': 'troubleshoot/pbm-report.md'
+  - 故障排除和常见问题:
+      - 概述: troubleshoot/index.md
+      - '诊断 PBM': 'troubleshoot/troubleshooting.md'
+      - '检查状态': 'troubleshoot/status.md'
+      - '诊断报告': 'troubleshoot/pbm-report.md'
       - troubleshoot/restore-partial.md
-      - 'Troubleshoot backup management via PMM': 'troubleshoot/pbm-pmm.md'
+      - '通过 PMM 故障排除备份管理': 'troubleshoot/pbm-pmm.md'
       - troubleshoot/faq.md
-  - PBM internals:
+  - PBM 内部结构:
       - details/architecture.md
       - details/pbm-agent.md
       - PBM CLI: details/cli.md
-      - PBM control collections: details/control-collections.md
-      - How PBM works: 'intro.md'
+      - PBM 控制集合: details/control-collections.md
+      - PBM 工作原理: 'intro.md'
       - details/authentication.md
-  - Release notes:
+  - 发布说明:
       - release-notes.md
       - PBM 2.x:
         - "{{pbm.full_name}} 2.12.0 ({{date.2_12_0}})": release-notes/2.12.0.md
@@ -325,9 +325,9 @@ nav:
         - 'Percona Backup for MongoDB 1.1.0 (2020-01-16)': 'release-notes/1.1.0.md'
         - 'Percona Backup for MongoDB 1.0.0 (2019-09-19)': 'release-notes/1.0.0.md'
         - 'Percona Backup for MongoDB 0.5.0 (2019-06-17)': 'release-notes/0.5.0.md'
-  - Reference:
-      - "About Percona Backup for MongoDB documentation": about-docs.md
+  - 参考:
+      - "关于 Percona Backup for MongoDB 文档": about-docs.md
       - reference/glossary.md
-      - Contribution guidelines: 'https://github.com/percona/pbm-docs/blob/main/CONTRIBUTING.md'
-      - Copyright and licensing: copyright.md
-      - Trademark policy: trademark-policy.md
+      - 贡献指南: 'https://github.com/percona/pbm-docs/blob/main/CONTRIBUTING.md'
+      - 版权和许可: copyright.md
+      - 商标政策: trademark-policy.md

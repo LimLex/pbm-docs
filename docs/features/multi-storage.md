@@ -1,27 +1,27 @@
-# Multiple storages for backups
+# 多个备份存储
 
-!!! admonition "Version added: [2.6.0](../release-notes/2.6.0.md)"
+!!! admonition "版本添加：[2.6.0](../release-notes/2.6.0.md)"
 
-A good practice in a backup policy is to follow the 3-to-1 rule: have 3 copies of data stored on 2 different storages and have 1 copy kept offsite. Instead of transferring data to multiple storages, you can configure those storages and have PBM make backups to them directly, at different schedules. 
+备份策略中的一个良好做法是遵循 3-2-1 规则：在 2 个不同的存储上存储 3 份数据副本，并保留 1 份异地副本。您无需将数据传输到多个存储，而是可以配置这些存储并让 PBM 直接在不同时间表上向它们创建备份。 
 
-For example, you can configure backups as follows:
+例如，您可以按如下方式配置备份：
 
-* Make full physical backups with point-in-time recovery enabled weekly and store them on AWS S3 bucket, 
-* Make incremental backups daily on another storage.
-* Make EBS snapshots of the whole database monthly and store it on an external offsite server.
+* 每周创建启用时间点恢复的完整物理备份，并将它们存储在 AWS S3 存储桶上， 
+* 每天在另一个存储上创建增量备份。
+* 每月创建整个数据库的 EBS 快照并将其存储在外部异地服务器上。
 
-This ability to define multiple storages for backups brings the following benefits:
+这种为备份定义多个存储的能力带来以下好处：
 
-* Saves costs on data transfer in case of cloud storages
-* Increases effectiveness of following your organization’s backup policy either via your own applications and tools interfaced with PBM or via Percona Everest
+* 在云存储的情况下节省数据传输成本
+* 通过您自己的与 PBM 接口的应用程序和工具或通过 Percona Everest 提高遵循组织备份策略的有效性
 
-## Configuration profiles 
+## 配置配置文件 
 
-By default, PBM stores backups and point-in-time recovery oplog slices to the remote backup storage which you defined in the configuration file during the initial setup. This is the **main** backup storage.
+默认情况下，PBM 将备份和时间点恢复 oplog 切片存储到您在初始设置期间在配置文件中定义的远程备份存储。这是**主**备份存储。
 
-To make backups to additional – **external** backup storages, a concept of a configuration profile is introduced. A configuration profile is a file that stores only the configuration for an external backup storage.
+要向额外的 — **外部**备份存储创建备份，引入了配置配置文件的概念。配置配置文件是仅存储外部备份存储配置的文件。
 
-Here’s the example of the configuration profile:
+以下是配置配置文件的示例：
 
 ```yaml title="minio.yaml"
 storage:
@@ -36,53 +36,53 @@ storage:
 	
 ```
 
-To upload the configuration profile to PBM, use the [`pbm profile add`](../reference/pbm-commands.md#pbm-profile-add) command and specify the path to the profile.
+要将配置配置文件上传到 PBM，请使用 [`pbm profile add`](../reference/pbm-commands.md#pbm-profile-add) 命令并指定配置文件的路径。
 
 ```bash
 pbm profile add <profile_name> /path/to/profile.yaml
 ```
 
-To show the information about the external backup storage, use the [`pbm profile show`](../reference/pbm-commands.md#pbm-profile-show) command:
+要显示有关外部备份存储的信息，请使用 [`pbm profile show`](../reference/pbm-commands.md#pbm-profile-show) 命令：
 
 ```bash
 pbm profile show <profile_name>
 ```
 
-See the full list of the configuration profile management commands in the [pbm commands](../reference/pbm-commands.md) reference.
+请参阅 [pbm 命令](../reference/pbm-commands.md) 参考中的配置配置文件管理命令的完整列表。
 
-## Make a backup to an external storage
+## 向外部存储创建备份
 
-To make a backup to an external backup storage, pass the profile name with the `--profile` flag for the `pbm backup` command. For example, to run a physical backup and store it in the MinIO storage defined via the `minio` configuration profile, run the following command:
+要向外部备份存储创建备份，请为 `pbm backup` 命令使用 `--profile` 标志传递配置文件名称。例如，要运行物理备份并将其存储在通过 `minio` 配置配置文件定义的 MinIO 存储中，请运行以下命令：
 
 ```bash
 pbm backup -t physical --profile=minio --wait 
 ```
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     Starting backup '2024-06-25T11:25:30Z'....Backup '2024-06-25T11:25:30Z' to remote store 's3://http://minio:9000/backup' has started
 	```
 
-You can make any type of backups except snapshot-based ones on an external storage.
+您可以在外部存储上创建除基于快照的备份之外的任何类型的备份。
 
-Note that point-in-time recovery oplog slicing is not stopped automatically for backups made to an external storage. Thus, PBM saves oplog chunks related to such backups on both the main and the external storages.
+请注意，对于向外部存储创建的备份，时间点恢复 oplog 切片不会自动停止。因此，PBM 在主存储和外部存储上保存与此类备份相关的 oplog 块。
 
-When you make incremental backups, make sure to keep the whole backup chain on the same storage. To switch the backup storage, you must make a new base backup on it to start the new incremental chain. 
+当您创建增量备份时，请确保将整个备份链保存在同一存储上。要切换备份存储，您必须在其上创建新的基础备份以开始新的增量链。 
 
-## Restore from an external storage
+## 从外部存储恢复
 
-Before you start, make sure that `pbm-agents` have the read permissions to backups on the remote storage(s). Also, [make all preparations for the restore](../usage/restore.md#before-you-start).
+在开始之前，请确保 `pbm-agents` 对远程存储上的备份具有读取权限。另外，[进行恢复的所有准备工作](../usage/restore.md#before-you-start)。
 
-1. List backups by running the `pbm list` or `pbm status` commands.
+1. 通过运行 `pbm list` 或 `pbm status` 命令列出备份。
     
     ```bash
 	pbm list
 	```
 
-	The output shows the backup names and timestamps. External backups are marked with an asterisk:
+	输出显示备份名称和时间戳。外部备份用星号标记：
 
-	??? example "Sample output"
+	??? example "示例输出"
 
 	    ```{.text .no-copy}
 	    Backup snapshots:
@@ -94,36 +94,36 @@ Before you start, make sure that `pbm-agents` have the read permissions to backu
 	      2024-06-25T10:54:03Z - 2024-06-25T10:57:51Z
 	    ```
 
-2. To make a point-in-time restore, you must explicitly pass the backup name for the `pbm restore` command:
+2. 要进行时间点恢复，您必须为 `pbm restore` 命令明确传递备份名称：
 
     ```bash
     pbm-restore --time=<timestamp> --base-snapshot <backup-name>
     ```
 
-3. After the restore is complete, do the required post-restore steps depending on the restore type.
-4. Make a fresh backup to serve as the new base for future restores. 
+3. 恢复完成后，根据恢复类型执行所需的恢复后步骤。
+4. 创建新备份作为未来恢复的新基础。 
 
-## Delete backups
+## 删除备份
 
-You can delete backups from an external storage only by name. 
+您只能按名称从外部存储删除备份。 
 
-Run the `pbm delete` command and pass the backup name:
+运行 `pbm delete` 命令并传递备份名称：
 
 ```bash
 pbm delete-backup 2024-06-25T10:54:55Z
 ```
 
-## Implementation specifics
+## 实现细节
 
-1. You can make backups of any type except snapshot-based ones on the external storage.
-2. To start point-in-time recovery oplog slicing, you must make a backup on the main storage. A backup from an external storage is not considered a valid base backup for oplog slicing.
-3. PBM saves point-in-time recovery oplog ranges only on the main storage. Backups are saved on the storage that you define when starting a backup. 
-4. Backup process on the external storage doesn’t stop point-in-time recovery oplog slicing on the main storage. Thus, PBM saves oplog chunks related to such backups on both the main and the external storages
-5. The whole incremental chain must be stored on the same storage. To change the storage for incremental backups, you must start a new backup chain with the incremental base backup on the new storage.
-6. To restore from a backup on external storage, `pbm-agents` must have read permissions on it.
-7. To make a point-in-time recovery, you must specify the backup name via the `--base-snapshot` flag. Without it, PBM searches for the base backup on the main storage.
-8. You can delete backups from external storages only by name using the `pbm delete-backup <backup-name>` command. 
-9. You can delete backups older than the specified time using the `pbm delete-backup --older-than <time>` or `pbm cleanup --older-than <time>` commands only from the **main** storage. 
+1. 您可以在外部存储上创建除基于快照的备份之外的任何类型的备份。
+2. 要启动时间点恢复 oplog 切片，您必须在主存储上创建备份。来自外部存储的备份不被视为 oplog 切片的有效基础备份。
+3. PBM 仅在主存储上保存时间点恢复 oplog 范围。备份保存在启动备份时定义的存储上。 
+4. 外部存储上的备份过程不会停止主存储上的时间点恢复 oplog 切片。因此，PBM 在主存储和外部存储上保存与此类备份相关的 oplog 块
+5. 整个增量链必须存储在同一存储上。要更改增量备份的存储，您必须在新存储上使用增量基础备份启动新的备份链。
+6. 要从外部存储上的备份恢复，`pbm-agents` 必须对其具有读取权限。
+7. 要进行时间点恢复，您必须通过 `--base-snapshot` 标志指定备份名称。如果没有它，PBM 会在主存储上搜索基础备份。
+8. 您只能使用 `pbm delete-backup <backup-name>` 命令按名称从外部存储删除备份。 
+9. 您只能使用 `pbm delete-backup --older-than <time>` 或 `pbm cleanup --older-than <time>` 命令从**主**存储删除早于指定时间的备份。 
 
 
 

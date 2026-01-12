@@ -1,37 +1,37 @@
-# Make a logical backup
+# 创建逻辑备份
 
 --8<-- "prepare-backup.md"
 
-## Procedure
+## 步骤
 
 !!! warning
 
-    Sharded time series collections are not supported. If you use them in your deployment, you won't be able to make a backup. 
+    不支持分片时间序列集合。如果您在部署中使用它们，将无法创建备份。 
  
 
-To make a backup, run the following command:
+要创建备份，请运行以下命令：
 
 ```bash
 pbm backup --type=logical
 ```
      
-Logical backup is the default one so you can bypass the `--type` flag. 
+逻辑备份是默认的，因此您可以省略 `--type` 标志。 
 
-During *logical* backups, Percona Backup for MongoDB copies the actual data to the backup storage.
+在*逻辑*备份期间，Percona Backup for MongoDB 将实际数据复制到备份存储。
 
-Starting with version 2.0.0, Percona Backup for MongoDB stores data in the new multi-file format where each collection has a separate file. The oplog is stored for all namespaces regardless whether this is a full or selective backup.
+从版本 2.0.0 开始，Percona Backup for MongoDB 以新的多文件格式存储数据，其中每个集合都有一个单独的文件。无论这是完整备份还是选择性备份，都会为所有命名空间存储 oplog。
 
-Multi-format is now the default data format since it allows [selective restore](restore-selective.md). Note, however, that you can make only full restores from backups made with earlier versions of Percona Backup for MongoDB.
+多格式现在是默认的数据格式，因为它允许[选择性恢复](restore-selective.md)。但是请注意，您只能从使用早期版本的 Percona Backup for MongoDB 创建的备份进行完整恢复。
 
 
-## Next steps
+## 下一步
 
-[List backups](../usage/list-backup.md){.md-button}
-[Make a restore from a logical backup](restore.md){.md-button}
-[Make a point-in-time recovery](pitr-tutorial.md){.md-button}
+[列出备份](../usage/list-backup.md){.md-button}
+[从逻辑备份恢复](restore.md){.md-button}
+[执行时间点恢复](pitr-tutorial.md){.md-button}
 
-## Useful links
+## 有用的链接
 
-* [Track backup progress](../troubleshoot/status.md#backup-progress-tracking)
-* [Schedule backups](../usage/schedule-backup.md)
+* [跟踪备份进度](../troubleshoot/status.md#backup-progress-tracking)
+* [安排备份](../usage/schedule-backup.md)
 

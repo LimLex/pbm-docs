@@ -1,23 +1,22 @@
-# Logical backups and restores
+# 逻辑备份和恢复
 
-*Logical backup* is the copying of the actual database data. A `pbm-agent` connects to the database, retrieves the data, and writes it to the remote backup storage. 
+*逻辑备份*是复制实际数据库数据的过程。`pbm-agent` 连接到数据库，检索数据，并将其写入远程备份存储。 
 
-Logical restore is the reverse process: The ``pbm-agent`` retrieves the backup data from the storage and inserts it on every primary node in the cluster. The remaining nodes receive the data during the replication process.
+逻辑恢复是相反的过程：``pbm-agent`` 从存储中检索备份数据，并将其插入集群中的每个主节点。其余节点在复制过程中接收数据。
 
 !!! warning
 
-    Sharded time series collections are not supported. 
+    不支持分片时间序列集合。 
 
-The following diagram shows the restore flow.
+以下图表显示了恢复流程。
 
 ![image](../_images/pbm-restore-shard.png)
  
 
-| Advantages                     | Disadvantages                   |
+| 优点                     | 缺点                   |
 | ------------------------------ | ------------------------------- |
-| - Easy to operate with, using a single command <br> - Support for point-in-time recovery <br> - The backup size is smaller as it includes only the data | - Much slower than physical backup / restore <br> - Adds database overhead on reading and inserting the data | 
+| - 易于操作，使用单个命令 <br> - 支持时间点恢复 <br> - 备份大小更小，因为它只包含数据 | - 比物理备份/恢复慢得多 <br> - 在读取和插入数据时增加数据库开销 | 
 
-[Make a backup](../usage/start-backup.md){ .md-button .md-button }
-[Restore a backup](../usage/restore.md){ .md-button .md-button }
-
+[创建备份](../usage/start-backup.md){ .md-button .md-button }
+[恢复备份](../usage/restore.md){ .md-button .md-button }
 

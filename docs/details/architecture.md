@@ -1,15 +1,15 @@
-# Architecture
+# 架构
 
-Percona Backup for MongoDB consists of the following components:
+Percona Backup for MongoDB 由以下组件组成：
 
-* [`pbm-agent`](../reference/glossary.md#pbm-agent) is a process running on **every** `mongod` node that is not an arbiter node within the cluster or within a replica set that performs backup and restore operations.
+* [`pbm-agent`](../reference/glossary.md#pbm-agent) 是在集群或副本集中**每个**非仲裁节点的 `mongod` 节点上运行的进程，用于执行备份和恢复操作。
 
-* [`pbm` CLI](../reference/glossary.md#pbm-cli) is a command-line utility that instructs `pbm-agents` to perform an operation.
+* [`pbm` CLI](../reference/glossary.md#pbm-cli) 是指令 `pbm-agents` 执行操作的命令行实用程序。
 
-* [PBM Control collections](../reference/glossary.md#pbm-control-collections) are special collections in MongoDB that store the configuration data and backup states. Both `pbm` CLI and `pbm-agent` use PBM Control collections to check backup status in MongoDB and communicate with each other.
+* [PBM 控制集合](../reference/glossary.md#pbm-control-collections) 是 MongoDB 中存储配置数据和备份状态的特殊集合。`pbm` CLI 和 `pbm-agent` 都使用 PBM 控制集合来检查 MongoDB 中的备份状态并相互通信。
 
-* Remote backup storage is where Percona Backup for MongoDB saves backups. It can be either [an S3 compatible storage](../reference/glossary.md#s3-compatible-storage) or a filesystem-type storage.
+* 远程备份存储是 Percona Backup for MongoDB 保存备份的位置。它可以是 [S3 兼容存储](../reference/glossary.md#s3-compatible-storage) 或文件系统类型存储。
 
-The following diagram illustrates how Percona Backup for MongoDB components communicate with MongoDB.
+以下图表说明了 Percona Backup for MongoDB 组件如何与 MongoDB 通信。
 
 ![image](../_images/pbm-architecture.png){ align=center}

@@ -1,21 +1,21 @@
-# View backup logs
+# 查看备份日志
 
-!!! admonition "Version added: [1.4.0](../release-notes/1.4.0.md)"
+!!! admonition "版本添加：[1.4.0](../release-notes/1.4.0.md)"
 
-You can see the logs from all `pbm-agents` in your MongoDB environment using `pbm CLI`. This reduces time for finding required information when troubleshooting issues.
+您可以使用 `pbm CLI` 查看 MongoDB 环境中所有 `pbm-agents` 的日志。这减少了在排查问题时查找所需信息的时间。
 
 !!! note 
     
-    The log information about restores from physical backups is not available in pbm logs.
+    有关从物理备份恢复的日志信息在 pbm logs 中不可用。
 
-To view `pbm-agent` logs, run the `pbm logs` command and pass one or several flags to narrow down the search.
+要查看 `pbm-agent` 日志，请运行 `pbm logs` 命令并传递一个或多个标志以缩小搜索范围。
 
-The following flags are available:
+以下标志可用：
 
-* `-t`, `--tail` - Show the last N rows of the log
-* `-e`, `--event` - Filter logs by all backups or a specific backup
-* `-n`, `--node` - Filter logs by a specific node  or a replica set
-* `-s`, `--severity` - Filter logs by severity level. The following values are supported (from low to high):
+* `-t`、`--tail` - 显示日志的最后 N 行
+* `-e`、`--event` - 按所有备份或特定备份过滤日志
+* `-n`、`--node` - 按特定节点或副本集过滤日志
+* `-s`、`--severity` - 按严重性级别过滤日志。支持以下值（从低到高）：
 
     * `D` - Debug
     * `I` - Info
@@ -23,37 +23,37 @@ The following flags are available:
     * `E` - Error
     * `F` - Fatal
 
-* `-o`, `--output` - Show log information as text (default) or in JSON format.
-* `-i`, `--opid` - Filter logs by the operation ID
+* `-o`、`--output` - 以文本（默认）或 JSON 格式显示日志信息。
+* `-i`、`--opid` - 按操作 ID 过滤日志
 
-## Examples
+## 示例
 
-The following are some examples of filtering logs:
+以下是一些过滤日志的示例：
 
-**Show logs for all backups**
+**显示所有备份的日志**
 
 ```bash
 pbm logs --event=backup
 ```
 
-**Show the last 100 lines of the log about a specific backup 2020-10-15T17:42:54Z**
+**显示特定备份 2020-10-15T17:42:54Z 的日志的最后 100 行**
 
 ```bash
 pbm logs --tail=100 --event=backup/2020-10-15T17:42:54Z
 ```
 
-**Include only errors from the specific replica set**
+**仅包含来自特定副本集的错误**
 
 ```bash
 pbm logs -n rs1 -s E
 ```
 
-The output includes log messages of the specified severity type and all higher levels. Thus, when `ERROR` is specified, both `ERROR` and `FATAL` messages are shown in the output.
+输出包括指定严重性类型的日志消息和所有更高级别。因此，当指定 `ERROR` 时，输出中会显示 `ERROR` 和 `FATAL` 消息。
 
-## Implementation details
+## 实现细节
 
-`pbm-agents` write log information into the `pbmLog` collection in the [PBM Control collections](../reference/glossary.md#pbm-control-collections). Every `pbm-agent` also writes log information to `stderr` so that you can retrieve it when there is no healthy `mongod` node in your cluster or replica set. For how to view an individual `pbm-agent` log, see [How to see the pbm-agent log](../install/start-pbm-agent.md#how-to-see-the-pbm-agent-log).
+`pbm-agents` 将日志信息写入 [PBM 控制集合](../reference/glossary.md#pbm-control-collections) 中的 `pbmLog` 集合。每个 `pbm-agent` 还将日志信息写入 `stderr`，以便在集群或副本集中没有健康的 `mongod` 节点时可以检索它。有关如何查看单个 `pbm-agent` 日志，请参阅[如何查看 pbm-agent 日志](../install/start-pbm-agent.md#how-to-see-the-pbm-agent-log)。
 
 !!! note
 
-    Log information from `pbmLog` collection is shown in the UTC timezone and from the stderr - in the server’s time zone.
+    来自 `pbmLog` 集合的日志信息以 UTC 时区显示，来自 stderr 的日志信息以服务器的时区显示。

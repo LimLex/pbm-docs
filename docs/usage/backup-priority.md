@@ -1,8 +1,8 @@
-# Adjust node priority for backups
+# 调整备份的节点优先级
 
-By default, the `pbm-agent` to do a backup is elected randomly among secondary nodes in a replica set. In sharded cluster deployments, the `pbm-agent` is elected among the secondary nodes in every shard and the config server replica sets. If no secondary node responds in a defined period, then the `pbm-agent` on the primary node is elected to do a backup.
+默认情况下，执行备份的 `pbm-agent` 在副本集的从节点中随机选择。在分片集群部署中，`pbm-agent` 在每个分片和配置服务器副本集的从节点中选择。如果在定义的时间内没有从节点响应，则选择主节点上的 `pbm-agent` 执行备份。
 
-You can influence the `pbm-agent` election by assigning a priority to `mongod` nodes in the Percona Backup for MongoDB [configuration file](../reference/config.md).
+您可以通过在 Percona Backup for MongoDB [配置文件](../reference/config.md) 中为 `mongod` 节点分配优先级来影响 `pbm-agent` 选举。
 
 ```yaml
 backup:
@@ -13,15 +13,15 @@ backup:
     "localhost:27017": 0.1
 ```
 
-The format of the priority array is `<hostname:port>`:`<priority>`.
+优先级数组的格式是 `<hostname:port>`:`<priority>`。
 
 !!! note
 
-    Using configuration file is the only way to define backup priority. 
+    使用配置文件是定义备份优先级的唯一方法。 
 
-To define priority in a sharded cluster, you can either list all nodes or specify priority for one node in each shard and config server replica set. The `hostname` and `port` uniquely identifies a node so that Percona Backup for MongoDB recognizes where it belongs to and grants the priority accordingly.
+要在分片集群中定义优先级，您可以列出所有节点，或者为每个分片和配置服务器副本集中的一个节点指定优先级。`hostname` 和 `port` 唯一标识一个节点，以便 Percona Backup for MongoDB 识别它属于哪里并相应地授予优先级。
 
-Note that if you listed only specific nodes, the remaining nodes will be automatically assigned priority `1.0`. For example, you assigned priority `2.5` to only one secondary node in every shard and config server replica set of the sharded cluster.
+请注意，如果您仅列出特定节点，剩余节点将自动分配优先级 `1.0`。例如，您仅为分片集群的每个分片和配置服务器副本集中的一个从节点分配优先级 `2.5`。
 
 ```yaml
 backup:
@@ -31,22 +31,22 @@ backup:
     "localhost:28018": 2.5  # shard 2
 ```
 
-The remaining secondaries and the primary nodes in the cluster receive priority `1.0`.
+集群中剩余的从节点和主节点接收优先级 `1.0`。
 
-The `mongod` node with the highest priority makes the backup. If this node is unavailable, the next priority node is selected. If there are several nodes with the same priority, one of them is randomly elected to make the backup.
+优先级最高的 `mongod` 节点进行备份。如果此节点不可用，则选择下一个优先级节点。如果有多个具有相同优先级的节点，则随机选择其中一个进行备份。
 
-If you haven’t listed any nodes for the `priority` option in the config, the nodes have the default priority for making backups as follows:
+如果您没有在配置中为 `priority` 选项列出任何节点，节点具有以下默认备份优先级：
 
-* hidden nodes - priority 2.0
-* secondary nodes - priority 1.0
-* primary node - priority 0.5
+* 隐藏节点 - 优先级 2.0
+* 从节点 - 优先级 1.0
+* 主节点 - 优先级 0.5
 
 !!! important
 
-    As soon as you adjust node priorities in the configuration file, it is assumed that you take manual control over them. The default rule to prefer secondary nodes over primary stops working.
+    一旦您在配置文件中调整节点优先级，就假定您手动控制它们。优先选择从节点而不是主节点的默认规则停止工作。
 
-    Adjusting node priority interferes the default flow for incremental backups, where PBM tries to schedule the incremental backup on happen on the same node that made the base backup. If you list only a subset of nodes in the priority list, the remaining nodes receive the default priority 1.0. This may result in the incremental backup being taken from a node that didn't make the base backup. 
+    调整节点优先级会干扰增量备份的默认流程，其中 PBM 尝试在同一节点上安排增量备份，该节点创建了基础备份。如果您仅在优先级列表中列出节点的子集，剩余节点会收到默认优先级 1.0。这可能导致增量备份不是从创建基础备份的节点获取的。 
 
-    To workaround it, list either all nodes or at least a single node from every replica set in the priorities list.
+    要解决此问题，请在优先级列表中列出所有节点，或至少列出每个副本集中的一个节点。
 
-This ability to adjust node priority helps you manage your backup strategy by selecting specific nodes or nodes from preferred data centers. In geographically distributed infrastructures, you can reduce network latency by making backups from nodes in geographically closest locations.
+这种调整节点优先级的能力通过选择特定节点或首选数据中心的节点来帮助您管理备份策略。在地理分布的基础设施中，您可以通过从地理位置最近的位置的节点进行备份来减少网络延迟。

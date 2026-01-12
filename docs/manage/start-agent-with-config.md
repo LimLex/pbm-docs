@@ -1,16 +1,16 @@
-# Start pbm-agent using the configuration file
+# 使用配置文件启动 pbm-agent
 
-!!! admonition "Version added: [2.9.0](../release-notes/2.9.0.md)"
+!!! admonition "版本添加：[2.9.0](../release-notes/2.9.0.md)"
 
-A `pbm-agent` requires a MongoDB connection string URI to start. You can define it either via the environment variable or use the configuration file. The latter option enables you to specify additional configuration like the number of parallel connections for backups and [custom logging configuration](logpath.md). 
+`pbm-agent` 需要 MongoDB 连接字符串 URI 才能启动。您可以通过环境变量或使用配置文件来定义它。后一个选项使您能够指定其他配置，如备份的并行连接数和[自定义日志配置](logpath.md)。 
 
-This document explains how to start a `pbm-agent` using the configuration file. For how to use environment variables, see the [Configure authentication in MongoDB](../install/configure-authentication.md#set-the-mongodb-connection-uri-for-pbm-agent)
+本文档说明如何使用配置文件启动 `pbm-agent`。有关如何使用环境变量，请参阅[在 MongoDB 中配置身份验证](../install/configure-authentication.md#set-the-mongodb-connection-uri-for-pbm-agent)
 
-The steps vary slightly based on your installation method. In the following example, we provide all available configuration options for reference. Note that for initial `pbm-agent` start, `mongodb-uri` is mandatory.
+步骤根据您的安装方法略有不同。在以下示例中，我们提供所有可用的配置选项以供参考。请注意，对于初始 `pbm-agent` 启动，`mongodb-uri` 是必需的。
 
-## For installation from packages {.power-number}
+## 从软件包安装 {.power-number}
 
-1. Create a configuration file. For example, `/etc/pbm-agent.yaml`. 
+1. 创建配置文件。例如，`/etc/pbm-agent.yaml`。 
 
 	```yaml title="/etc/pbm-agent.yaml"
 	mongodb-uri: mongodb://pbm:mysecret@localhost:27017/
@@ -22,7 +22,7 @@ The steps vary slightly based on your installation method. In the following exam
 	  json: true
 	```
 
-2. Modify the `pbm-agent.service` systemd unit file. Specify the path to the configuration file for the `ExecStart` parameter. 
+2. 修改 `pbm-agent.service` systemd 单元文件。为 `ExecStart` 参数指定配置文件的路径。 
 
     ```init title="pbm-agent.service"
     ....
@@ -34,17 +34,17 @@ The steps vary slightly based on your installation method. In the following exam
     ....
     ```
 
-3. Start the `pbm-agent`.
+3. 启动 `pbm-agent`。
 
     ```bash
     sudo systemctl start pbm-agent
     ```
 
-## For installation from the source code and tarballs {.power-number}
+## 从源代码和压缩包安装 {.power-number}
 
-For the initial `pbm-agent` start, you require the credentials of a `pbm` user. See the [Create a pbm user](../install/configure-authentication.md#create-the-pbm-user) section for how to create this user. 
+对于初始 `pbm-agent` 启动，您需要 `pbm` 用户的凭据。有关如何创建此用户，请参阅[创建 pbm 用户](../install/configure-authentication.md#create-the-pbm-user) 部分。 
 
-1. Create the configuration file. Specify the `pbm` user credentials in the MongoDB connection string URI.
+1. 创建配置文件。在 MongoDB 连接字符串 URI 中指定 `pbm` 用户凭据。
 
 	```yaml title="/etc/pbm-agent.yaml"
 	mongodb-uri: mongodb://pbm:mysecret@localhost:27017/
@@ -56,8 +56,8 @@ For the initial `pbm-agent` start, you require the credentials of a `pbm` user. 
 	  json: true
 	```
 
-2. Check that you have exported the location of the PBM binaries to the `$PATH` variable
-3. Start the `pbm-agent`:
+2. 检查您是否已将 PBM 二进制文件的位置导出到 `$PATH` 变量
+3. 启动 `pbm-agent`：
 
     ```bash
     pbm-agent -f /etc/pbm-agent.yaml

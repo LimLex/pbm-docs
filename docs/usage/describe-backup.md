@@ -1,14 +1,14 @@
-# View detailed information about a backup
+# 查看备份的详细信息
 
-To view a detailed information about a backup, run the following command:
+要查看备份的详细信息，请运行以下命令：
 
 ```bash
 pbm describe-backup <backup-name>
 ```
 
-The output provides the backup name, type, status, size and the information about the cluster topology it was taken in. For [selective backups](../features/selective-backup.md), it also shows the namespaces that were backed up. 
+输出提供备份名称、类型、状态、大小以及创建它的集群拓扑信息。对于[选择性备份](../features/selective-backup.md)，它还显示已备份的命名空间。 
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     name: "2022-08-17T10:49:03Z"
@@ -31,9 +31,9 @@ The output provides the backup name, type, status, size and the information abou
       error: ""
     ```
 
-Starting with version 2.10.0, the command output displays the uncompressed backup size for the whole cluster and the compressed/uncompressed size for each replica set. This helps PBM evaluate the required disk space when doing [physical restores with a fallback directory](../features/physical.md#physical-restores-with-a-fallback-directory).
+从版本 2.10.0 开始，命令输出显示整个集群的未压缩备份大小以及每个副本集的压缩/未压缩大小。这有助于 PBM 在执行[使用回退目录的物理恢复](../features/physical.md#physical-restores-with-a-fallback-directory) 时评估所需的磁盘空间。
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     pbm describe-backup 2025-06-05T16:57:35Z
@@ -53,17 +53,17 @@ Starting with version 2.10.0, the command output displays the uncompressed backu
       size_h: 3.3 GiB
       size_uncompressed_h: 3.6 GiB
 
-!!! admonition "Version added: [2.3.0](../release-notes/2.3.0.md)"
+!!! admonition "版本添加：[2.3.0](../release-notes/2.3.0.md)"
 
-You can view the list of collections included in the *logical* or *selective* backup. This simplifies troubleshooting as it helps identify the backup contents for environments where databases are frequently created or dropped.
+您可以查看*逻辑*或*选择性*备份中包含的集合列表。这简化了故障排除，因为它有助于识别频繁创建或删除数据库的环境中的备份内容。
 
-To view the backup contents, use the `--with-collections` flag:
+要查看备份内容，请使用 `--with-collections` 标志：
 
 ```bash
 pbm describe-backup <backup-name> --with-collections
 ```
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     name: "2023-09-14T14:44:33Z"

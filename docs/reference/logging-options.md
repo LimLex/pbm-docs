@@ -1,6 +1,6 @@
-# Logging options
+# 日志选项
 
-The following options are for the pbm-agent configuration. Read more about it in the [Start pbm-agent using the configuration file](../manage/start-agent-with-config.md) chapter.
+以下选项用于 pbm-agent 配置。在[使用配置文件启动 pbm-agent](../manage/start-agent-with-config.md) 章节中了解更多信息。
 
 ```yaml
 log:
@@ -11,20 +11,20 @@ log:
 
 ### path
 
-*Type*: string
+*类型*：字符串
 
-The path to the log file. The file is created if it doesn't exist. The default value is `/dev/stderr` which means that the logs are written to the standard error output. If PBM cannot write logs to the specified path for due to some error, it falls back to the default path.
+日志文件的路径。如果文件不存在，则创建该文件。默认值为 `/dev/stderr`，这意味着日志写入标准错误输出。如果 PBM 由于某种错误无法将日志写入指定路径，它会回退到默认路径。
 
 ### level
 
-*Type*: string
+*类型*：字符串
 
-The log severity level. Supported levels are (from low to high): D - Debug (default), I - Info, W - Warning, E - Error, F - Fatal.
+日志严重性级别。支持的级别有（从低到高）：D - Debug（默认）、I - Info、W - Warning、E - Error、F - Fatal。
 
-The output includes both the specified severity level and all higher ones.
+输出包括指定的严重性级别和所有更高级别。
 
 ### json
 
-*Type*: boolean
+*类型*：boolean
 
-Output log messages in JSON format. If undefined, logs are written in the default text format.
+以 JSON 格式输出日志消息。如果未定义，日志以默认文本格式写入。

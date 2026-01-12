@@ -1,126 +1,126 @@
-# Point-in-time recovery
+# 时间点恢复
 
-!!! admonition "Version added: [1.3.0](../release-notes/1.3.0.md)"
+!!! admonition "版本添加：[1.3.0](../release-notes/1.3.0.md)"
 
-??? admonition "Implementation history"
+??? admonition "实现历史"
 
-    The following table lists the changes in the implementation of point-in-time recovery and the versions that introduced those changes:
+    下表列出了时间点恢复实现中的更改以及引入这些更改的版本：
 
-    |Version | Description |
+    |版本 | 描述 |
     |--------|-------------|
-    | [1.3.0](../release-notes/1.3.0.md)   | Initial implementation of point-in-time recovery|
-    | [1.6.0](../release-notes/1.6.0.md)   | Ability to change duration of an oplog span|
-    | [1.7.0](../release-notes/1.7.0.md)   | Added compression to oplog slices|
-    | [2.3.0](../release-notes/2.3.0.md)   | Support of any type of base backup|
-    | [2.4.0](../release-notes/2.4.0.md)   | Oplog slicing in parallel with backups|
-    |[2.6.0](../release-notes/2.6.0.md)    | Adjust node priority for oplog slices|
+    | [1.3.0](../release-notes/1.3.0.md)   | 时间点恢复的初始实现|
+    | [1.6.0](../release-notes/1.6.0.md)   | 能够更改 oplog 跨度持续时间|
+    | [1.7.0](../release-notes/1.7.0.md)   | 添加了对 oplog 切片的压缩|
+    | [2.3.0](../release-notes/2.3.0.md)   | 支持任何类型的基础备份|
+    | [2.4.0](../release-notes/2.4.0.md)   | 与备份并行进行 oplog 切片|
+    |[2.6.0](../release-notes/2.6.0.md)    | 调整 oplog 切片的节点优先级|
 
-Point-in-time recovery is restoring a database up to a specific timestamp. This includes restoring the data from a backup snapshot and replaying all events that occurred to this data up to a specified time from [oplog slices](#oplog-slicing). 
+时间点恢复是将数据库恢复到特定时间戳。这包括从备份快照恢复数据，并从 [oplog 切片](#oplog-slicing) 重放直到指定时间发生的所有事件。 
 
-| Advantages                     | Disadvantages                   |
+| 优点                     | 缺点                   |
 | ------------------------------ | ------------------------------- |
-| Helps you prevent data loss during a disaster such as a crashed database, accidental data deletion or drop of collections, and unwanted update of multiple fields instead of a single one. | Restore takes longer since it requires you to restore the backup and then replay oplog events on top of it.|
+| 帮助您防止灾难期间的数据丢失，例如数据库崩溃、意外数据删除或集合删除，以及意外更新多个字段而不是单个字段。 | 恢复需要更长时间，因为它需要您恢复备份，然后在其上重放 oplog 事件。|
 
-## Enable point-in-time recovery
+## 启用时间点恢复
 
-Set the `pitr.enabled` configuration option to `true`.
+将 `pitr.enabled` 配置选项设置为 `true`。
 
-=== ":octicons-file-code-24: Command line"
+=== ":octicons-file-code-24: 命令行"
 
      ```bash
      pbm config --set pitr.enabled=true
      ```
 
-=== ":material-console: Configuration file"
+=== ":material-console: 配置文件"
 
      ```yaml
      pitr:
        enabled: true
      ```
 
-The `pbm-agent` starts [saving consecutive slices of the oplog](#oplog-slicing) periodically. The `pbm-agent` to save oplog slices is randomly selected among the nodes according to their priority, whether it is the default or [user-defined one](#adjust-node-priority-for-oplog-slices). 
+`pbm-agent` 开始定期[保存连续的 oplog 切片](#oplog-slicing)。保存 oplog 切片的 `pbm-agent` 根据节点的优先级在节点中随机选择，无论是默认优先级还是[用户定义的优先级](#adjust-node-priority-for-oplog-slices)。 
 
-You can manage the `pbm-agent` election by assigning a priority value to the `mongod` nodes. See the [Adjust node priority for oplog slices](#adjust-node-priority-for-oplog-slices) for details.
+您可以通过为 `mongod` 节点分配优先级值来管理 `pbm-agent` 选举。有关详细信息，请参阅[调整 oplog 切片的节点优先级](#adjust-node-priority-for-oplog-slices)。
 
 
-[Restore to a point-in-time](../usage/pitr-tutorial.md){ .md-button .md-button }
+[恢复到时间点](../usage/pitr-tutorial.md){ .md-button .md-button }
 
-## Oplog slicing
+## Oplog 切片
 
-To start saving [oplog slices](../reference/glossary.md#oplog), the following preconditions must be met:
+要开始保存 [oplog 切片](../reference/glossary.md#oplog)，必须满足以下先决条件：
 
-=== ":material-data-matrix: Logical backups"
+=== ":material-data-matrix: 逻辑备份"
 
-    * A full backup snapshot is required. Starting with version [2.3.0](../release-notes/2.3.0.md), it can be a logical, a physical or an incremental backup. Make sure that a [backup exists](../usage/list-backup.md). See the [Make a backup](../usage/start-backup.md) guide to make a backup snapshot.
-    * Point-in-time recovery routine is [enabled](#enable-point-in-time-recovery). 
+    * 需要完整备份快照。从版本 [2.3.0](../release-notes/2.3.0.md) 开始，它可以是逻辑、物理或增量备份。确保[存在备份](../usage/list-backup.md)。请参阅[创建备份](../usage/start-backup.md) 指南以创建备份快照。
+    * 时间点恢复例程已[启用](#enable-point-in-time-recovery)。 
 
-=== ":material-database-refresh-outline: Physical backups"
+=== ":material-database-refresh-outline: 物理备份"
 
-    Point-in-time recovery routine is [enabled](#enable-point-in-time-recovery). 
+    时间点恢复例程已[启用](#enable-point-in-time-recovery)。 
     
 
-If you just enabled point-in-time recovery, it requires 10 minutes for the first slice to appear in the [`pbm list`](../reference/pbm-commands.md#pbm-list) output.
+如果您刚刚启用时间点恢复，第一个切片需要 10 分钟才会出现在 [`pbm list`](../reference/pbm-commands.md#pbm-list) 输出中。
 
-Starting with version [2.4.0](../release-notes/2.4.0.md), oplog slicing runs as follows:
+从版本 [2.4.0](../release-notes/2.4.0.md) 开始，oplog 切片运行如下：
 
-* **Logical backups** 
+* **逻辑备份** 
 
-    Before backup starts, the point-in-time recovery routine is automatically disabled. A backup routine creates oplog slices during the backup creation. After the backup is complete, the point-in-time recovery routine is re-enabled automatically. It copies the slices taken during the backup and continues oplog slicing from the latest timestamp. 
+    在备份开始之前，时间点恢复例程会自动禁用。备份例程在备份创建期间创建 oplog 切片。备份完成后，时间点恢复例程会自动重新启用。它复制备份期间拍摄的切片，并从最新时间戳继续 oplog 切片。 
 
-* **Physical backups** 
+* **物理备份** 
 
-    During a physical backup, the point-in-time recovery routine is not disabled and continues to save oplog slices in parallel with a backup snapshot operation. 
-
-
-Thus, if a backup snapshot is large and takes hours to make, all oplog events are saved for it, ensuring point-in-time recovery to any timestamp.
-
-[Known limitations](known-limitations.md#oplog-slicing-for-point-in-time-recovery){.md-button}
+    在物理备份期间，时间点恢复例程不会禁用，并继续与备份快照操作并行保存 oplog 切片。 
 
 
-### Oplog duration
+因此，如果备份快照很大并且需要数小时才能完成，所有 oplog 事件都会为其保存，确保恢复到任何时间戳。
 
-!!! admonition "Version added: [1.6.0](../release-notes/1.6.0.md)"
+[已知限制](known-limitations.md#oplog-slicing-for-point-in-time-recovery){.md-button}
 
-By default, a slice covers a 10-minute span of oplog events. It can be shorter if point-in-time recovery is disabled or interrupted by the start of a backup snapshot operation.
 
-You can change the duration of an oplog span via the configuration file. Specify the new value (in minutes) for the `pitr.oplogSpanMin` option.
+### Oplog 持续时间
 
-=== ":octicons-file-code-24: Command line"
+!!! admonition "版本添加：[1.6.0](../release-notes/1.6.0.md)"
+
+默认情况下，切片涵盖 10 分钟的 oplog 事件跨度。如果时间点恢复被禁用或被备份快照操作的开始中断，它可能会更短。
+
+您可以通过配置文件更改 oplog 跨度的持续时间。为 `pitr.oplogSpanMin` 选项指定新值（以分钟为单位）。
+
+=== ":octicons-file-code-24: 命令行"
 
      ```bash
      pbm config --set pitr.oplogSpanMin=5
      ```
 
-=== ":material-console: Configuration file"
+=== ":material-console: 配置文件"
 
      ```yaml
      pitr:
        oplogSpanMin: 5
      ```
 
-If you set the new duration when the `pbm-agent` is making an oplog slice, the slice’s span is updated right away.
+如果您在 `pbm-agent` 正在创建 oplog 切片时设置新持续时间，切片的跨度会立即更新。
 
-If the new duration is shorter, this triggers the `pbm-agent` to make a new slice with the updated span immediately. If the new duration is larger,  the `pbm-agent` makes the next slice with the updated span in its scheduled time.
+如果新持续时间更短，这会触发 `pbm-agent` 立即使用更新的跨度创建新切片。如果新持续时间更长，`pbm-agent` 会在其计划时间使用更新的跨度创建下一个切片。
 
-### Adjust node priority for oplog slices
+### 调整 oplog 切片的节点优先级
 
-!!! admonition "Version added: [2.6.0](../release-notes/2.6.0.md)"
+!!! admonition "版本添加：[2.6.0](../release-notes/2.6.0.md)"
 
-Before version 2.6.0, the `pbm-agent` to save oplog slices is selected randomly across replica set members. 
+在版本 2.6.0 之前，保存 oplog 切片的 `pbm-agent` 在副本集成员中随机选择。 
 
-Starting with version 2.6.0, you can control from what node to save oplog slices by assigning the priority to the desired nodes via the configuration file. For example, you can ensure that both backups and oplog slices are taken from the nodes in a specific data center as defined in the organization's regulations. Or, you can reduce network latency by making backups and / or oplog slices from nodes in geographically closest locations.  
+从版本 2.6.0 开始，您可以通过配置文件为所需节点分配优先级来控制从哪个节点保存 oplog 切片。例如，您可以确保备份和 oplog 切片都从组织法规中定义的特定数据中心中的节点获取。或者，您可以通过从地理位置最近的位置的节点进行备份和/或 oplog 切片来减少网络延迟。  
 
-Node priority for oplog slices is handled similarly to the [node priority for making backups](../usage/backup-priority.md), yet it is independent from it. Thus, you can assign a different priority for backups and oplog slices for the same node. Or, adjust only the priority for oplog slices, leaving the default one for backups. 
+oplog 切片的节点优先级处理方式与[创建备份的节点优先级](../usage/backup-priority.md) 类似，但它独立于它。因此，您可以为同一节点的备份和 oplog 切片分配不同的优先级。或者，仅调整 oplog 切片的优先级，保留备份的默认优先级。 
 
-PBM then handles both processes according to their priority.
+然后 PBM 根据它们的优先级处理这两个过程。
 
-The default node priority for oplog slices is the same as for making backups:
+oplog 切片的默认节点优先级与创建备份相同：
 
-* hidden node - priority 2
-* secondary nodes - priority 1
-* primary node - priority 0.5
+* 隐藏节点 - 优先级 2
+* 从节点 - 优先级 1
+* 主节点 - 优先级 0.5
 
-To redefine it, specify the new priority for the [`pitr.priority`](../reference/pitr-options.md#pitrpriority) option in the configuration file:
+要重新定义它，请在配置文件中为 [`pitr.priority`](../reference/pitr-options.md#pitrpriority) 选项指定新优先级：
 
 ```yaml
 pitr:
@@ -131,18 +131,18 @@ pitr:
     "rs3:27019": 1
 ```
 
-Using configuration file is the only way to define priority for oplog slices. 
+使用配置文件是定义 oplog 切片优先级的唯一方法。 
 
 
-The format of the priority array is `<hostname:port>:<priority>`.
+优先级数组的格式是 `<hostname:port>:<priority>`。
 
 !!! important
 
-    As soon as you adjust node priorities in the configuration file, it is assumed that you take manual control over them. The default rule to prefer secondary nodes over primary stops working.
+    一旦您在配置文件中调整节点优先级，就假定您手动控制它们。优先选择从节点而不是主节点的默认规则停止工作。
 
-To define priority in a sharded cluster, you can either list all nodes or specify priority for one node in each shard and config server replica set. The `hostname` and `port` uniquely identifies a node so that Percona Backup for MongoDB recognizes where it belongs to and grants the priority accordingly.
+要在分片集群中定义优先级，您可以列出所有节点，或者为每个分片和配置服务器副本集中的一个节点指定优先级。`hostname` 和 `port` 唯一标识一个节点，以便 Percona Backup for MongoDB 识别它属于哪里并相应地授予优先级。
 
-Note that if you listed only specific nodes, the remaining nodes will be automatically assigned priority `1.0`. For example, you assigned priority `2.5` to only one secondary node in every shard and config server replica set of the sharded cluster.
+请注意，如果您仅列出特定节点，剩余节点将自动分配优先级 `1.0`。例如，您仅为分片集群的每个分片和配置服务器副本集中的一个从节点分配优先级 `2.5`。
 
 ```yaml
 pitr:
@@ -153,15 +153,15 @@ pitr:
     "localhost:28018": 2.5  # shard 2
 ```
 
-The remaining secondaries and the primary nodes in the cluster receive priority `1.0`.
+集群中剩余的从节点和主节点接收优先级 `1.0`。
 
-To check the priorities, run the `pbm status` command with the  `--priority` flag.
+要检查优先级，请使用 `--priority` 标志运行 `pbm status` 命令。
 
 ```bash
 pbm status --priority
 ```
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     Cluster:
@@ -172,53 +172,53 @@ pbm status --priority
       - rs1/rs103:27017 [S], Bkp Prio: [1.0], PITR Prio: [1.0]: pbm-agent [v{{release}}] OK
     ```
 
-PBM saves oplog slices from the node with the highest priority. If this node is not responding, it selects the next priority node. If there are several nodes with the same priority, one of them is randomly elected for saving oplog slices.
+PBM 从优先级最高的节点保存 oplog 切片。如果此节点不响应，它会选择下一个优先级节点。如果有多个具有相同优先级的节点，则随机选择其中一个来保存 oplog 切片。
 
 
-### Compressed oplog slices 
+### 压缩的 oplog 切片 
 
-!!! admonition "Version added: [1.7.0](../release-notes/1.7.0.md)"
+!!! admonition "版本添加：[1.7.0](../release-notes/1.7.0.md)"
 
-The oplog slices are saved with the `s2` compression method by default. You can specify a different compression method via the configuration file. Specify the new value for the [`pitr.compression`](../reference/pitr-options.md#pitrcompression) option.
+oplog 切片默认使用 `s2` 压缩方法保存。您可以通过配置文件指定不同的压缩方法。为 [`pitr.compression`](../reference/pitr-options.md#pitrcompression) 选项指定新值。
 
-=== ":octicons-file-code-24: Command line"
+=== ":octicons-file-code-24: 命令行"
 
      ```bash
      pbm config --set pitr.compression=gzip
      ```
 
-=== ":material-console: Configuration file"
+=== ":material-console: 配置文件"
 
      ```yaml
      pitr:
        compression: gzip
      ```
 
-Supported compression methods are: `gzip`, `snappy`, `lz4`, `s2`, `pgzip`, `zstd`.
+支持的压缩方法有：`gzip`、`snappy`、`lz4`、`s2`、`pgzip`、`zstd`。
 
-Additionally, you can override the compression level used by the compression method by setting the [`pitr.compressionLevel`](../reference/pitr-options.md#pitrcompressionlevel) option. The default values differ for each compression level. 
+此外，您可以通过设置 [`pitr.compressionLevel`](../reference/pitr-options.md#pitrcompressionlevel) 选项来覆盖压缩方法使用的压缩级别。每个压缩级别的默认值不同。 
 
-Note that the higher value you specify, the more time and computing resources it will take to compress the data.
+请注意，您指定的值越高，压缩数据所需的时间和计算资源就越多。
 
 !!! note 
 
-    You can use different compression methods for backup snapshots and point-in-time recovery slices. However, backup snapshot-related oplog is compressed with the same compression method as the backup itself.
+    您可以为备份快照和时间点恢复切片使用不同的压缩方法。但是，与备份快照相关的 oplog 使用与备份本身相同的压缩方法进行压缩。
 
-### View oplog slices
+### 查看 oplog 切片
 
-The oplog slices are stored in the `pbmPitr` subdirectory in the [remote storage defined in the config](../details/storage-configuration.md#supported-storage-types). A slice name reflects the start and end time this slice covers.
+oplog 切片存储在配置中定义的[远程存储](../details/storage-configuration.md#supported-storage-types) 的 `pbmPitr` 子目录中。切片名称反映此切片涵盖的开始和结束时间。
 
-The [`pbm list`](../reference/pbm-commands.md#pbm-list) output includes the following information:
+[`pbm list`](../reference/pbm-commands.md#pbm-list) 输出包括以下信息：
 
-* Backup snapshots. As of version 1.4.0, it also shows the completion time (renamed to the `restore_to_time` in version 2.0.0)
-* Valid time ranges for recovery
-* Point-in-time recovery status
+* 备份快照。从版本 1.4.0 开始，它还显示完成时间（在版本 2.0.0 中重命名为 `restore_to_time`）
+* 恢复的有效时间范围
+* 时间点恢复状态
 
    ```bash
    pbm list
 
      2021-08-04T13:00:58Z [restore_to_time: 2021-08-04T13:01:23Z]
-     2021-08-05T13:00:47Z [restore_to_time: 2021-08-05T13:01:11Z]
+     2021-08-04T13:00:47Z [restore_to_time: 2021-08-05T13:01:11Z]
      2021-08-06T08:02:44Z [restore_to_time: 2021-08-06T08:03:09Z]
      2021-08-06T08:03:43Z [restore_to_time: 2021-08-06T08:04:08Z]
      2021-08-06T08:18:17Z [restore_to_time: 2021-08-06T08:18:41Z]
@@ -228,5 +228,4 @@ The [`pbm list`](../reference/pbm-commands.md#pbm-list) output includes the foll
      2021-08-06T08:03:10 - 2021-08-06T08:18:29
      2021-08-06T08:18:42 - 2021-08-06T08:33:09
    ```
-
 

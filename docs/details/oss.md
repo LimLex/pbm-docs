@@ -1,74 +1,74 @@
-# Alibaba Cloud Object Storage Service (OSS)
+# 阿里云对象存储服务 (OSS)
 
-If you operate in Asia-Pacific region or China and/or use the Alibaba Cloud infrastructure, you can use the Alibaba Cloud Object Storage Service (OSS) as a remote backup storage for Percona Backup for MongoDB (PBM). This way you ensure low-latency access to your backups and optimize costs.
+如果您在亚太地区或中国运营和/或使用阿里云基础设施，您可以使用阿里云对象存储服务 (OSS) 作为 Percona Backup for MongoDB (PBM) 的远程备份存储。这样可以确保对备份的低延迟访问并优化成本。
 
-To use Alibaba Cloud OSS, you need to have:
+要使用阿里云 OSS，您需要：
 
-* an active Alibaba Cloud account with the Object Storage Service enabled for it. Read more about setting up Alibaba Cloud account in the [official documentation :octicons-link-external-16:](https://www.alibabacloud.com/help/en/account/step-1-register-an-alibaba-cloud-account?spm=a2c63.l28256.0.i0)
+* 一个启用了对象存储服务的活跃阿里云账户。在[官方文档 :octicons-link-external-16:](https://www.alibabacloud.com/help/en/account/step-1-register-an-alibaba-cloud-account?spm=a2c63.l28256.0.i0) 中了解更多关于设置阿里云账户的信息
 
-* an access to the Resource Access Management (RAM) console and sufficient permissions to create and manage access policies and users. Read more about using RAM with Alibaba Cloud OSS in the [official documentation :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/user-guide/how-oss-works-with-ram)
+* 访问资源访问管理 (RAM) 控制台并具有创建和管理访问策略和用户的足够权限。在[官方文档 :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/user-guide/how-oss-works-with-ram) 中了解更多关于将 RAM 与阿里云 OSS 一起使用的信息
 
-## Create a bucket
+## 创建存储桶
 
-You can create a bucket via the [Alibaba Cloud Management Console :octicons-link-external-16:](https://home.console.aliyun.com/) or via the command line. 
+您可以通过 [阿里云管理控制台 :octicons-link-external-16:](https://home.console.aliyun.com/) 或通过命令行创建存储桶。 
 
-=== ":simple-alibabacloud: via Alibaba Cloud Management Console"
+=== ":simple-alibabacloud: 通过阿里云管理控制台"
 
-    1. Log in to the Alibaba Cloud Management Console.
-    2. Navigate to the Object Storage Service (OSS) section.
-    3. Navigate to Buckets and click Create a new bucket.
-    4. Specify the bucket name, region, and other settings as needed. Refer to bucket naming conventions
-    5. Click **Create**, verify the bucket information and click **Confirm**.
+    1. 登录阿里云管理控制台。
+    2. 导航到对象存储服务 (OSS) 部分。
+    3. 导航到存储桶并单击创建新存储桶。
+    4. 根据需要指定存储桶名称、区域和其他设置。参考存储桶命名约定
+    5. 单击**创建**，验证存储桶信息并单击**确认**。
 
-=== ":material-console: via Command Line"
+=== ":material-console: 通过命令行"
 
-    1. [Install](https://www.alibabacloud.com/help/en/oss/developer-reference/install-ossutil2#DAS) and configure the Alibaba Cloud OSS client. After the installation, the `ossutil` command line tool is available for you.
-    2. Specify the region:
+    1. [安装](https://www.alibabacloud.com/help/en/oss/developer-reference/install-ossutil2#DAS) 并配置阿里云 OSS 客户端。安装后，`ossutil` 命令行工具可供您使用。
+    2. 指定区域：
 
         ```bash
         ossutil config
         ```
 
-        Press Enter until you see the prompt `Please enter Region [cn-hangzhou]:` and specify the desired region.
+        按 Enter 直到看到提示 `Please enter Region [cn-hangzhou]:` 并指定所需区域。
 
-    3. Create a bucket:
+    3. 创建存储桶：
 
 		```bash
 		ossutil mb oss://your-bucket-name
 		```
 
-		Replace `your-bucket-name` with the desired name for your bucket.
+		将 `your-bucket-name` 替换为您存储桶的所需名称。
 
-	4. Verify that the bucket is created:
+	4. 验证存储桶是否已创建：
 
 	 	```bash
 		ossutil ls
 		```
 
-After you created a bucket, apply the [necessary permissions](storage-configuration.md#permissions-setup) for the user identified by the access credentials you plan to use with PBM.
+创建存储桶后，为您计划与 PBM 一起使用的访问凭据标识的用户应用[必要的权限](storage-configuration.md#permissions-setup)。
 
-## Configure access to Alibaba Cloud OSS for PBM
+## 为 PBM 配置对阿里云 OSS 的访问
 
-For PBM to successfully access and operate in Alibaba Cloud OSS, it requires access credentials with the necessary permissions to read and write data to the designated OSS bucket.
+为了使 PBM 成功访问和操作阿里云 OSS，它需要具有对指定 OSS 存储桶读写数据的必要权限的访问凭据。
 
-Alibaba Cloud OSS supports the following access modes:
+阿里云 OSS 支持以下访问模式：
 
-* Using the Access Key ID and Access Key secret associated with a RAM user. These are permanent credentials designed for programmatic access. Note that the RAM user must have all required permissions to access the OSS resources assigned to them. 
+* 使用与 RAM 用户关联的 Access Key ID 和 Access Key secret。这些是专为编程访问设计的永久凭据。请注意，RAM 用户必须具有访问分配给他们的 OSS 资源的所有必要权限。 
 
-   Refer to the [Use the AccessKey pair of a RAM user to access OSS resources :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/developer-reference/use-the-accesskey-pair-of-a-ram-user-to-initiate-a-request) chapter for detailed instructions.
+   请参阅[使用 RAM 用户的 AccessKey 对访问 OSS 资源 :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/developer-reference/use-the-accesskey-pair-of-a-ram-user-to-initiate-a-request) 章节以获取详细说明。
 
-* Rather than granting permissions directly to a RAM user, you can assign them through a RAM role. A RAM role is a virtual identity that can have one or more access policies attached, defining the necessary permissions. A RAM user gains these permissions by assuming the role.
+* 您可以通过 RAM 角色分配权限，而不是直接授予 RAM 用户。RAM 角色是一个虚拟身份，可以附加一个或多个访问策略，定义必要的权限。RAM 用户通过承担角色来获得这些权限。
 
-  An authorized RAM user can use an AccessKey pair to call the [AssumeRole :octicons-link-external-16:](https://www.alibabacloud.com/help/en/ram/developer-reference/api-sts-2015-04-01-assumerole#main-107864) operation. Then the user receives an STS token together with the temporary credentials to access OSS resources.
+  授权的 RAM 用户可以使用 AccessKey 对调用 [AssumeRole :octicons-link-external-16:](https://www.alibabacloud.com/help/en/ram/developer-reference/api-sts-2015-04-01-assumerole#main-107864) 操作。然后用户收到 STS 令牌以及临时凭据以访问 OSS 资源。
 
-  Refer to the [STS temporary access authorization :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/sts-temporary-access-authorization#section-csx-hvf-vdb) chapter for configuration guidelines.
+  请参阅 [STS 临时访问授权 :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/sts-temporary-access-authorization#section-csx-hvf-vdb) 章节以获取配置指南。
 
 
-## Configuration example
+## 配置示例
 
-Here is an example of a Alibaba Cloud OSS configuration in Percona Backup for MongoDB:
+以下是 Percona Backup for MongoDB 中阿里云 OSS 配置的示例：
 
-=== "using AccessKey pair"
+=== "使用 AccessKey 对"
 
     ```yaml
     storage:
@@ -82,7 +82,7 @@ Here is an example of a Alibaba Cloud OSS configuration in Percona Backup for Mo
         accessKeySecret:  "3dZn*******************************************"
     ```
 
-=== "using a RAM role"
+=== "使用 RAM 角色"
 
     ```yaml
     storage:
@@ -98,69 +98,69 @@ Here is an example of a Alibaba Cloud OSS configuration in Percona Backup for Mo
          sessionName: pbm-backup-session
     ```
 
-See [Configuration file options](../reference/configuration-options.md) for the description of configuration options.
+有关配置选项的说明，请参阅[配置文件选项](../reference/configuration-options.md)。
 
-## Fine-tune storage configuration
+## 微调存储配置
 
-The following sections describe how you can fine-tune your storage configuration:
+以下部分介绍如何微调存储配置：
 
-* [Server-side encryption](#server-side-encryption)
-* [Upload retries](#upload-retries)
-* [multiple endpoints to the same S3 storage](endpoint-map.md) 
+* [服务器端加密](#server-side-encryption)
+* [上传重试](#upload-retries)
+* [同一 S3 存储的多个端点](endpoint-map.md) 
 
-### Server-side encryption
+### 服务器端加密
 
-Alibaba Cloud OSS provides server-side encryption (SSE) capabilities to protect your data at rest. When you enable SSE, your data is automatically encrypted before being stored and decrypted when you access it.
+阿里云 OSS 提供服务器端加密 (SSE) 功能以保护您的静态数据。启用 SSE 后，您的数据在存储前会自动加密，在访问时会自动解密。
 
-Percona Backup for MongoDB supports server-side encryption for OSS buckets with the following encryption types:
+Percona Backup for MongoDB 支持 OSS 存储桶的服务器端加密，支持以下加密类型：
 
-* [Alibaba Cloud OSS-managed encryption keys (SSE-OSS)](#using-oss-managed-encryption-keys-sse-oss). This type provides basic encryption capabilities. 
-* [Customer master keys managed by Alibaba Cloud Key Management Service (SSE-KMS)](#using-customer-master-keys-managed-by-key-management-service-sse-kms). This option provides more control over key management and security and is suitable when you need to use self-managed or user-specified keys to meet security and compliance requirements.
+* [阿里云 OSS 管理的加密密钥 (SSE-OSS)](#using-oss-managed-encryption-keys-sse-oss)。此类型提供基本加密功能。 
+* [由阿里云密钥管理服务管理的客户主密钥 (SSE-KMS)](#using-customer-master-keys-managed-by-key-management-service-sse-kms)。此选项提供对密钥管理和安全的更多控制，适合需要使用自管理或用户指定的密钥以满足安全和合规要求的情况。
 
-Learn more about server-side encryption and billing options when using it in [Server-side encryption :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/user-guide/server-side-encryption-8) documentation.
+在[服务器端加密 :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/user-guide/server-side-encryption-8) 文档中了解更多关于服务器端加密及其使用时的计费选项。
 
-#### Prerequisites
+#### 先决条件
 
-The RAM user used for PBM to access the Alibaba Cloud OSS must have the required permissions to use server-side encryption on a bucket. Make sure the RAM policy for this user includes the following actions:
+用于 PBM 访问阿里云 OSS 的 RAM 用户必须具有在存储桶上使用服务器端加密的必要权限。确保此用户的 RAM 策略包括以下操作：
 
-1. Permissions to manage the target bucket.
+1. 管理目标存储桶的权限。
 
-2. The `PutBucketEncryption` and `GetBucketEncryption` permissions.
+2. `PutBucketEncryption` 和 `GetBucketEncryption` 权限。
 
-3. For SSE-KMS encryption type, the RAM user must also have the following permissions:
+3. 对于 SSE-KMS 加密类型，RAM 用户还必须具有以下权限：
 
    * `kms:Encrypt`
    * `kms:Decrypt`
    * `kms:GenerateDataKey`
    * `kms:DescribeKey`
 
-Read more about managing RAM policies in the following Alibaba Cloud OSS documentation:
+在以下阿里云 OSS 文档中了解更多关于管理 RAM 策略的信息：
 
-* [Create a custom RAM policy](https://www.alibabacloud.com/help/en/ram/user-guide/create-a-custom-policy#task-glf-vwf-xdb)
-* [Common examples of RAM policies](https://www.alibabacloud.com/help/en/oss/user-guide/common-examples-of-ram-policies) 
-* [Permissions for server-side encryption](https://www.alibabacloud.com/help/en/oss/user-guide/server-side-encryption-8#section-oe2-ypt-1fi)
+* [创建自定义 RAM 策略](https://www.alibabacloud.com/help/en/ram/user-guide/create-a-custom-policy#task-glf-vwf-xdb)
+* [RAM 策略的常见示例](https://www.alibabacloud.com/help/en/oss/user-guide/common-examples-of-ram-policies) 
+* [服务器端加密的权限](https://www.alibabacloud.com/help/en/oss/user-guide/server-side-encryption-8#section-oe2-ypt-1fi)
 
-#### Using OSS-managed encryption keys (SSE-OSS)
+#### 使用 OSS 管理的加密密钥 (SSE-OSS)
 
-Server-side encryption with OSS-managed keys (SSE-OSS) is the default encryption method for Alibaba Cloud OSS. Alibaba Cloud OSS automatically generates  encryption keys for each object. It also creates a master key to encrypt encryption keys. 
+使用 OSS 管理的密钥进行服务器端加密 (SSE-OSS) 是阿里云 OSS 的默认加密方法。阿里云 OSS 自动为每个对象生成加密密钥。它还创建主密钥以加密加密密钥。 
 
-To configure PBM to use SSE-OSS, add the following options to the `oss` configuration block:
+要配置 PBM 使用 SSE-OSS，请将以下选项添加到 `oss` 配置块：
 
 ```yaml
 serverSideEncryption:
    sseAlgorithm: AES256
 ```
 
-#### Using customer master keys managed by Key Management Service (SSE-KMS)
+#### 使用密钥管理服务管理的客户主密钥 (SSE-KMS)
 
-Server-side encryption with customer master keys (CMK) managed by Key Management Service (SSE-KMS) gives you more flexibility over key management and security. 
+使用密钥管理服务管理的客户主密钥 (CMK) 进行服务器端加密 (SSE-KMS) 为您提供对密钥管理和安全的更多灵活性。 
 
-You have the following options:
+您有以下选项：
 
-* use the default customer master key provided by KMS. OSS creates this key in the KMS platform and uses it to encrypt data 
-* generate your own customer master key using the KMS console. OSS uses this specified key to encrypt data.
+* 使用 KMS 提供的默认客户主密钥。OSS 在 KMS 平台中创建此密钥并使用它加密数据 
+* 使用 KMS 控制台生成您自己的客户主密钥。OSS 使用此指定密钥加密数据。
 
-To configure PBM to use SSE-KMS, add the following options to the `oss` configuration block:
+要配置 PBM 使用 SSE-KMS，请将以下选项添加到 `oss` 配置块：
 
 ```yaml
 serverSideEncryption:
@@ -169,11 +169,11 @@ serverSideEncryption:
    kmsDataEncryption: AES256
 ```
 
-### Upload retries 
+### 上传重试 
 
-You can set up the number of attempts for Percona Backup for MongoDB to upload data to Alibaba Cloud OSS as well as the min and max time to wait for the next retry. 
+您可以设置 Percona Backup for MongoDB 上传数据到阿里云 OSS 的尝试次数以及等待下次重试的最小和最大时间。 
 
-Set the following options in Percona Backup for MongoDB configuration.
+在 Percona Backup for MongoDB 配置中设置以下选项。
 
 ```yaml
 retryer:
@@ -182,4 +182,4 @@ retryer:
   baseDelay: 30
 ```
 
-This upload retry increases the chances of data upload completion in cases of unstable connection.
+此上传重试增加了在不稳定连接情况下完成数据上传的机会。

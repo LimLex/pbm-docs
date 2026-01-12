@@ -1,58 +1,58 @@
-# Install from Percona repositories
+# 从 Percona 仓库安装
 
-To install the software from Percona repositories means to subscribe to them. Percona provides the [`percona-release` :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/index.html) repository management tool. It automatically enables the required repository so that you can install and update both Percona Backup for MongoDB packages and required dependencies smoothly.
+从 Percona 仓库安装软件意味着订阅它们。Percona 提供 [`percona-release` :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/index.html) 仓库管理工具。它会自动启用所需的仓库，以便您可以顺利安装和更新 Percona Backup for MongoDB 软件包和所需的依赖项。
 
 --8<-- "pbm-install-nodes.md"
 
-## Before you start
+## 开始之前
 
-Check the [system requirements](../system-requirements.md) and [supported MongoDB versions](../details/versions.md).
+检查[系统要求](../system-requirements.md) 和[支持的 MongoDB 版本](../details/versions.md)。
 
-## Procedure
+## 步骤
 
-<i warning>:material-alert: Warning:</i> Run the following commands as root or via the `sudo` command.
+<i warning>:material-alert: 警告：</i> 以 root 用户身份或通过 `sudo` 命令运行以下命令。
 {.power-number}
 
-### Configure Percona repository
+### 配置 Percona 仓库
 
-Percona provides the [`percona-release` :material-arrow-top-right: ](https://docs.percona.com/percona-software-repositories/index.html) configuration tool that simplifies operating repositories and enables to install and update both Percona Backup for MongoDB packages and required dependencies smoothly. 
+Percona 提供 [`percona-release` :material-arrow-top-right: ](https://docs.percona.com/percona-software-repositories/index.html) 配置工具，可简化仓库操作并能够顺利安装和更新 Percona Backup for MongoDB 软件包和所需的依赖项。 
 
-1. [Install `percona-release` :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/installing.html).    
+1. [安装 `percona-release` :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/installing.html)。    
 
-2. Enable the repository    
+2. 启用仓库    
 
     ```bash
     sudo percona-release enable pbm release
     ```
 
 
-### Install Percona Backup for MongoDB packages
+### 安装 Percona Backup for MongoDB 软件包
 
-=== ":material-debian: On Debian and Ubuntu"    
+=== ":material-debian: 在 Debian 和 Ubuntu 上"    
 
-    1. Reload the local package database:    
+    1. 重新加载本地软件包数据库：    
 
         ```bash
         sudo apt update
         ```    
 
-    2. Install Percona Backup for MongoDB:    
+    2. 安装 Percona Backup for MongoDB：    
 
         ```bash
         sudo apt install percona-backup-mongodb
         ```    
 
-=== ":material-redhat: On RHEL and derivatives" 
+=== ":material-redhat: 在 RHEL 和衍生版本上" 
 
-    Run the following command to install the packages:
+    运行以下命令安装软件包：
 
     ```bash
     sudo yum install percona-backup-mongodb
     ```
 
-=== ":fontawesome-brands-amazon: On Amazon Linux 2023"
+=== ":fontawesome-brands-amazon: 在 Amazon Linux 2023 上"
 
-    Run the following command to install the packages:
+    运行以下命令安装软件包：
 
     ```bash
     sudo yum install percona-backup-mongodb
@@ -60,6 +60,6 @@ Percona provides the [`percona-release` :material-arrow-top-right: ](https://doc
 
 --8<-- "install-result.md"
 
-## Next steps
+## 下一步
 
-[Initial setup :material-arrow-right:](initial-setup.md){.md-button}
+[初始设置 :material-arrow-right:](initial-setup.md){.md-button}

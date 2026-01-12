@@ -1,12 +1,12 @@
-# Make a physical backup
+# 创建物理备份
 
 --8<-- "prepare-backup.md"
 
-## Procedure
+## 步骤
 
-During a *physical* backup, Percona Backup for MongoDB  copies the contents of the `dbpath` directory (data and metadata files, indexes, journal and logs) from every shard and config server replica set to the backup storage. 
+在*物理*备份期间，Percona Backup for MongoDB 将 `dbpath` 目录的内容（数据和元数据文件、索引、日志和日志文件）从每个分片和配置服务器副本集复制到备份存储。 
 
-To start a backup, run the following command:
+要启动备份，请运行以下命令：
 
 ```bash
 pbm backup --type=physical
@@ -14,18 +14,18 @@ pbm backup --type=physical
      
 !!! warning 
 
-    During the period the backup cursor is open, database checkpoints can be created, but no checkpoints can be deleted. This may result in significant file growth.
+    在备份游标打开期间，可以创建数据库检查点，但不能删除检查点。这可能导致文件显著增长。
     
-Starting with [2.4.0](../release-notes/2.4.0.md), PBM doesn't stop [point-in-time recovery oplog slicing](../features/point-in-time-recovery.md#oplog-slicing), if it's enabled, but runs it in parallel. This ensures [point-in-time recovery](pitr-tutorial.md) to any timestamp if it takes too long (e.g. hours) to make a backup snapshot.
+从 [2.4.0](../release-notes/2.4.0.md) 开始，如果启用了[时间点恢复 oplog 切片](../features/point-in-time-recovery.md#oplog-slicing)，PBM 不会停止它，而是并行运行它。这确保如果创建备份快照需要太长时间（例如数小时），可以[时间点恢复](pitr-tutorial.md) 到任何时间戳。
 
-## Next steps
+## 下一步
 
-[List backups](../usage/list-backup.md){.md-button}
-[Make a restore](restore-physical.md){.md-button}
-[Make a point-in-time recovery](pitr-physical.md){.md-button}
+[列出备份](../usage/list-backup.md){.md-button}
+[进行恢复](restore-physical.md){.md-button}
+[进行时间点恢复](pitr-physical.md){.md-button}
 
-## Useful links
+## 有用的链接
 
-* [Backup and restore types](../features/backup-types.md)
-* [Schedule backups](../usage/schedule-backup.md)
+* [备份和恢复类型](../features/backup-types.md)
+* [安排备份](../usage/schedule-backup.md)
 

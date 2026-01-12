@@ -1,4 +1,4 @@
-# Point-in-time recovery options
+# 时间点恢复选项
 
 ```yaml
 pitr:
@@ -15,65 +15,65 @@ pitr:
 
 ### pitr.enabled
 
-*Type*: boolean <br>
-*Default*: False
+*类型*：boolean <br>
+*默认*：False
 
-Enables point-in-time recovery
+启用时间点恢复
 
 ### pitr.oplogSpanMin
 
-*Type*: float64 <br>
-*Default*: 10
+*类型*：float64 <br>
+*默认*：10
 
-The duration of an oplog span in minutes. If set when the `pbm-agent` is making an oplog slice, the slice’s span is updated right away.
+oplog 跨度的持续时间（以分钟为单位）。如果在 `pbm-agent` 正在创建 oplog 切片时设置，切片的跨度会立即更新。
 
-If the new duration is smaller than the previous one, the `pbm-agent` is triggered to save a new slice with the updated span. If the duration is larger, then the next slice is saved with the updated span in scheduled time.
+如果新持续时间小于前一个持续时间，则触发 `pbm-agent` 保存具有更新跨度的新切片。如果持续时间更大，则下一个切片在计划时间使用更新的跨度保存。
 
 ### pitr.compression
 
-*Type*: string <br>
-*Default*: s2
+*类型*：字符串 <br>
+*默认*：s2
 
-The compression method for Point-in-Time Recovery oplog slices. 
+时间点恢复 oplog 切片的压缩方法。 
 
-Supported values: `gzip`, `snappy`, `lz4`, `s2`, `pgzip`, `zstd`. Default: `s2`.
+支持的值：`gzip`、`snappy`、`lz4`、`s2`、`pgzip`、`zstd`。默认：`s2`。
 
 ### pitr.compressionLevel
 
-*Type*: int
+*类型*：int
 
-The compression level is from `0` till `10`. The default value depends on the compression method used.
+压缩级别从 `0` 到 `10`。默认值取决于使用的压缩方法。
 
-The following table shows available compression levels per compression method:
+下表显示了每种压缩方法的可用压缩级别：
 
-| Compression method   | Compression levels           | Default
+| 压缩方法   | 压缩级别           | 默认
 | ------------------   | ---------------------------- | ----------
-| `zstd`               | 1 - fastest speed, 2 - default, 3 - better compression, 4 - best compression | 2
-| `snappy`             | no levels|
-| `lz4`                | From 1 (fastest) to 16 | 1
-| `gzip` and `pgzip`   | -1 - default compression, 0 - no compression, 1 - best speed, 9 - best compression| -1
+| `zstd`               | 1 - 最快速度, 2 - 默认, 3 - 更好的压缩, 4 - 最佳压缩 | 2
+| `snappy`             | 无级别|
+| `lz4`                | 从 1（最快）到 16 | 1
+| `gzip` 和 `pgzip`   | -1 - 默认压缩, 0 - 无压缩, 1 - 最快速度, 9 - 最佳压缩| -1
 
 
-Note that the greater value you specify, the more time and computing resources it will take to compress the data.
+请注意，您指定的值越大，压缩数据所需的时间和计算资源就越多。
 
 ### pitr.oplogOnly
 
-*Type*: boolean <br>
-*Default*: False <br>
-*Required*: NO
+*类型*：boolean <br>
+*默认*：False <br>
+*必需*：否
 
-Controls whether the base backup is required to start [Point-in-Time recovery oplog slicing](../features/point-in-time-recovery.md#oplog-slicing). When set to true, Percona Backup for MongoDB saves oplog chunks without the base backup snapshot.
+控制是否需要基础备份来启动[时间点恢复 oplog 切片](../features/point-in-time-recovery.md#oplog-slicing)。设置为 true 时，Percona Backup for MongoDB 在没有基础备份快照的情况下保存 oplog 块。
 
-To learn more about the usage, see [Point-in-Time Recovery oplog replay](../usage/oplog-replay.md).
+要了解更多用法，请参阅[时间点恢复 oplog 重放](../usage/oplog-replay.md)。
 
 ### pitr.priority
 
-*Type*: array of strings
+*类型*：字符串数组
 
-The list of `mongod` nodes and their priority for saving oplog slices. The node with the highest priority is elected for saving oplog slices. If several nodes have the same priority, the one among them is randomly elected.
+`mongod` 节点列表及其保存 oplog 切片的优先级。优先级最高的节点被选为保存 oplog 切片。如果多个节点具有相同的优先级，则随机选择其中一个。
 
-If not set, the replica set nodes have the default priority as follows:
+如果未设置，副本集节点具有以下默认优先级：
 
-* hidden nodes - 2.0
-* secondary nodes - 1.0
-* primary node - 0.5
+* 隐藏节点 - 2.0
+* 从节点 - 1.0
+* 主节点 - 0.5

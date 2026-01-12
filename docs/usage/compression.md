@@ -1,30 +1,30 @@
-# Configure backup compression
+# 配置备份压缩
 
-By default, Percona Backup for MongoDB uses the `s2` compression method when making a backup.
+默认情况下，Percona Backup for MongoDB 在创建备份时使用 `s2` 压缩方法。
 
-You can start a backup with a different compression method by passing the `--compression` flag to the **pbm backup** command.
+您可以通过将 `--compression` 标志传递给 **pbm backup** 命令来使用不同的压缩方法启动备份。
 
-For example, to start a backup with `gzip` compression, use the following command:
+例如，要使用 `gzip` 压缩启动备份，请使用以下命令：
 
 ```bash
 pbm backup --compression=gzip
 ```
 
-Supported compression types are: `gzip`, `snappy`, `lz4`, `pgzip`, `zstd`.  The `none` value means no compression is done during backup.
+支持的压缩类型有：`gzip`、`snappy`、`lz4`、`pgzip`、`zstd`。`none` 值表示备份期间不进行压缩。
 
-## Compression level setup
+## 压缩级别设置
 
-You can configure the compression level for backups. Specify the value for the [`--compression-level`](../reference/backup-options.md#backupcompressionlevel) flag. 
+您可以配置备份的压缩级别。为 [`--compression-level`](../reference/backup-options.md#backupcompressionlevel) 标志指定值。 
 
-Default compression levels differ per compression method used. 
+默认压缩级别因使用的压缩方法而异。 
 
-The following table shows available compression levels per compression method:
+下表显示了每种压缩方法的可用压缩级别：
 
-| Compression method   | Supported compression levels | Default
+| 压缩方法   | 支持的压缩级别 | 默认
 | ------------------   | ---------------------------- | ----------
-| `zstd`               | 1 - fastest speed, 2 - default, 3 - better compression, 4 - best compression | 2
-| `snappy`             | no levels|
-| `lz4`                | From 1 (fastest) to 16 | 1
-| `gzip` and `pgzip`   | -1 - default compression, 0 - no compression, 1 - best speed, 9 - best compression| -1
+| `zstd`               | 1 - 最快速度, 2 - 默认, 3 - 更好的压缩, 4 - 最佳压缩 | 2
+| `snappy`             | 无级别|
+| `lz4`                | 从 1（最快）到 16 | 1
+| `gzip` 和 `pgzip`   | -1 - 默认压缩, 0 - 无压缩, 1 - 最快速度, 9 - 最佳压缩| -1
 
-Note that the higher value you specify, the more time and computing resources it will take to compress the data.
+请注意，您指定的值越高，压缩数据所需的时间和计算资源就越多。

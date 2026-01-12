@@ -1,15 +1,15 @@
-# Remote backup storage options
+# 远程备份存储选项
 
-## Common options
+## 通用选项
 
 ### storage.type
 
-*Type*: string <br>
-*Required*:     YES   
+*类型*：字符串 <br>
+*必需*：    是   
 
-Remote backup storage type. Supported values: `s3`, `minio`, `gcs`, `filesystem`, `azure`.
+远程备份存储类型。支持的值：`s3`、`minio`、`gcs`、`filesystem`、`azure`。
 
-## AWS S3 storage options
+## AWS S3 存储选项
 
 ```yaml
 storage:
@@ -44,124 +44,124 @@ storage:
 ### storage.s3.provider
 
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The storage provider's name. This field is deprecated.
+存储提供商的名称。此字段已弃用。
 
 
 ### storage.s3.bucket
 
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The name of the storage bucket. See the [AWS Bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html#bucketnamingrules) for bucket name requirements.
+存储桶的名称。有关存储桶名称要求，请参阅 [AWS 存储桶命名规则](https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html#bucketnamingrules)。
 
 ### storage.s3.region
 
-*Type*: string <br>
-*Required*: YES (for AWS)
+*类型*：字符串 <br>
+*必需*：是（对于 AWS）
 
-The location of the storage bucket.
-Use the [AWS region list](https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region)  to define the bucket region
+存储桶的位置。
+使用 [AWS 区域列表](https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region) 定义存储桶区域
 
 ### storage.s3.prefix
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The path to the data directory in the bucket. If undefined, backups are stored in the bucket's root directory.
+存储桶中数据目录的路径。如果未定义，备份存储在存储桶的根目录中。
 
 ### storage.s3.endpointUrl
 
-*Type*: string <br>
-*Required*: YES (for MinIO)
+*类型*：字符串 <br>
+*必需*：是（对于 MinIO）
 
-The URL to access the bucket. 
+访问存储桶的 URL。 
 
 ### storage.s3.endpointUrlMap
 
-*Type*: array of strings <br>
-*Required*: NO
+*类型*：字符串数组 <br>
+*必需*：否
 
-The list of custom paths for `pbm-agents` on different servers to the same storage. Use this option if `pbm-agents` reside on servers hidden behind different network configurations. Read more in the [Support for multiple endpoints to the same S3 storage](../details/endpoint-map.md) section. Supported for Amazon S3 and Microsoft Azure Blob storages. Available with version 2.8.0.
+不同服务器上的 `pbm-agents` 到同一存储的自定义路径列表。如果 `pbm-agents` 位于隐藏在不同网络配置后面的服务器上，请使用此选项。在[支持同一 S3 存储的多个端点](../details/endpoint-map.md) 部分了解更多信息。支持 Amazon S3 和 Microsoft Azure Blob 存储。从版本 2.8.0 开始可用。
 
 ### storage.s3.forcePathStyle
 
-*Type*: boolean <br>
-*Required*: NO
+*类型*：boolean <br>
+*必需*：否
 
-By default, PBM uses the [path-style URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html#path-style-access) for accessing the S3 bucket. Setting this option to `false` instructs PBM to send virtual-hosted–style requests instead.
+默认情况下，PBM 使用[路径样式 URL](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html#path-style-access) 访问 S3 存储桶。将此选项设置为 `false` 指示 PBM 发送虚拟主机样式请求。
 
 ### storage.s3.credentials.access-key-id
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-Your access key to the storage bucket. This option can be omitted when you run Percona Backup for MongoDB using an EC2 instance profile. To learn more, refer to [Automate access to S3 buckets for Percona Backup for MongoDB](../manage/automate-s3-access.md)
+您对存储桶的访问密钥。当您使用 EC2 实例配置文件运行 Percona Backup for MongoDB 时，可以省略此选项。要了解更多信息，请参阅[为 Percona Backup for MongoDB 自动化 S3 存储桶访问](../manage/automate-s3-access.md)
 
 ### storage.s3.credentials.secret-access-key
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The key to sign your programmatic requests to the storage bucket. This option can be omitted when you run Percona Backup for MongoDB using an EC2 instance profile. To learn more, refer to [Automate access to S3 buckets for Percona Backup for MongoDB](../manage/automate-s3-access.md)
+用于签署对存储桶的编程请求的密钥。当您使用 EC2 实例配置文件运行 Percona Backup for MongoDB 时，可以省略此选项。要了解更多信息，请参阅[为 Percona Backup for MongoDB 自动化 S3 存储桶访问](../manage/automate-s3-access.md)
 
 ### storage.s3.credentials.session-token
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The AWS session token used to validate the [temporary security credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html) for accessing the S3 storage. 
+用于验证访问 S3 存储的[临时安全凭据](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html) 的 AWS 会话令牌。 
 
 ### storage.s3.uploadPartSize
 
-*Type*: int <br>
-*Required*: NO
+*类型*：int <br>
+*必需*：否
 
-The size of data chunks in bytes to be uploaded to the storage bucket. Default: 10MB
+要上传到存储桶的数据块大小（字节）。默认：10MB
 
-Percona Backup for MongoDB automatically increases the `uploadPartSize` value if the size of the file to be uploaded exceeds the max allowed file size. (The max allowed file size is calculated with the default values of `uploadPartSize` \* [`maxUploadParts`](https://docs.aws.amazon.com/sdk-for-go/api/service/s3/s3manager/#pkg-constants) and is appr. 97,6 GB).
+如果要上传的文件大小超过最大允许文件大小，Percona Backup for MongoDB 会自动增加 `uploadPartSize` 值。（最大允许文件大小使用 `uploadPartSize` \* [`maxUploadParts`](https://docs.aws.amazon.com/sdk-for-go/api/service/s3/s3manager/#pkg-constants) 的默认值计算，约为 97.6 GB）。
 
-The `uploadPartSize` value is printed in the `pbm-agent` log.
+`uploadPartSize` 值打印在 `pbm-agent` 日志中。
 
-By setting this option, you can manually adjust the size of data chunks if Percona Backup for MongoDB failed to do it for some reason. The defined `uploadPartSize` value overrides the default value and is used for calculating the max allowed file size
+通过设置此选项，如果 Percona Backup for MongoDB 由于某种原因无法执行，您可以手动调整数据块的大小。定义的 `uploadPartSize` 值会覆盖默认值，并用于计算最大允许文件大小
 
 ### storage.s3.maxUploadParts
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 10,000
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：10,000
 
-The maximum number of data chunks to be uploaded to the storage bucket. Default: 10,000
+要上传到存储桶的最大数据块数。默认：10,000
 
-By setting this option, you can override the value defined in the [AWS SDK](https://docs.aws.amazon.com/sdk-for-go/api/service/s3/s3manager/#MaxUploadParts).
+通过设置此选项，您可以覆盖 [AWS SDK](https://docs.aws.amazon.com/sdk-for-go/api/service/s3/s3manager/#MaxUploadParts) 中定义的值。
 
-It can be useful when using an S3 provider that supports a smaller number of chunks for multipart uploads.
+在使用支持较少块数进行多部分上传的 S3 提供商时，这可能很有用。
 
-The `maxUploadParts` value is printed in the pbm-agent log.
+`maxUploadParts` 值打印在 pbm-agent 日志中。
 
 ### storage.s3.storageClass
 
-*Type*: string <br>
-*Required*: NO
-*Example*: STANDARD
+*类型*：字符串 <br>
+*必需*：否
+*示例*：STANDARD
 
-The [storage class :octicons-link-external-16:](https://aws.amazon.com/s3/storage-classes/) assigned to objects stored in the S3 bucket. If not provided, the `STANDARD` storage class will be used. 
+分配给存储在 S3 存储桶中的对象的[存储类 :octicons-link-external-16:](https://aws.amazon.com/s3/storage-classes/)。如果未提供，将使用 `STANDARD` 存储类。 
 
 ### storage.s3.debugLogLevels
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-Enables S3 debug logging for different types of S3 requests. S3 log messages are printed in the `pbm logs` output.
+为不同类型的 S3 请求启用 S3 调试日志。S3 日志消息打印在 `pbm logs` 输出中。
 
-Starting with version 2.10.0, PBM uses AWS SDK v2. The AWS SDK v1 values are deprecated. They are kept for backward compatibility.
+从版本 2.10.0 开始，PBM 使用 AWS SDK v2。AWS SDK v1 值已弃用。它们保留用于向后兼容。
 
-Please find the mapping table below:
+请查找下面的映射表：
 
-| AWS SDK v1 value | AWS SDK v2 value |
+| AWS SDK v1 值 | AWS SDK v2 值 |
 |------------------|------------------|
 | `LogDebug`       | `Request` <br> `Response`|
 | `Signing`        | `Signing`|
@@ -171,93 +171,93 @@ Please find the mapping table below:
 | `EventStreamBody`| `RequestWithBody` <br> `ResponseWithBody`|
 
 
-To specify several event types, separate them by comma. To lean more about the event types, see [the documentation :octicons-link-external-16:](https://pkg.go.dev/github.com/aws/aws-sdk-go@v1.40.7/aws#LogLevelType)
+要指定多个事件类型，请用逗号分隔它们。要了解更多关于事件类型的信息，请参阅[文档 :octicons-link-external-16:](https://pkg.go.dev/github.com/aws/aws-sdk-go@v1.40.7/aws#LogLevelType)
 
-When undefined, no S3 debug logging is performed.
+未定义时，不执行 S3 调试日志。
 
 ### storage.s3.insecureSkipTLSVerify
 
-*Type*: bool <br>
-*Required*: NO <br>
-*Default*: False
+*类型*：bool <br>
+*必需*：否 <br>
+*默认*：False
 
-Disables the TLS verification of the S3 storage. This allows Percona Backup for MongoDB to upload data to S3-like storages that use self-issued TLS certificates.
+禁用 S3 存储的 TLS 验证。这允许 Percona Backup for MongoDB 将数据上传到使用自签名 TLS 证书的类似 S3 的存储。
 
 !!! warning 
     
-    Use this option with caution as it might leave a hole for man-in-the-middle attacks.
+    请谨慎使用此选项，因为它可能为中间人攻击留下漏洞。
 
-## Server-side encryption options
+## 服务器端加密选项
 
 ### storage.s3.serverSideEncryption.sseAlgorithm
 
-*Type*: string <br>
-*Required*: NO 
+*类型*：字符串 <br>
+*必需*：否 
 
-The key management mode used for server-side encryption with the encryption keys stored in AWS KMS.
+用于服务器端加密的密钥管理模式，加密密钥存储在 AWS KMS 中。
 
-Supported value: `aws:kms`
+支持的值：`aws:kms`
 
 ### storage.s3.serverSideEncryption.kmsKeyID
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-Your customer-managed key stored in the AWS KMS.
+您存储在 AWS KMS 中的客户管理的密钥。
 
 ### storage.s3.serverSideEncryption.sseCustomerAlgorithm
 
-*Type*: string <br>
-*Required*: NO 
+*类型*：字符串 <br>
+*必需*：否 
 
-The key management mode for [server-side encryption with customer-provided keys (SSE-C)](../details/s3-storage.md#server-side-encryption).
+用于[使用客户提供的密钥进行服务器端加密 (SSE-C)](../details/s3-storage.md#server-side-encryption) 的密钥管理模式。
 
-Supported value: `AES256`
+支持的值：`AES256`
 
 ### storage.s3.serverSideEncryption.sseCustomerKey
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-Your custom encryption key. This key is not stored on the S3 storage side. Thus, it is your responsibility to track what data is encrypted with what key and for storing the key. 
+您的自定义加密密钥。此密钥不存储在 S3 存储端。因此，您有责任跟踪哪些数据使用哪些密钥加密以及存储密钥。 
 
-## Upload retry options
+## 上传重试选项
 
 ### storage.s3.retryer.numMaxRetries
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 3
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：3
 
-The maximum number of retries to upload data to S3 storage. A zero value means no retries will be performed. 
+上传数据到 S3 存储的最大重试次数。零值表示不执行重试。 
 
 ### storage.s3.retryer.minRetryDelay
 
-*Type*: time.Duration <br>
-*Required*: NO <br>
-*Default*: 30ms
+*类型*：time.Duration <br>
+*必需*：否 <br>
+*默认*：30ms
 
-The minimum time to wait before the next retry, specified as a *time.Duration*. Units like ms, s, etc., are supported. Defaults to nanoseconds if no unit is provided. 
+下次重试前等待的最短时间，指定为 *time.Duration*。支持 ms、s 等单位。如果未提供单位，则默认为纳秒。 
 
 ### storage.s3.retryer.maxRetryDelay
 
-*Type*: time.Duration <br>
-*Required*: NO <br>
-*Default*: 5m
+*类型*：time.Duration <br>
+*必需*：否 <br>
+*默认*：5m
 
-The maximum time to wait before the next retry, specified as a *time.Duration*. Units like ms, s, etc., are supported. Defaults to nanoseconds if no unit is provided. 
+下次重试前等待的最长时间，指定为 *time.Duration*。支持 ms、s 等单位。如果未提供单位，则默认为纳秒。 
 
 ### storage.s3.maxObjSizeGB
 
-*Type*: float64 <br>
-*Required*: NO <br>
-*Default*: 5018
+*类型*：float64 <br>
+*必需*：否 <br>
+*默认*：5018
 
-The maximum file size to be stored on the backup storage. If the file to upload exceeds this limit, PBM splits it in pieces, each of which falls within the limit. Read more about [Managing large backup files](../features/split-merge-backup.md).
+要存储在备份存储上的最大文件大小。如果要上传的文件超过此限制，PBM 会将其拆分为多个部分，每个部分都在限制范围内。了解更多关于[管理大型备份文件](../features/split-merge-backup.md) 的信息。
 
-## MinIO type storage options
+## MinIO 类型存储选项
 
-You can use this storage type for other S3-compatible storage services
+您可以将此存储类型用于其他 S3 兼容存储服务
 
 ```yaml
 storage:
@@ -287,127 +287,127 @@ storage:
 
 ### storage.minio.region
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The location of the storage bucket. Use the [AWS region list](https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region) to define the bucket region. If not specified, the default `us-east-1` region is used.
+存储桶的位置。使用 [AWS 区域列表](https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region) 定义存储桶区域。如果未指定，使用默认的 `us-east-1` 区域。
 
 ### storage.minio.bucket
 
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The name of the storage bucket. See the [AWS Bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html#bucketnamingrules) for bucket name requirements.
+存储桶的名称。有关存储桶名称要求，请参阅 [AWS 存储桶命名规则](https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html#bucketnamingrules)。
 
 ### storage.minio.prefix
 
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The path to the data directory in the bucket. If undefined, backups are stored in the bucket’s root directory.
+存储桶中数据目录的路径。如果未定义，备份存储在存储桶的根目录中。
 
 ### storage.minio.endpoint
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The network address (URL or IP:port) where your MinIO server is accessible.
+您的 MinIO 服务器可访问的网络地址（URL 或 IP:port）。
 
 ### storage.minio.endpointMap
 
-*Type*: array of strings <br>
-*Required*: NO
+*类型*：字符串数组 <br>
+*必需*：否
 
-A mapping of custom endpoints for `pbm-agents` on different servers to the same MinIO storage. Use this option if `pbm-agents` reside on servers hidden behind different network configurations. Read more in the [Support for multiple endpoints to the same S3 storage](../details/endpoint-map.md) section. Supported for Amazon S3, MinIO, and Microsoft Azure Blob storages. Available with version 2.8.0.
+不同服务器上的 `pbm-agents` 到同一 MinIO 存储的自定义端点映射。如果 `pbm-agents` 位于隐藏在不同网络配置后面的服务器上，请使用此选项。在[支持同一 S3 存储的多个端点](../details/endpoint-map.md) 部分了解更多信息。支持 Amazon S3、MinIO 和 Microsoft Azure Blob 存储。从版本 2.8.0 开始可用。
 
 ### storage.minio.secure
 
-*Type*: boolean <br>
-*Required*: NO <br>
-*Default*: false
+*类型*：boolean <br>
+*必需*：否 <br>
+*默认*：false
 
-Defines whether to use HTTP or HTTPS protocol for communication between PBM and S3 storage. Default: `false`.
+定义 PBM 和 S3 存储之间的通信是使用 HTTP 还是 HTTPS 协议。默认：`false`。
 
 ### storage.minio.insecureSkipTLSVerify
 
-*Type*: boolean <br>
-*Required*: NO <br>
-*Default*: false
+*类型*：boolean <br>
+*必需*：否 <br>
+*默认*：false
 
-Disables the TLS verification of the MinIO / S3-compatible storage. This allows Percona Backup for MongoDB to upload data to MinIO / S3-compatible storages that use self-issued TLS certificates. Use it with caution as it might leave a hole for man-in-the-middle attacks.
+禁用 MinIO / S3 兼容存储的 TLS 验证。这允许 Percona Backup for MongoDB 将数据上传到使用自签名 TLS 证书的 MinIO / S3 兼容存储。请谨慎使用，因为它可能为中间人攻击留下漏洞。
 
 ### storage.minio.forcePathStyle
 
-*Type*: boolean <br>
-*Required*: NO <br>
-*Default*: false
+*类型*：boolean <br>
+*必需*：否 <br>
+*默认*：false
 
-Enforces the use of [path style access](../reference/glossary.md#path-style-access-to-the-storage) to the storage. Default is `false` which means PBM uses the [virtual-hosted-style](../reference/glossary.md#virtual-hosted-style-access) access to the storage
+强制使用[路径样式访问](../reference/glossary.md#path-style-access-to-the-storage) 存储。默认为 `false`，这意味着 PBM 使用[虚拟主机样式](../reference/glossary.md#virtual-hosted-style-access) 访问存储
 
 ### storage.minio.credentials.access-key-id
 
-*Type*: string<br>
-*Required*: YES
+*类型*：字符串<br>
+*必需*：是
 
-Your access key to the storage bucket.
+您对存储桶的访问密钥。
 
 ### storage.minio.credentials.secret-access-key
 
-*Type*: string<br>
-*Required*: YES
+*类型*：字符串<br>
+*必需*：是
 
-The key to sign your programmatic requests to the storage bucket.
+用于签署对存储桶的编程请求的密钥。
 
 ### storage.minio.credentials.session-token
 
-*Type*: string<br>
-*Required*: NO
+*类型*：字符串<br>
+*必需*：否
 
-The MinIO session token used to validate the temporary security credentials for accessing the storage.
+用于验证访问存储的临时安全凭据的 MinIO 会话令牌。
 
 ### storage.minio.credentials.signature-ver
 
-*Type*: string<br>
-*Required*: NO<br>
-*Default*: V4
+*类型*：字符串<br>
+*必需*：否<br>
+*默认*：V4
 
-Specifies the AWS Signature version to use for authentication. Accepted values: `V2`, `V4`. 
+指定用于身份验证的 AWS Signature 版本。接受的值：`V2`、`V4`。 
 
-Allows using the deprecated AWS Signature version 2 for backward compatibility with storages that don't support Signature version 4. Default: `V4`.
+允许使用已弃用的 AWS Signature 版本 2，以与不支持 Signature 版本 4 的存储向后兼容。默认：`V4`。
 
 ### storage.minio.partSize
 
-*Type*: int<br>
-*Required*: NO
+*类型*：int<br>
+*必需*：否
 
-The size of data chunks in bytes to be uploaded to the storage bucket. Default: 10MB.
+要上传到存储桶的数据块大小（字节）。默认：10MB。
 
 ### storage.minio.retryer.numMaxRetries
 
-*Type*: int<br>
-*Required*: NO<br>
-*Default*: 10
+*类型*：int<br>
+*必需*：否<br>
+*默认*：10
 
-The maximum number of retries to upload data to MinIO / S3-compatible storage. A zero value means no retries will be performed.
+上传数据到 MinIO / S3 兼容存储的最大重试次数。零值表示不执行重试。
 
 ### storage.minio.maxObjSizeGB
 
-*Type*: float64<br>
-*Required*: NO<br>
-*Default*: 5018
+*类型*：float64<br>
+*必需*：否<br>
+*默认*：5018
 
-The maximum file size to be stored on the backup storage. If the file to upload exceeds this limit, PBM splits it in pieces, each of which falls within the limit. Read more about [Managing large backup files](../features/split-merge-backup.md).
+要存储在备份存储上的最大文件大小。如果要上传的文件超过此限制，PBM 会将其拆分为多个部分，每个部分都在限制范围内。了解更多关于[管理大型备份文件](../features/split-merge-backup.md) 的信息。
 
 ### storage.minio.debugTrace
 
-*Type*: boolean<br>
-*Required*: NO
+*类型*：boolean<br>
+*必需*：否
 
-If set to `true`, outputs all http communication trace in PBM log. Default: false.
+如果设置为 `true`，在 PBM 日志中输出所有 http 通信跟踪。默认：false。
 
-## GCS type storage options
+## GCS 类型存储选项
 
 ```yaml
 storage:
@@ -426,120 +426,120 @@ storage:
 
 ### storage.gcs.bucket
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The name of the storage bucket. See the [GCS bucket naming guidelines](https://cloud.google.com/storage/docs/naming-buckets#requirements) for bucket name requirements.
+存储桶的名称。有关存储桶名称要求，请参阅 [GCS 存储桶命名指南](https://cloud.google.com/storage/docs/naming-buckets#requirements)。
 
 ### storage.gcs.chunkSize
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The size of data chunks in bytes to be uploaded to the storage bucket in a single request. Larger data chunks will be split over multiple requests. Default data chunk size is 10MB.
+在单个请求中上传到存储桶的数据块大小（字节）。较大的数据块将拆分为多个请求。默认数据块大小为 10MB。
 
 ### storage.gcs.prefix
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The path to the data directory in the bucket. If undefined, backups are stored in the bucket's root directory.
+存储桶中数据目录的路径。如果未定义，备份存储在存储桶的根目录中。
 
 ### storage.gcs.credentials.clientEmail
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The email address that uniquely identifies your service account in GCS.
+在 GCS 中唯一标识您的服务账户的电子邮件地址。
 
 ### storage.gcs.credentials.privateKey
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The private key of the service account used to authenticate the request.
+用于验证请求的服务账户的私钥。
 
 ### storage.gcs.credentials.hmacAccessKey
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The HMAC access key associated with your service account. The access key is used to authenticate the request to GCS via the XML API. 
+与您的服务账户关联的 HMAC 访问密钥。访问密钥用于通过 XML API 验证对 GCS 的请求。 
 
-The use of HMAC keys is deprecated starting with version 2.12.0. Use the `storage.gcs.credentials.clientEmail` and `storage.gcs.credentials.privateKey` instead.
+从版本 2.12.0 开始，HMAC 密钥的使用已弃用。请改用 `storage.gcs.credentials.clientEmail` 和 `storage.gcs.credentials.privateKey`。
 
 ### storage.gcs.credentials.hmacSecret
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-A 40-character Base-64 encoded string that is linked to a specific HMAC access ID. You receive the secret when you create an HMAC key. It is used to create signatures as part of the authentication process. 
+链接到特定 HMAC 访问 ID 的 40 字符 Base-64 编码字符串。创建 HMAC 密钥时会收到密钥。它用于在身份验证过程中创建签名。 
 
-The use of HMAC keys is deprecated starting with version 2.12.0. Use the `storage.gcs.credentials.clientEmail` and `storage.gcs.credentials.privateKey` instead.
+从版本 2.12.0 开始，HMAC 密钥的使用已弃用。请改用 `storage.gcs.credentials.clientEmail` 和 `storage.gcs.credentials.privateKey`。
 
 ### storage.gcs.retryer.backoffInitial
 
-*Type*: time.Duration <br>
-*Required*: NO
-*Default*: 1s
+*类型*：time.Duration <br>
+*必需*：否
+*默认*：1s
 
-The time to wait to make an initial retry, specified as a time.Duration. Units like ms, s, etc., are supported. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+进行初始重试前等待的时间，指定为 time.Duration。支持 ms、s 等单位。有效时间单位为 "ns"、"us"（或 "µs"）、"ms"、"s"、"m"、"h"。
 
-Defaults to nanoseconds if no unit is provided.
+如果未提供单位，则默认为纳秒。
 
 ### storage.gcs.retryer.backoffMax
 
-*Type*: time.Duration <br>
-*Required*: NO
-*Default*: 30s
+*类型*：time.Duration <br>
+*必需*：否
+*默认*：30s
 
-The maximum amount of time between retries, in seconds. Units like ms, s, etc., are supported. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+重试之间的最大时间（秒）。支持 ms、s 等单位。有效时间单位为 "ns"、"us"（或 "µs"）、"ms"、"s"、"m"、"h"。
 
-Defaults to nanoseconds if no unit is provided.
+如果未提供单位，则默认为纳秒。
 
 ### storage.gcs.retryer.backoffMultiplier
 
-*Type*: int <br>
-*Required*: NO
-*Default*: 2
+*类型*：int <br>
+*必需*：否
+*默认*：2
 
-Each time PBM fails and tries again, it increases the wait time by multiplying it by this number. Default value is 2 sec.
+每次 PBM 失败并重试时，它会通过将此数字相乘来增加等待时间。默认值为 2 秒。
 
-For example, if the first wait time is 1 second, the next will be 2 seconds, then 4 seconds, and so on, until it reaches the maximum. Default value is 2 sec.
+例如，如果第一次等待时间是 1 秒，下一次将是 2 秒，然后是 4 秒，依此类推，直到达到最大值。默认值为 2 秒。
 
 ### storage.gcs.retryer.maxAttempts
 
-*Type*: int <br>
-*Required*: NO
-*Default*: 5
+*类型*：int <br>
+*必需*：否
+*默认*：5
 
-The maximum number of retries to upload data to GCS storage. A zero value means no retries will be performed. Available starting with version 2.12.0.
+上传数据到 GCS 存储的最大重试次数。零值表示不执行重试。从版本 2.12.0 开始可用。
 
 ### storage.gcs.retryer.chunkRetryDeadline
 
-*Type*: time.Duration <br>
-*Required*: NO
-*Default*: 32s
+*类型*：time.Duration <br>
+*必需*：否
+*默认*：32s
 
-When you upload large files to GCS using resumable uploads, the data is sent in chunks. If a chunk fails to upload due to a network issue, timeout or transient error, GCS will retry sending that chunk.
+当您使用可恢复上传将大文件上传到 GCS 时，数据以块的形式发送。如果由于网络问题、超时或临时错误导致块上传失败，GCS 将重试发送该块。
 
-The `chunkRetryDeadline` sets a time limit in seconds for how long GCS will keep retrying a failed chunk. Once this deadline is reached, GCS stops retrying and marks the upload as failed.
+`chunkRetryDeadline` 设置一个时间限制（秒），GCS 将在此时间内继续重试失败的块。一旦达到此截止时间，GCS 停止重试并将上传标记为失败。
 
-Units like ms, s, etc., are supported. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+支持 ms、s 等单位。有效时间单位为 "ns"、"us"（或 "µs"）、"ms"、"s"、"m"、"h"。
 
-Defaults to nanoseconds if no unit is provided.
+如果未提供单位，则默认为纳秒。
 
-Available starting with version 2.12.0.
+从版本 2.12.0 开始可用。
 
 ### storage.gcs.maxObjSizeGB
 
-*Type*: float64 <br>
-*Required*: NO <br>
-*Default*: 5018
+*类型*：float64 <br>
+*必需*：否 <br>
+*默认*：5018
 
-The maximum file size to be stored on the backup storage. If the file to upload exceeds this limit, PBM splits it in pieces, each of which falls within the defined limit. Read more about [Managing large backup files](../features/split-merge-backup.md).
+要存储在备份存储上的最大文件大小。如果要上传的文件超过此限制，PBM 会将其拆分为多个部分，每个部分都在定义的限制范围内。了解更多关于[管理大型备份文件](../features/split-merge-backup.md) 的信息。
 
-## Filesystem storage options
+## 文件系统存储选项
 
 ```yaml
 storage:
@@ -551,20 +551,20 @@ storage:
 
 ### storage.filesystem.path
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The path to the backup directory
+备份目录的路径
 
 ### storage.filesystem.maxObjSizeGB
 
-*Type*: float64 <br>
-*Required*: NO <br>
-*Default*: 5018
+*类型*：float64 <br>
+*必需*：否 <br>
+*默认*：5018
 
-The maximum file size to be stored on the backup storage. If the file to upload exceeds this limit, PBM splits it in pieces, each of which falls within the defined limit. Read more about [Managing large backup files](../features/split-merge-backup.md).
+要存储在备份存储上的最大文件大小。如果要上传的文件超过此限制，PBM 会将其拆分为多个部分，每个部分都在定义的限制范围内。了解更多关于[管理大型备份文件](../features/split-merge-backup.md) 的信息。
 
-## Microsoft Azure Blob storage options
+## Microsoft Azure Blob 存储选项
 
 ```yaml
 storage:
@@ -585,81 +585,81 @@ storage:
 
 ### storage.azure.account
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The name of your storage account.
+您的存储账户的名称。
 
 ### storage.azure.container
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The name of the storage container. See the  [Container names](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names) for naming conventions.
+存储容器的名称。有关命名约定，请参阅 [容器名称](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names)。
 
 ### storage.azure.endpointUrl
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The URL to access the data in Microsoft Azure Blob Storage. The default value is `https://<storage-account>.blob.core.windows.net`.
+访问 Microsoft Azure Blob Storage 中数据的 URL。默认值为 `https://<storage-account>.blob.core.windows.net`。
 
 ### storage.azure.endpointUrlMap
 
-*Type*: object (host:port -> endpoint URL) <br>
-*Required*: NO
+*类型*：object (host:port -> endpoint URL) <br>
+*必需*：否
 
-A mapping of custom endpoint URLs for `pbm-agents` on different servers to the same remote storage. Use this option if `pbm-agents` reside on servers hidden behind different network configurations. Read more in the [Support for multiple endpoints to the same remote storage](../details/endpoint-map.md) section. Available with version 2.8.0.
+不同服务器上的 `pbm-agents` 到同一远程存储的自定义端点 URL 映射。如果 `pbm-agents` 位于隐藏在不同网络配置后面的服务器上，请使用此选项。在[支持同一远程存储的多个端点](../details/endpoint-map.md) 部分了解更多信息。从版本 2.8.0 开始可用。
 
 
 ### storage.azure.prefix
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The path to the data directory in the bucket. If undefined, backups are stored in the bucket's root directory.
+存储桶中数据目录的路径。如果未定义，备份存储在存储桶的根目录中。
 
 ### storage.azure.credentials.key
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-Your access key to authorize access to data in your storage account.
+您用于授权访问存储账户中数据的访问密钥。
 
 ### storage.azure.maxObjSizeGB
 
-*Type*: float64 <br>
-*Required*: NO <br>
-*Default*: 194560
+*类型*：float64 <br>
+*必需*：否 <br>
+*默认*：194560
 
-The maximum file size to be stored on the backup storage. If the file to upload exceeds this limit, PBM splits it in pieces, each of which falls within the defined limit. Read more about [Managing large backup files](../features/split-merge-backup.md).
+要存储在备份存储上的最大文件大小。如果要上传的文件超过此限制，PBM 会将其拆分为多个部分，每个部分都在定义的限制范围内。了解更多关于[管理大型备份文件](../features/split-merge-backup.md) 的信息。
 
 ### storage.azure.retryer.numMaxRetries
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 3
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：3
 
-The maximum number of retries to upload data to Microsoft Azure storage. A zero value means no retries will be performed.
+上传数据到 Microsoft Azure 存储的最大重试次数。零值表示不执行重试。
 
 ### storage.azure.retryer.minRetryDelay
 
-*Type*: time.Duration <br>
-*Required*: NO <br>
-*Default*: 800ms
+*类型*：time.Duration <br>
+*必需*：否 <br>
+*默认*：800ms
 
-The minimum time to wait before the next retry, specified as a `time.Duration`. Units like ms, s, etc., are supported. Defaults to nanoseconds if no unit is provided.
+下次重试前等待的最短时间，指定为 `time.Duration`。支持 ms、s 等单位。如果未提供单位，则默认为纳秒。
 
 
 ### storage.azure.retryer.maxRetryDelay
 
-*Type*: time.Duration <br>
-*Required*: NO <br>
-*Default*: 60s
+*类型*：time.Duration <br>
+*必需*：否 <br>
+*默认*：60s
 
-The maximum time to wait before the next retry, specified as a `time.Duration`. Units like ms, s, etc., are supported. Defaults to nanoseconds if no unit is provided.
+下次重试前等待的最长时间，指定为 `time.Duration`。支持 ms、s 等单位。如果未提供单位，则默认为纳秒。
 
-## Alibaba Cloud OSS storage options
+## 阿里云 OSS 存储选项
 
 ```yaml
 storage:
@@ -691,146 +691,146 @@ storage:
 
 ### storage.oss.region
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The region where your OSS bucket is located. Refer to the [OSS regions and endpoints](https://www.alibabacloud.com/help/en/oss/user-guide/regions-and-endpoints) for the list of available regions.
+您的 OSS 存储桶所在的区域。有关可用区域列表，请参阅 [OSS 区域和端点](https://www.alibabacloud.com/help/en/oss/user-guide/regions-and-endpoints)。
 
 ### storage.oss.endpointUrl
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-A domain name to access OSS over the Internet. The endpoint must correspond to the region that you selected when you created the bucket. 
+通过 Internet 访问 OSS 的域名。端点必须与创建存储桶时选择的区域相对应。 
 
 ### storage.oss.bucket
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The name of the storage bucket. See the [OSS bucket naming rules](https://www.alibabacloud.com/help/en/oss/user-guide/bucket-naming-conventions) for bucket name requirements.
+存储桶的名称。有关存储桶名称要求，请参阅 [OSS 存储桶命名规则](https://www.alibabacloud.com/help/en/oss/user-guide/bucket-naming-conventions)。
 
 ### storage.oss.prefix
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The path to the data directory in the bucket. If undefined, backups are stored in the bucket's root directory.
+存储桶中数据目录的路径。如果未定义，备份存储在存储桶的根目录中。
 
 ### storage.oss.credentials.accessKeyId
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The Access Key ID associated with the RAM user used to access Alibaba Cloud OSS.
+与用于访问阿里云 OSS 的 RAM 用户关联的 Access Key ID。
 
 ### storage.oss.credentials.accessKeySecret
 
-*Type*: string <br>
-*Required*: YES
+*类型*：字符串 <br>
+*必需*：是
 
-The Access Key Secret associated with the RAM user used to access Alibaba Cloud OSS. The secret is used to encrypt and verify the signature string.
+与用于访问阿里云 OSS 的 RAM 用户关联的 Access Key Secret。密钥用于加密和验证签名字符串。
 
 ### storage.oss.credentials.securityToken
 
-*Type*: string <br>
-*Required*: YES when using temporary credentials
+*类型*：字符串 <br>
+*必需*：使用临时凭据时为是
 
-The security token that is used together with temporary access key ID and access key secret. You receive the token when you request temporary access credentials by using the [Security Token Service](https://www.alibabacloud.com/help/en/ram/product-overview/what-is-sts).
+与临时访问密钥 ID 和访问密钥 secret 一起使用的安全令牌。使用[安全令牌服务](https://www.alibabacloud.com/help/en/ram/product-overview/what-is-sts) 请求临时访问凭据时会收到令牌。
 
 ### storage.oss.credentials.roleArn
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The Alibaba Cloud Resource Name (ARN) of the RAM role to assume. PBM uses this role to obtain required permissions for accessing OSS resources.
+要承担的 RAM 角色的阿里云资源名称 (ARN)。PBM 使用此角色获取访问 OSS 资源所需的权限。
 
 ### storage.oss.credentials.sessionName
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-Identifier for the assumed role session
+承担角色的会话标识符
 
 ### storage.oss.serverSideEncryption.sseAlgorithm
 
-*Type*: string <br>
-*Required*: NO 
+*类型*：字符串 <br>
+*必需*：否 
 
-The encryption algorithm used to encrypt data before storing it in OSS. Supported values: `AES256`, `KMS`, `SM4`. Default: `AES256`
+用于在将数据存储在 OSS 中之前加密数据的加密算法。支持的值：`AES256`、`KMS`、`SM4`。默认：`AES256`
 
 ### storage.oss.serverSideEncryption.kmsMasterKeyId 
 
-*Type*: string <br>
-*Required*: YES (when using a custom KMS key)
+*类型*：字符串 <br>
+*必需*：是（使用自定义 KMS 密钥时）
 
-The ID of the customer master key used for encryption.
+用于加密的客户主密钥的 ID。
 
 ### storage.oss.serverSideEncryption.kmsDataEncryption
 
-*Type*: string <br>
-*Required*: NO
+*类型*：字符串 <br>
+*必需*：否
 
-The encryption algorithm for encrypting data when SSE-KMS is used. Can be set only when `storage.oss.serverSideEncryption.sseAlgorithm` is set to `KMS`.
+使用 SSE-KMS 时用于加密数据的加密算法。仅在 `storage.oss.serverSideEncryption.sseAlgorithm` 设置为 `KMS` 时可以设置。
 
-Supported values: `AES256`, `SM4`. Default: `AES256`
+支持的值：`AES256`、`SM4`。默认：`AES256`
 
 ### storage.oss.uploadPartSize
 
-*Type*: int <br>
-*Required*: NO
+*类型*：int <br>
+*必需*：否
 
-The size of data chunks in bytes to be uploaded to the storage bucket. Default: 10MB
+要上传到存储桶的数据块大小（字节）。默认：10MB
 
-Percona Backup for MongoDB automatically increases the `uploadPartSize` value if the size of the file to be uploaded exceeds the max allowed file size. (The max allowed file size is calculated with the default values of `uploadPartSize` \* [`maxUploadParts`](https://docs.aws.amazon.com/sdk-for-go/api/service/s3/s3manager/#pkg-constants) and is appr. 97,6 GB).
+如果要上传的文件大小超过最大允许文件大小，Percona Backup for MongoDB 会自动增加 `uploadPartSize` 值。（最大允许文件大小使用 `uploadPartSize` \* [`maxUploadParts`](https://docs.aws.amazon.com/sdk-for-go/api/service/s3/s3manager/#pkg-constants) 的默认值计算，约为 97.6 GB）。
 
-The `uploadPartSize` value is printed in the `pbm-agent` log.
+`uploadPartSize` 值打印在 `pbm-agent` 日志中。
 
-By setting this option, you can manually adjust the size of data chunks if Percona Backup for MongoDB failed to do it for some reason. The defined `uploadPartSize` value overrides the default value and is used for calculating the max allowed file size
+通过设置此选项，如果 Percona Backup for MongoDB 由于某种原因无法执行，您可以手动调整数据块的大小。定义的 `uploadPartSize` 值会覆盖默认值，并用于计算最大允许文件大小
 
 ### storage.oss.maxUploadParts
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 10,000
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：10,000
 
-The maximum number of data chunks to be uploaded to the storage bucket. Default: 10,000
+要上传到存储桶的最大数据块数。默认：10,000
 
-By setting this option, you can override the value defined in the [Multipart upload](https://www.alibabacloud.com/help/en/oss/developer-reference/multipart-upload-3?spm=a3c0i.29367734.6737026690.4.43067d3faLVHMa) method.
+通过设置此选项，您可以覆盖 [Multipart upload](https://www.alibabacloud.com/help/en/oss/developer-reference/multipart-upload-3?spm=a3c0i.29367734.6737026690.4.43067d3faLVHMa) 方法中定义的值。
 
-It can be useful to specify a smaller number of chunks for multipart uploads.
+指定较少的块数进行多部分上传可能很有用。
 
-The `maxUploadParts` value is printed in the pbm-agent log.
+`maxUploadParts` 值打印在 pbm-agent 日志中。
 
 
 ### storage.oss.connectTimeout
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 5s
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：5s
 
-The connection timeout in seconds when PBM connects to the OSS storage. Default value is 5 seconds.
+PBM 连接到 OSS 存储时的连接超时（秒）。默认值为 5 秒。
 
 ### storage.oss.retryer.maxAttempts
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 300
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：300
 
-The maximum number of retry attempts for failed requests to the OSS storage. Default value is 5.
+对 OSS 存储的失败请求的最大重试尝试次数。默认值为 5。
 
 ### storage.oss.retryer.maxBackoff
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 300s
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：300s
 
-The maximum time in seconds to wait between retry attempts for failed requests to the OSS storage. Default value is 5 minutes (300 seconds).
+对 OSS 存储的失败请求的重试尝试之间的最大等待时间（秒）。默认值为 5 分钟（300 秒）。
 
 ### storage.oss.retryer.baseDelay
 
-*Type*: int <br>
-*Required*: NO <br>
-*Default*: 30ms
+*类型*：int <br>
+*必需*：否 <br>
+*默认*：30ms
 
-The initial delay before the first retry attempt. Default value is 30 ms.
+第一次重试尝试前的初始延迟。默认值为 30 毫秒。

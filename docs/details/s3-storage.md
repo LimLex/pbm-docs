@@ -1,42 +1,42 @@
-# AWS S3 storage
+# AWS S3 存储
 
-Percona Backup for MongoDB (PBM) works with AWS S3 and other S3-compatible storage services. We test PBM with the following services:
+Percona Backup for MongoDB (PBM) 可与 AWS S3 和其他 S3 兼容存储服务配合使用。我们使用以下服务测试 PBM：
 
 * [Amazon Simple Storage Service :octicons-link-external-16:](https://docs.aws.amazon.com/s3/index.html)
 * [MinIO :octicons-link-external-16:](https://min.io/)
 
-This document provides overview for the native AWS S3 services. To use MinIO and other S3-compatible storage services, see [S3-compatible storage](minio.md).
+本文档提供原生 AWS S3 服务的概述。要使用 MinIO 和其他 S3 兼容存储服务，请参阅 [S3 兼容存储](minio.md)。
 
-[Configuration example :material-arrow-down:](#configuration-example){.md-button}
+[配置示例 :material-arrow-down:](#configuration-example){.md-button}
 
 
-## Storage bucket creation
+## 存储桶创建
 
-To create a bucket, do the following.
+要创建存储桶，请执行以下操作。
 
-1. Install and configure [AWS CLI :octicons-link-external-16:](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+1. 安装并配置 [AWS CLI :octicons-link-external-16:](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
-2. Create an S3 bucket
+2. 创建 S3 存储桶
 
     ```bash
     aws s3api create-bucket --bucket my-s3-bucket --region us-east-1
     ```
   
-3. Verify the bucket creation
+3. 验证存储桶创建
 
     ```bash
     aws s3 ls
     ```
 
-After the bucket is created, apply the proper [permissions for PBM to use the bucket](storage-configuration.md#permissions-setup).
+创建存储桶后，应用适当的[权限以便 PBM 使用存储桶](storage-configuration.md#permissions-setup)。
 
-## Configuration example
+## 配置示例
 
 !!! important
     
-    Percona Backup for MongoDB (PBM) needs its own dedicated S3 bucket exclusively for backup-related files. Ensure that this [bucket is created](#storage-bucket-creation) and managed solely by PBM.
+    Percona Backup for MongoDB (PBM) 需要自己的专用 S3 存储桶，专门用于备份相关文件。确保此[存储桶已创建](#storage-bucket-creation) 并仅由 PBM 管理。
 
-This is the example for the basic configuration of AWS S3 storage in Percona Backup for MongoDB. You can find [the configuration file template :octicons-link-external-16:](https://github.com/percona/percona-backup-mongodb/blob/v{{release}}/packaging/conf/pbm-conf-reference.yml) and uncomment the required fields.
+这是 Percona Backup for MongoDB 中 AWS S3 存储的基本配置示例。您可以找到[配置文件模板 :octicons-link-external-16:](https://github.com/percona/percona-backup-mongodb/blob/v{{release}}/packaging/conf/pbm-conf-reference.yml) 并取消注释所需字段。
 
 
 ```yaml
@@ -54,29 +54,29 @@ storage:
       kmsKeyID: <your-kms-key-here>
 ```
 
-For the description of configuration options, see [Configuration file options](../reference/configuration-options.md).
+有关配置选项的说明，请参阅[配置文件选项](../reference/configuration-options.md)。
 
-## Fine-tune storage configuration 
+## 微调存储配置 
 
-The following sections describe how you can fine-tune your storage configuration: 
+以下部分介绍如何微调存储配置： 
 
-* [server-side encryption](#server-side-encryption) 
-* [debug logging](#debug-logging) 
-* [storage classes](#storage-classes)
-* [upload retries](#upload-retries) 
-* [multiple endpoints to the same S3 storage](endpoint-map.md) 
+* [服务器端加密](#server-side-encryption) 
+* [调试日志](#debug-logging) 
+* [存储类](#storage-classes)
+* [上传重试](#upload-retries) 
+* [同一 S3 存储的多个端点](endpoint-map.md) 
 
-### Server-side encryption
+### 服务器端加密
 
-Percona Backup for MongoDB supports [server-side encryption](../reference/glossary.md#server-side-encryption) for [S3 buckets](../reference/glossary.md#bucket) with the following encryption types:
+Percona Backup for MongoDB 支持 [S3 存储桶](../reference/glossary.md#bucket) 的[服务器端加密](../reference/glossary.md#server-side-encryption)，支持以下加密类型：
 
-* [customer-provided keys stored in AWS KMS (SSE-KMS)](#using-aws-kms-keys-sse-kms)
-* [customer-provided keys stored on the client side (SSE-C)](#using-customer-provided-keys-sse-c)
-* [Amazon S3 managed encryption keys (SSE-S3)](#using-amazon-s3-managed-keys-sse-s3)
+* [存储在 AWS KMS 中的客户提供的密钥 (SSE-KMS)](#using-aws-kms-keys-sse-kms)
+* [存储在客户端的客户提供的密钥 (SSE-C)](#using-customer-provided-keys-sse-c)
+* [Amazon S3 管理的加密密钥 (SSE-S3)](#using-amazon-s3-managed-keys-sse-s3)
 
-####  Using AWS KMS keys (SSE-KMS)
+####  使用 AWS KMS 密钥 (SSE-KMS)
 
-To use the SSE-KMS encryption, specify the following parameters in the Percona Backup for MongoDB configuration file: 
+要使用 SSE-KMS 加密，请在 Percona Backup for MongoDB 配置文件中指定以下参数： 
 
 ```yaml
 serverSideEncryption:
@@ -84,18 +84,18 @@ serverSideEncryption:
    sseAlgorithm: aws:kms
 ```  
 
-#### Using customer-provided keys (SSE-C)
+#### 使用客户提供的密钥 (SSE-C)
 
-!!! admonition "Version added: [2.0.1](../release-notes/2.0.1.md)" 
+!!! admonition "版本添加：[2.0.1](../release-notes/2.0.1.md)" 
 
-Percona Backup for MongoDB also supports server-side encryption with customer-provided keys that are stored on the client side (SSE-C). Percona Backup for MongoDB provides the encryption keys as part of the requests to the S3 storage. The S3 storage uses them to encrypt/decrypt the data using the `AES-256` encryption algorithm. In such a way you save on subscribing to AWS KMS services and can use the server-side encryption with the S3-compatible storage of your choice.
+Percona Backup for MongoDB 还支持使用存储在客户端的客户提供的密钥进行服务器端加密 (SSE-C)。Percona Backup for MongoDB 将加密密钥作为对 S3 存储的请求的一部分提供。S3 存储使用它们通过 `AES-256` 加密算法加密/解密数据。通过这种方式，您可以节省订阅 AWS KMS 服务的费用，并可以使用您选择的 S3 兼容存储进行服务器端加密。
 
 !!! warning
 
-    1. Enable/disable the server-side encryption only for the empty bucket. Otherwise, Percona Backup for MongoDB fails to save/retrieve objects to/from the storage properly.
-    2. S3 storage doesn't manage or store the encryption key. It is your responsibility to track what key was used to encrypt what object in the bucket. If you lose the key, any request for an object without the encryption key fails and you lose the object. 
+    1. 仅对空存储桶启用/禁用服务器端加密。否则，Percona Backup for MongoDB 无法正确保存/检索存储中的对象。
+    2. S3 存储不管理或存储加密密钥。您有责任跟踪哪个密钥用于加密存储桶中的哪个对象。如果您丢失密钥，任何没有加密密钥的对象请求都会失败，您将丢失该对象。 
 
-To use the SSE-C encryption, specify the following parameters in the Percona Backup for MongoDB configuration file:    
+要使用 SSE-C 加密，请在 Percona Backup for MongoDB 配置文件中指定以下参数：    
 
 ```yaml
 serverSideEncryption:
@@ -103,30 +103,30 @@ serverSideEncryption:
   sseCustomerKey: <your_encryption_key>
 ``` 
 
-#### Using Amazon S3 managed keys (SSE-S3)
+#### 使用 Amazon S3 管理的密钥 (SSE-S3)
 
-!!! admonition "Version added: [2.6.0](../release-notes/2.6.0.md)" 
+!!! admonition "版本添加：[2.6.0](../release-notes/2.6.0.md)" 
 
-Percona Backup for MongoDB supports server-side encryption with Amazon S3 managed keys (SSE-S3), the default encryption method in Amazon AWS S3. Amazon S3 encrypts each object with a unique key. As an additional safeguard, it encrypts the key itself with a key that it rotates regularly. Amazon S3 server-side encryption uses 256-bit Advanced Encryption Standard Galois/Counter Mode (AES-GCM) to encrypt all uploaded objects.
+Percona Backup for MongoDB 支持使用 Amazon S3 管理的密钥进行服务器端加密 (SSE-S3)，这是 Amazon AWS S3 中的默认加密方法。Amazon S3 使用唯一密钥加密每个对象。作为额外的安全措施，它使用定期轮换的密钥加密密钥本身。Amazon S3 服务器端加密使用 256 位高级加密标准 Galois/Counter Mode (AES-GCM) 加密所有上传的对象。
 
-To use SSE-S3 encryption, specify the following parameters in the Percona Backup for the MongoDB configuration file:
+要使用 SSE-S3 加密，请在 Percona Backup for MongoDB 配置文件中指定以下参数：
 
 ```yaml
 serverSideEncryption:
    sseAlgorithm: AES256
 ```  
 
-### Debug logging
+### 调试日志
 
-You can enable debug logging for different types of S3 requests in Percona Backup for MongoDB. Percona Backup for MongoDB prints S3 log messages in the `pbm logs` output so that you can debug and diagnose S3 request issues or failures.
+您可以为 Percona Backup for MongoDB 中的不同类型的 S3 请求启用调试日志。Percona Backup for MongoDB 在 `pbm logs` 输出中打印 S3 日志消息，以便您可以调试和诊断 S3 请求问题或故障。
 
-To enable S3 debug logging, set the `storage.s3.DebugLogLevel` option in Percona Backup for MongoDB configuration. The supported values are: `LogDebug`, `Signing`, `HTTPBody`, `RequestRetries`, `RequestErrors`, `EventStreamBody`.
+要启用 S3 调试日志，请在 Percona Backup for MongoDB 配置中设置 `storage.s3.DebugLogLevel` 选项。支持的值有：`LogDebug`、`Signing`、`HTTPBody`、`RequestRetries`、`RequestErrors`、`EventStreamBody`。
 
-### Storage classes 
+### 存储类 
 
-Percona Backup for MongoDB supports [Amazon S3 storage classes :octicons-link-external-16:](https://aws.amazon.com/s3/storage-classes/). Knowing your data access patterns, you can set the S3 storage class in Percona Backup for MongoDB configuration. When Percona Backup for MongoDB uploads data to S3, the data is distributed to the corresponding storage class. The support of S3 bucket storage types allows you to effectively manage S3 storage space and costs.
+Percona Backup for MongoDB 支持 [Amazon S3 存储类 :octicons-link-external-16:](https://aws.amazon.com/s3/storage-classes/)。了解您的数据访问模式后，您可以在 Percona Backup for MongoDB 配置中设置 S3 存储类。当 Percona Backup for MongoDB 将数据上传到 S3 时，数据会分发到相应的存储类。对 S3 存储桶存储类型的支持使您能够有效管理 S3 存储空间和成本。
 
-To set the storage class, specify the `storage.s3.storageClass` option in Percona Backup for MongoDB configuration file:
+要设置存储类，请在 Percona Backup for MongoDB 配置文件中指定 `storage.s3.storageClass` 选项：
 
 ```yaml
 storage:
@@ -135,11 +135,11 @@ storage:
     storageClass: INTELLIGENT_TIERING
 ```
 
-When the option is undefined, the S3 Standard (`STANDARD`) storage type is used.
+当选项未定义时，使用 S3 Standard (`STANDARD`) 存储类型。
 
-### Upload retries 
+### 上传重试 
 
-You can set up the number of attempts for Percona Backup for MongoDB to upload data to S3 storage as well as the min and max time to wait for the next retry. Set the options `storage.s3.retryer.numMaxRetries`, `storage.s3.retryer.minRetryDelay` and `storage.s3.retryer.maxRetryDelay` in Percona Backup for MongoDB configuration.
+您可以设置 Percona Backup for MongoDB 上传数据到 S3 存储的尝试次数以及等待下次重试的最小和最大时间。在 Percona Backup for MongoDB 配置中设置选项 `storage.s3.retryer.numMaxRetries`、`storage.s3.retryer.minRetryDelay` 和 `storage.s3.retryer.maxRetryDelay`。
 
 ```yaml
 retryer:
@@ -148,25 +148,25 @@ retryer:
   maxRetryDelay: 5
 ```
 
-This upload retry increases the chances of data upload completion in cases of unstable connection.
+此上传重试增加了在不稳定连接情况下完成数据上传的机会。
 
-## Data upload to storage with self-signed TLS certificates
+## 使用自签名 TLS 证书上传数据到存储
 
-Percona Backup for MongoDB supports data upload to S3-compatible storage service over HTTPS with a self-signed or a private CA certificate. This feature is especially important when you use services like MinIO, Ceph, or internal S3 gateways that don't use certificates signed by public Certificate Authorities (CAs).
+Percona Backup for MongoDB 支持通过 HTTPS 使用自签名或私有 CA 证书将数据上传到 S3 兼容存储服务。当您使用 MinIO、Ceph 或不使用公共证书颁发机构 (CA) 签名的证书的内部 S3 网关等服务时，此功能尤其重要。
 
-Providing a whole chain of certificates is recommended to ensure the connection is legit. The `SSL_CERT_FILE` environment variable specifies the path to a custom certificate chain file in PEM-format that PBM uses to validate TLS/SSL connection. 
+建议提供完整的证书链以确保连接合法。`SSL_CERT_FILE` 环境变量指定 PBM 用于验证 TLS/SSL 连接的自定义证书链文件（PEM 格式）的路径。 
 
-### Usage example
+### 使用示例
 
-Let's assume that your custom CA certificate is at `/etc/ssl/minio-ca.crt` path and your S3 endpoint is `https://minio.internal.local:9000`. To use self-issued TLS certificates, do the following:
+假设您的自定义 CA 证书位于 `/etc/ssl/minio-ca.crt` 路径，您的 S3 端点是 `https://minio.internal.local:9000`。要使用自签发的 TLS 证书，请执行以下操作：
 
-1. Ensure the cert file is in PEM format. Use the following command to check it:
+1. 确保证书文件为 PEM 格式。使用以下命令检查：
 
     ```bash
     cat /etc/ssl/minio-ca.crt
     ```
 
-    ??? example "Sample output"
+    ??? example "示例输出"
 
 
         ```{text .no-copy}
@@ -175,24 +175,24 @@ Let's assume that your custom CA certificate is at `/etc/ssl/minio-ca.crt` path 
         -----END CERTIFICATE-----
         ```
 
-2. Set the `SSL_CERT_FILE` environment variable to that file's path on each host where `pbm-agent` and PBM CLI are running:
+2. 在运行 `pbm-agent` 和 PBM CLI 的每个主机上，将 `SSL_CERT_FILE` 环境变量设置为该文件的路径：
 
     ```bash
     export SSL_CERT_FILE=/etc/ssl/minio-ca.crt
     ```
 
-    If this variable isn't set, PBM uses the system root certificates.
+    如果未设置此变量，PBM 使用系统根证书。
 
-3. Restart `pbm-agent`:
+3. 重启 `pbm-agent`：
 
     ```bash
     sudo systemctl start pbm-agent
     ```
 
-4. Verify that your custom certificate is recognized. Check PBM logs for successful S3 access. 
+4. 验证您的自定义证书是否被识别。检查 PBM 日志以确认成功访问 S3。 
 
 
-Alternatively, you can disable the TLS verification of the S3 storage in Percona Backup for MongoDB configuration:
+或者，您可以在 Percona Backup for MongoDB 配置中禁用 S3 存储的 TLS 验证：
 
 ```bash
 pbm config --set storage.s3.insecureSkipTLSVerify=True
@@ -200,5 +200,5 @@ pbm config --set storage.s3.insecureSkipTLSVerify=True
 
 !!! warning 
 
-    Use this option with caution as it might leave a hole for man-in-the-middle attacks.
+    请谨慎使用此选项，因为它可能为中间人攻击留下漏洞。
 

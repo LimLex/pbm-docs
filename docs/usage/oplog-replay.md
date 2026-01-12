@@ -1,80 +1,80 @@
-# Replay oplog from arbitrary start time
+# 从任意开始时间重放 oplog
 
-You can replay the [oplog](../reference/glossary.md#oplog) for a specific period on top of any backup: logical, physical, storage level snapshot (like [EBS-snapshot](../reference/glossary.md#ebs-snapshot)). You can save oplog slices without the mandatory base backup snapshot. This behavior is controlled by the [`pitr.oplogOnly`](../reference/pitr-options.md) configuration parameter:
+您可以在任何备份之上重放特定时期的 [oplog](../reference/glossary.md#oplog)：逻辑、物理、存储级别快照（如 [EBS 快照](../reference/glossary.md#ebs-snapshot)）。您可以在没有强制基础备份快照的情况下保存 oplog 切片。此行为由 [`pitr.oplogOnly`](../reference/pitr-options.md) 配置参数控制：
 
 ```yaml
 pitr:
    oplogOnly: true
 ```
 
-By replaying these oplog slices on top of the backup snapshot with the [`pbm oplog-replay`](../reference/pbm-commands.md#pbm-oplog-replay) command, you can manually restore sharded clusters and non-sharded replica sets to a specific point in time from a backup made by any tool and not only by Percona Backup for MongoDB. Plus, you reduce time, storage space, and administration efforts on making the redundant base backup snapshot.
+通过使用 [`pbm oplog-replay`](../reference/pbm-commands.md#pbm-oplog-replay) 命令在备份快照之上重放这些 oplog 切片，您可以手动将分片集群和非分片副本集从任何工具（不仅仅是 Percona Backup for MongoDB）创建的备份恢复到特定时间点。此外，您还可以减少创建冗余基础备份快照的时间、存储空间和管理工作。
 
 !!! warning
 
-    Use the oplog replay functionality with caution, only when you are sure about the starting time from which to replay oplog. The oplog replay does not guarantee data consistency when restoring from any backup. However, it is less error-prone for backups made with Percona Backup for MongoDB.
+    请谨慎使用 oplog 重放功能，仅在您确定要重放 oplog 的开始时间时使用。从任何备份恢复时，oplog 重放不保证数据一致性。但是，对于使用 Percona Backup for MongoDB 创建的备份，它不太容易出错。
 
-## Ways to specify time for oplog replay
+## 指定 oplog 重放时间的方法
 
-PBM uses MongoDB's timestamp format for oplog replay, which provides operation-level resolution. Each oplog operation is identified by `(epoch, ordinal)`, where `epoch` is the Unix time in seconds and `ordinal` distinguishes multiple operations within the same second. The specified operation is always included in the replay.
+PBM 使用 MongoDB 的时间戳格式进行 oplog 重放，提供操作级别的分辨率。每个 oplog 操作由 `(epoch, ordinal)` 标识，其中 `epoch` 是 Unix 时间（以秒为单位），`ordinal` 区分同一秒内的多个操作。指定的操作始终包含在重放中。
 
-You can define the oplog replay stop point in two ways:
+您可以通过两种方式定义 oplog 重放停止点：
 
-1. **By ISO timestamp**:  
-   Specify an end time as an ISO timestamp (for example, `2025-01-02T15:00:00`). Use this method when you want to include all operations that occurred until the specified second.
+1. **通过 ISO 时间戳**：  
+   将结束时间指定为 ISO 时间戳（例如，`2025-01-02T15:00:00`）。当您想要包含直到指定秒发生的所有操作时，请使用此方法。
 
-2. **By MongoDB timestamp tuple**:  
-   Specify the stop point as `epoch,ordinal` (e.g., `1764576382,20`). PBM includes all operations up to that exact operation. Use this method when you need precise control over which specific operations within a second to include. 
+2. **通过 MongoDB 时间戳元组**：  
+   将停止点指定为 `epoch,ordinal`（例如，`1764576382,20`）。PBM 包括直到该确切操作的所有操作。当您需要精确控制在一秒内包含哪些特定操作时，请使用此方法。 
 
-## Oplog replay for physical backups
+## 物理备份的 Oplog 重放
 
 !!! note ""
 
-    Starting with version 2.2.0, oplog replay on top of a physical backups made with Percona Backup for MongoDB is done automatically as part of [point-in-time recovery](pitr-physical.md). 
+    从版本 2.2.0 开始，在使用 Percona Backup for MongoDB 创建的物理备份之上进行 oplog 重放是[时间点恢复](pitr-physical.md) 的一部分自动完成的。 
 
-This section describes how to **manually** replay oplog on top of physical backups made with Percona Backup for MongoDB version 2.1.0 and earlier.
+本节介绍如何在使用 Percona Backup for MongoDB 版本 2.1.0 及更早版本创建的物理备份之上**手动**重放 oplog。
 
-After you [restored a physical backup](restore.md), do the following:
+在您[恢复物理备份](restore.md) 后，执行以下操作：
 
-1. Stop point-in-time recovery, if enabled, to release the lock.
+1. 如果启用了时间点恢复，请停止它以释放锁。
 
-2. Run `pbm status` or `pbm list` commands to find oplog chunks available for replay.
+2. 运行 `pbm status` 或 `pbm list` 命令以查找可用于重放的 oplog 块。
 
-3. Run the `pbm oplog-replay` command and specify the `--start` and `--end` flags. See [how you can specify the time](#ways-to-specify-time-for-oplog-replay).
+3. 运行 `pbm oplog-replay` 命令并指定 `--start` 和 `--end` 标志。请参阅[如何指定时间](#ways-to-specify-time-for-oplog-replay)。
 
-    === "Use timestamp"
+    === "使用时间戳"
 
         ```bash
         pbm oplog-replay --start="{{year}}-01-02T15:00:00" --end="{{year}}-01-03T15:00:00"
         ```
     
-    === "Use `epoch,ordinal`"
+    === "使用 `epoch,ordinal`"
 
-        For a fine-grained precision which exactly operations within a second to include, specify the values for the `--start` and `--end` flags as `epoch,ordinal` tuples.
+        为了精确控制在一秒内包含哪些确切操作，请将 `--start` 和 `--end` 标志的值指定为 `epoch,ordinal` 元组。
 
         ```bash
-        pbm oplog-replay --end “1764576382,100”
+        pbm oplog-replay --end "1764576382,100"
         ``` 
 
-4. After the oplog replay, make a fresh backup and enable the point-in-time recovery oplog slicing.
+4. oplog 重放后，创建新备份并启用时间点恢复 oplog 切片。
 
-## Oplog replay for storage level snapshots
+## 存储级别快照的 Oplog 重放
 
-When making a backup, Percona Backup for MongoDB stops the point-in-time recovery. This is done to maintain data consistency after the restore.
+创建备份时，Percona Backup for MongoDB 会停止时间点恢复。这样做是为了在恢复后保持数据一致性。
 
-Storage-level snapshots are saved with point-in-time recovery enabled. Thus, after the database restore from such a backup, point-in-time recovery is automatically enabled and starts oplog slicing. These new oplog slices might conflict with the existing oplogs saved during the backup. To replay the oplog in such a case, do the following after the restore:
+存储级别快照在启用时间点恢复的情况下保存。因此，从此类备份恢复数据库后，时间点恢复会自动启用并开始 oplog 切片。这些新的 oplog 切片可能与备份期间保存的现有 oplog 冲突。要在此类情况下重放 oplog，请在恢复后执行以下操作：
 
 
-1. Disable point-in-time recovery.
-2. Delete the oplog slices that might have been created.
-3. Re-sync the data from the storage.
-4. Run the `pbm oplog-replay` command and specify the `--start` and `--end` flags with the timestamps.
+1. 禁用时间点恢复。
+2. 删除可能已创建的 oplog 切片。
+3. 从存储重新同步数据。
+4. 运行 `pbm oplog-replay` 命令并指定带有时间戳的 `--start` 和 `--end` 标志。
 
     ```bash
     pbm oplog-replay --start="2022-01-02T15:00:00" --end="2022-01-03T15:00:00"
     ```
 
-5. After the oplog replay, make a fresh backup and enable the point-in-time recovery oplog slicing.
+5. oplog 重放后，创建新备份并启用时间点恢复 oplog 切片。
 
-[Known limitations](../features/known-limitations.md#oplog-replay-from-arbitrary-start-time){.md-button}
+[已知限制](../features/known-limitations.md#oplog-replay-from-arbitrary-start-time){.md-button}
 
 

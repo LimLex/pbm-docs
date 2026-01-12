@@ -1,60 +1,60 @@
-# Azure Blob storage
+# Azure Blob 存储
 
-!!! admonition "Version added: [1.5.0](../release-notes/1.5.0.md)"
+!!! admonition "版本添加：[1.5.0](../release-notes/1.5.0.md)"
 
-Companies with Microsoft-based infrastructure can set up Percona Backup for MongoDB with less administrative efforts by using [Microsoft Azure Blob Storage :octicons-link-external-16:](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction) as the remote backup storage.
+使用基于 Microsoft 的基础设施的公司可以通过使用 [Microsoft Azure Blob Storage :octicons-link-external-16:](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction) 作为远程备份存储，以更少的管理工作设置 Percona Backup for MongoDB。
  
-## Create a blob storage
+## 创建 Blob 存储
 
-You can create a blob storage either via the Azure Portal web interface or using the Azure CLI.
+您可以通过 Azure Portal Web 界面或使用 Azure CLI 创建 Blob 存储。
 
-For either method you need a storage account.
+对于任一方法，您都需要一个存储账户。
 
 === "Azure Portal"
 
-    1. Sign in to Azure Portal
-    2. On the Home page, select **Storage accounts**.
-    3. Click **Create** from the toolbar and use the wizard to create a storage account.
-    4. After the storage account is created, select it from the list.
-    5. In the left menu, select **Data storage** -> **Containers**.
-    6. Click **+ Container** to create a new container.
-    7. Enter a name for the container and select **Private** as the access level.
-    8. Click **Create** to create the container.
+    1. 登录 Azure Portal
+    2. 在主页上，选择**存储账户**。
+    3. 从工具栏单击**创建**，使用向导创建存储账户。
+    4. 创建存储账户后，从列表中选择它。
+    5. 在左侧菜单中，选择**数据存储** -> **容器**。
+    6. 单击 **+ 容器** 创建新容器。
+    7. 输入容器名称，选择**私有**作为访问级别。
+    8. 单击**创建**创建容器。
 
 === "Azure CLI"
 
-    1. Install the [Azure CLI :octicons-link-external-16:](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli). After the installation, the `az` is available for you.
-    2. Sign in to Azure CLI:
+    1. 安装 [Azure CLI :octicons-link-external-16:](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)。安装后，`az` 可供您使用。
+    2. 登录 Azure CLI：
 
         ```bash
         az login
         ```
 
-    3. Create a Resource group if it's not created for you:
+    3. 如果未为您创建资源组，请创建一个：
 
         ```bash
         az group create --name <your-resource-group> --location <your-location>
         ```
 
-        For the list of available locations, run:
+        要获取可用位置列表，请运行：
 
         ```bash
         az account list-locations
         ```
 
-    4. Create a storage account:
+    4. 创建存储账户：
 
         ```bash
         az storage account create --name <storage-account-name> --resource-group <your-resource-group> --location <your-location> --sku Standard_LRS
         ```
 
-    4. Create a blob container:
+    4. 创建 Blob 容器：
 
         ```bash
         az storage container create --account-name <storage-account-name> --name <your-container>  --public-access off
         ```
 
-        ??? example "Expected output"
+        ??? example "预期输出"
 
             ```{.json .no-copy}
             {
@@ -62,11 +62,11 @@ For either method you need a storage account.
             }
             ```
 
-After the bucket is created, apply the proper [permissions for PBM to use the bucket](storage-configuration.md#permissions-setup).
+创建存储桶后，应用适当的[权限以便 PBM 使用存储桶](storage-configuration.md#permissions-setup)。
 
-## Configuration example
+## 配置示例
 
-You can find [the configuration file template :octicons-link-external-16:](https://github.com/percona/percona-backup-mongodb/blob/v{{release}}/packaging/conf/pbm-conf-reference.yml) and uncomment the required fields.
+您可以找到[配置文件模板 :octicons-link-external-16:](https://github.com/percona/percona-backup-mongodb/blob/v{{release}}/packaging/conf/pbm-conf-reference.yml) 并取消注释所需字段。
 
 ```yaml
 storage:
@@ -79,12 +79,12 @@ storage:
       key: <your-access-key>
 ```
 
-For the description of configuration options, see [Configuration file options](../reference/configuration-options.md).
+有关配置选项的说明，请参阅[配置文件选项](../reference/configuration-options.md)。
 
 
-## Upload retries 
+## 上传重试 
 
-You can set up the number of attempts for Percona Backup for MongoDB to upload data to Microsoft Azure storage as well as the min and max time to wait for the next retry. Set the options `storage.azure.retryer.numMaxRetries`, `storage.azure.retryer.minRetryDelay` and `storage.azure.retryer.maxRetryDelay` in Percona Backup for MongoDB configuration.
+您可以设置 Percona Backup for MongoDB 上传数据到 Microsoft Azure 存储的尝试次数以及等待下次重试的最小和最大时间。在 Percona Backup for MongoDB 配置中设置选项 `storage.azure.retryer.numMaxRetries`、`storage.azure.retryer.minRetryDelay` 和 `storage.azure.retryer.maxRetryDelay`。
 
 ```yaml
 retryer:
@@ -93,4 +93,4 @@ retryer:
   maxRetryDelay: 60s
 ```
 
-This upload retry increases the chances of data upload completion in cases of unstable connection.
+此上传重试增加了在不稳定连接情况下完成数据上传的机会。

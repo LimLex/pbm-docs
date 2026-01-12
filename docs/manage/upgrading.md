@@ -1,110 +1,110 @@
-# Upgrade Percona Backup for MongoDB
+# 升级 Percona Backup for MongoDB
 
-The recommended and most convenient way to upgrade PBM is from Percona repositories.
+推荐且最方便的升级 PBM 的方法是从 Percona 仓库升级。
 
-## Important notes
+## 重要说明
 
-1. Backward compatibility between data backup and restore is supported for upgrades within one major version only (for example, from 2.1.x to 2.2.y). When you upgrade Percona Backup for MongoDB across major versions (for example, from 2.0.x to 2.2.y), we recommend to make a backup right after the upgrade.
+1. 仅在主要版本内升级时支持数据备份和恢复的向后兼容性（例如，从 2.1.x 升级到 2.2.y）。当您跨主要版本升级 Percona Backup for MongoDB（例如，从 2.0.x 升级到 2.2.y）时，我们建议在升级后立即创建备份。
 
-2. Upgrade Percona Backup for MongoDB on all nodes where it is installed.
+2. 在所有安装了 Percona Backup for MongoDB 的节点上升级它。
 
-## Prerequisites 
+## 先决条件 
 
-1. [Install `percona-release` tool :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/installing.html) or [update it :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/updating.html) to the latest version.
+1. [安装 `percona-release` 工具 :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/installing.html) 或[将其更新 :octicons-link-external-16:](https://www.percona.com/doc/percona-repo-config/updating.html) 到最新版本。
 
-2. Enable the repository
+2. 启用仓库
 
     ```bash
     sudo percona-release enable pbm release
     ```
 
-<i info>:material-information: Note:</i> For `apt`-based systems, run `sudo apt update` to update the local cache.
+<i info>:material-information: 注意：</i> 对于基于 `apt` 的系统，运行 `sudo apt update` 以更新本地缓存。
 
-## Upgrade to the latest version
+## 升级到最新版本
 
-=== ":material-debian: On Debian and Ubuntu Linux"
+=== ":material-debian: 在 Debian 和 Ubuntu Linux 上"
 
-    Run all commands as root or via `sudo`.
+    以 root 用户身份或通过 `sudo` 运行所有命令。
     {.power-number}
 
-    1. Stop `pbm-agent`
+    1. 停止 `pbm-agent`
 
         ```bash
         sudo systemctl stop pbm-agent
         ```
 
-    2. Install new packages
+    2. 安装新软件包
 
         ```bash
         sudo apt install percona-backup-mongodb
         ```  
 
-    3. Reload the `systemd` process
+    3. 重新加载 `systemd` 进程
 
         ```bash
         sudo systemctl daemon-reload
         ```
 
-    4. Update permissions
+    4. 更新权限
 
-        For a *filesystem-based backup storage*, grant read / write permissions to the backup directory to the `mongod` user.
+        对于*基于文件系统的备份存储*，授予 `mongod` 用户对备份目录的读/写权限。
 
 
-    5. Start `pbm-agent`
+    5. 启动 `pbm-agent`
 
         ```bash
         sudo systemctl start pbm-agent
         ```
 
-=== ":material-redhat: On Red Hat Enterprise Linux and derivatives"
+=== ":material-redhat: 在 Red Hat Enterprise Linux 和衍生版本上"
 
-    Run all commands as root or via `sudo`.
+    以 root 用户身份或通过 `sudo` 运行所有命令。
     {.power-number}
 
-    1. Stop `pbm-agent`
+    1. 停止 `pbm-agent`
 
         ```bash
         sudo systemctl stop pbm-agent
         ```
 
-    2. Install new packages
+    2. 安装新软件包
 
         ```bash
         sudo yum install percona-backup-mongodb
         ```
 
-    3. Reload the `systemd` process
+    3. 重新加载 `systemd` 进程
 
-       Starting from v1.7.0, reload the `systemd` process to update the unit file with the following command:
+       从 v1.7.0 开始，使用以下命令重新加载 `systemd` 进程以更新单元文件：
 
        ```bash
        sudo systemctl daemon-reload
        ```
 
-    4. Update permissions
+    4. 更新权限
 
-        For a *filesystem-based backup storage*, grant read / write permissions to the backup directory to the `mongod` user.
+        对于*基于文件系统的备份存储*，授予 `mongod` 用户对备份目录的读/写权限。
 
-    5. Start `pbm-agent`
+    5. 启动 `pbm-agent`
 
         ```bash
         sudo systemctl start pbm-agent
         ``` 
 
-## Upgrade to a specific version
+## 升级到特定版本
 
-=== ":material-debian: On Debian and Ubuntu Linux"
+=== ":material-debian: 在 Debian 和 Ubuntu Linux 上"
 
-    Run all commands as root or via `sudo`.
+    以 root 用户身份或通过 `sudo` 运行所有命令。
     {.power-number}
 
-    1. List available versions
+    1. 列出可用版本
  
         ```bash
         sudo apt-cache madison percona-backup-mongodb
         ```
 
-        ??? example "Sample output"
+        ??? example "示例输出"
 
             ```{.text .no-copy}
             percona-backup-mongodb | 2.8.0-1.stretch | http://repo.percona.com/tools/apt stretch/main amd64 Packages
@@ -113,43 +113,43 @@ The recommended and most convenient way to upgrade PBM is from Percona repositor
             percona-backup-mongodb | 2.5.0-1.stretch | http://repo.percona.com/tools/apt stretch/main amd64 Packages
             ```
 
-    2. Stop `pbm-agent`
+    2. 停止 `pbm-agent`
 
         ```bash
         sudo systemctl stop pbm-agent
         ```
 
-    3. Install packages
+    3. 安装软件包
 
-        Install a specific version packages. For example, to upgrade to Percona Backup for MongoDB 1.7.0, run the following command:
+        安装特定版本的软件包。例如，要升级到 Percona Backup for MongoDB 1.7.0，请运行以下命令：
 
         ```bash
         sudo apt install percona-backup-mongodb=1.7.0-1.stretch
         ```
  
-    4. Update permissions
+    4. 更新权限
 
-       For a *filesystem-based backup storage*, grant read / write permissions to the backup directory to the `mongod` user.
+       对于*基于文件系统的备份存储*，授予 `mongod` 用户对备份目录的读/写权限。
 
 
-    5. Start `pbm-agent`
+    5. 启动 `pbm-agent`
  
         ```bash
         sudo systemctl start pbm-agent
         ``` 
 
-=== ":material-redhat: On Red Hat Enterprise Linux and derivatives"
+=== ":material-redhat: 在 Red Hat Enterprise Linux 和衍生版本上"
   
-    Run all commands as root or via `sudo`.
+    以 root 用户身份或通过 `sudo` 运行所有命令。
     {.power-number}
 
-    1. List available versions
+    1. 列出可用版本
 
         ```bash
         sudo yum list percona-backup-mongodb --showduplicates
         ```
 
-        ??? example "Sample output"
+        ??? example "示例输出"
 
             ```{.text .no-copy}
             Available Packages
@@ -161,28 +161,28 @@ The recommended and most convenient way to upgrade PBM is from Percona repositor
             percona-backup-mongodb.x86_64    1.5.0-1.el7          pbm-release-x86_64
             ```
 
-    2. Stop `pbm-agent`
+    2. 停止 `pbm-agent`
 
         ```bash
         sudo systemctl stop pbm-agent
         ```
 
-    3. Install packages
+    3. 安装软件包
 
-        Install a specific version packages. For example, to upgrade to Percona Backup for MongoDB 1.7.1, run the following command:
+        安装特定版本的软件包。例如，要升级到 Percona Backup for MongoDB 1.7.1，请运行以下命令：
 
         ```bash
         sudo yum install percona-backup-mongodb-1.7.1-1.el7
         ```
     
-    4. Update permissions
+    4. 更新权限
 
-        For a *filesystem-based backup storage*, grant read / write permissions to the backup directory to the `mongod` user.
+        对于*基于文件系统的备份存储*，授予 `mongod` 用户对备份目录的读/写权限。
 
-    5. Start `pbm-agent`
+    5. 启动 `pbm-agent`
 
         ```bash
         sudo systemctl start pbm-agent
         ``` 
 
-<i info>:material-information: Note:</i> If MongoDB runs under a *different user than `mongod`* (the default configuration for Percona Server for MongoDB), use the same user to run the `pbm-agent`. For filesystem-based storage, grant the read / write permissions to the backup directory for this user.
+<i info>:material-information: 注意：</i> 如果 MongoDB 在*不同于 `mongod` 的用户*下运行（Percona Server for MongoDB 的默认配置），请使用相同的用户运行 `pbm-agent`。对于基于文件系统的存储，请授予此用户对备份目录的读/写权限。

@@ -1,31 +1,31 @@
-# View restore progress
+# 查看恢复进度
 
-!!! admonition "Version added: [2.0.0](../release-notes/2.0.0.md)"
+!!! admonition "版本添加：[2.0.0](../release-notes/2.0.0.md)"
 
-You can track the status of both physical and logical restores. This gives you a clear understanding of the restore progress so that you can react accordingly. 
+您可以跟踪物理和逻辑恢复的状态。这使您清楚地了解恢复进度，以便您可以相应地做出反应。 
 
-To view the restore status, run the `pbm describe-restore` command and specify the restore name. To track a physical restore progress, specify the path to the Percona Backup for MongoDB (PBM) configuration file. Since `mongod` nodes are shut down during a physical restore, Percona Backup for MongoDB uses the configuration file to read the restore status on storage. PBM stores the restore metadata only in the main storage when [multiple backup storages](../features/multi-storage.md) are configured. 
+要查看恢复状态，请运行 `pbm describe-restore` 命令并指定恢复名称。要跟踪物理恢复进度，请指定 Percona Backup for MongoDB (PBM) 配置文件的路径。由于 `mongod` 节点在物理恢复期间关闭，Percona Backup for MongoDB 使用配置文件读取存储上的恢复状态。当配置了[多个备份存储](../features/multi-storage.md) 时，PBM 仅在主存储上存储恢复元数据。 
 
 ```bash
 pbm describe-restore 2022-08-15T11:14:55.683148162Z -c pbm_config.yaml
 ```
 
-The output provides the following information:
+输出提供以下信息：
 
--  Restore name
--  The name of the backup from which the database was restored
--  Type
--  Status
+-  恢复名称
+-  从中恢复数据库的备份名称
+-  类型
+-  状态
 -  opID
--  The time of the restoration start
--  The time of the restore finish (for successful restores)
--  Last transition time – the time when the restore process changed its status
--  The name of every replica set, its restore status, and the last transition time 
+-  恢复开始时间
+-  恢复完成时间（对于成功的恢复）
+-  最后转换时间 – 恢复过程更改其状态的时间
+-  每个副本集的名称、其恢复状态和最后转换时间 
 
-For physical backups only, the following additional information is provided:
+仅对于物理备份，提供以下附加信息：
 
-- The node name
-- Restore status on the node
-- Last transition time
+- 节点名称
+- 节点上的恢复状态
+- 最后转换时间
 
-Check the [pbm describe-restore](../reference/pbm-commands.md#output_1) for the full list of fields and their description.
+请参阅 [pbm describe-restore](../reference/pbm-commands.md#output_1) 以获取字段的完整列表及其描述。

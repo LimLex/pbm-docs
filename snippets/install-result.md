@@ -1,8 +1,8 @@
-After the installation completes, you have the following tools:
+安装完成后，您将拥有以下工具：
 
-| Tool            | Purpose                                                  |
+| 工具            | 用途                                                  |
 | --------------- | ---------------------------------------------------------|
-| `pbm`           | Command-line interface for controlling the backup system |
-| `pbm-agent`     | An agent for running backup/restore actions on a database host |
-| `pbm-speed-test`| An interface for field-testing compression and backup upload speed|
-| `pbm-agent-entrypoint` | An entry point application that allows starting `pbm-agent` and also restarts it in case of any faults| 
+| `pbm`           | 用于控制备份系统的命令行界面 |
+| `pbm-agent`     | 在数据库主机上运行备份/恢复操作的代理 |
+| `pbm-speed-test`| 用于现场测试压缩和备份上传速度的界面|
+| `pbm-agent-entrypoint` | 允许启动 `pbm-agent` 并在出现任何故障时重新启动它的入口点应用程序| 

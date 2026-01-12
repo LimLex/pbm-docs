@@ -1,65 +1,66 @@
-# Restore from an incremental backup
+# 从增量备份恢复
 
 --8<-- "restore-intro.md"
 
-## Considerations
+## 注意事项
 
-1. The Percona Server for MongoDB version for both backup and restore data must be within the same major release.
-2. Incremental backups made with PBM before PBM 2.1.0 are incompatible for restore with PBM 2.1.0 and onwards.
-3. Physical restores are not supported for deployments with arbiter nodes.
+1. 备份和恢复数据的 Percona Server for MongoDB 版本必须在同一主要版本内。
+2. 使用 PBM 2.1.0 之前的 PBM 创建的增量备份与 PBM 2.1.0 及更高版本的恢复不兼容。
+3. 不支持具有仲裁节点的部署的物理恢复。
    
-## Before you start
+## 开始之前
 
-1. Shut down all `mongos` nodes, `pmm-agent` processes and clients that can do writes to the database as it won’t be available while the restore is in progress.
-2. Check that the `systemctl` restart policy for the `pbm-agent.service` is not set to `always` or `on-success`:
+1. 关闭所有 `mongos` 节点、`pmm-agent` 进程和可以对数据库执行写入的客户端，因为恢复进行时数据库将不可用。
+2. 检查 `pbm-agent.service` 的 `systemctl` 重启策略未设置为 `always` 或 `on-success`：
 
     ```bash
     sudo systemctl show pbm-agent.service | grep Restart
     ```
 
-    ??? example "Sample output"
+    ??? example "示例输出"
 
         ```{.text .no-copy}
         Restart=no
         RestartUSec=100ms
         ```
     
-    During physical restores, the database must not be automatically restarted as this is controlled by the `pbm-agent`.
+    在物理恢复期间，数据库不得自动重启，因为这由 `pbm-agent` 控制。
    
-## Restore a database
+## 恢复数据库
 
-Restore flow from an incremental backup is the same as the restore from a full physical backup: specify the backup name for the `pbm restore` command:
+从增量备份恢复的流程与从完整物理备份恢复相同：为 `pbm restore` 命令指定备份名称：
 
 ```bash
 pbm restore 2022-11-25T14:13:43Z
 ```
 
-Percona Backup for MongoDB recognizes the backup type, finds the base incremental backup, restores the data from it and then restores the modified data from applicable incremental backups.
+Percona Backup for MongoDB 识别备份类型，找到增量基础备份，从中恢复数据，然后从适用的增量备份恢复修改的数据。
 
-### Post-restore steps
+### 恢复后步骤
 
-After the restore is complete, do the following:
+恢复完成后，执行以下操作：
 
-1. Restart all `mongod` nodes and `pbm-agents`. 
+1. 重启所有 `mongod` 节点和 `pbm-agents`。 
 
     !!! note
 
-        You may see the following message in the `mongod` logs after the cluster restart:
+        集群重启后，您可能会在 `mongod` 日志中看到以下消息：
 
         ```{.text .no-copy}
         "s":"I",  "c":"CONTROL",  "id":20712,   "ctx":"LogicalSessionCacheReap","msg":"Sessions collection is not set up; waiting until next sessions reap interval","attr":{"error":"NamespaceNotFound: config.system.sessions does not exist"}}}}
         ```
 
-        This is expected behavior of periodic checks upon the database start. During the restore, the `config.system.sessions` collection is dropped but Percona Server for MongoDB recreates it eventually. It is a normal procedure. No action is required from your end.
+        这是数据库启动时定期检查的预期行为。在恢复期间，`config.system.sessions` 集合被删除，但 Percona Server for MongoDB 最终会重新创建它。这是正常过程。您无需执行任何操作。
     
-2. Resync the backup list from the storage. 
-3. Start the balancer and the `mongos` node.
-4. As the general recommendation, make a new base backup to renew the starting point for subsequent incremental backups.
+2. 从存储重新同步备份列表。 
+3. 启动平衡器和 `mongos` 节点。
+4. 作为一般建议，创建新的基础备份以更新后续增量备份的起点。
 
 
-## Useful links 
+## 有用的链接 
 
-* [View restore progress](../usage/restore-progress.md)
+* [查看恢复进度](../usage/restore-progress.md)
+
 
 
 

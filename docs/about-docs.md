@@ -1,17 +1,17 @@
-# About Percona Backup for MongoDB documentation
+# 关于 Percona Backup for MongoDB 文档
 
-This documentation provides comprehensive information about the features and operation guide for Percona Backup for MongoDB (PBM). Reference materials on PBM commands and configuration file options are also available here.
+本文档提供有关 Percona Backup for MongoDB (PBM) 功能和操作指南的全面信息。PBM 命令和配置文件选项的参考材料也可在此处获得。
 
-## Versions
+## 版本
 
-We recommend you to run the latest version of PBM to receive all bug fixes and benefit from the new features. For this reason, the documentation always reflects the latest PBM version. 
+我们建议您运行最新版本的 PBM 以接收所有错误修复并受益于新功能。因此，文档始终反映最新的 PBM 版本。 
 
-To track feature changes, an additional version indication is added where a feature appeared or a change was introduced. Please also take a look at the release notes for detailed information.
+为了跟踪功能更改，在出现功能或引入更改的地方添加了额外的版本指示。还请查看发布说明以获取详细信息。
 
-## Report an issue or request a change
+## 报告问题或请求更改
 
-To report an issue with the documentation, leave your feedback using the widget at the bottom of the page or open a ticket in [Percona Backup for MongoDB Jira project :octicons-link-external-16:](https://perconadev.atlassian.net/jira/software/c/projects/PBM/issues).
+要报告文档问题，请使用页面底部的反馈小部件留下反馈，或在 [Percona Backup for MongoDB Jira 项目 :octicons-link-external-16:](https://perconadev.atlassian.net/jira/software/c/projects/PBM/issues) 中打开工单。
 
-## How to contribute
+## 如何贡献
 
-Thank you for willing to contribute to Percona Backup for MongoDB project. Please check the [Contribution guidelines](reference/contributing.md) for  instructions.
+感谢您愿意为 Percona Backup for MongoDB 项目做出贡献。请查看[贡献指南](reference/contributing.md) 以获取说明。

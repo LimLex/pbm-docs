@@ -1,26 +1,26 @@
-# Make incremental backups
+# 创建增量备份
 
 --8<-- "prepare-backup.md"
 
-## Procedure
+## 步骤
 
-1. To start incremental backups, first make a full incremental backup. It will serve as the base for subsequent incremental backups:
+1. 要启动增量备份，首先创建完整增量备份。它将作为后续增量备份的基础：
 
     ```bash 
     pbm backup --type incremental --base
     ```
 
-    The `pbm-agent` starts tracking the incremental backup history to be able to calculate and save the difference in data blocks. 
+    `pbm-agent` 开始跟踪增量备份历史，以便能够计算和保存数据块的差异。 
 
-2. Run regular incremental backups:
+2. 运行常规增量备份：
 
     ```bash
     pbm backup --type incremental
     ```
 
-The incremental backup history looks like this:
+增量备份历史如下所示：
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.bash .no-copy} 
     Snapshots:
@@ -31,13 +31,13 @@ The incremental backup history looks like this:
     ```
 
 
-## Next steps
+## 下一步
 
-[List backups](../usage/list-backup.md){.md-button}
-[Make a restore](restore-incremental.md){.md-button}
+[列出备份](../usage/list-backup.md){.md-button}
+[进行恢复](restore-incremental.md){.md-button}
 
-## Useful links
+## 有用的链接
 
-* [Backup and restore types](../features/backup-types.md)
-* [Schedule backups](../usage/schedule-backup.md)
+* [备份和恢复类型](../features/backup-types.md)
+* [安排备份](../usage/schedule-backup.md)
 

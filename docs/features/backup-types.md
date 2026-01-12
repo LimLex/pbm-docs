@@ -1,22 +1,21 @@
-# Backup and restore types
+# 备份和恢复类型
 
-You can use several types of database backups and restores to develop your backup strategy. 
+您可以使用多种类型的数据库备份和恢复来制定备份策略。 
 
 ![image](../_images/backups-infographic.png)
 
-Not sure what exactly backup you need? The following diagram helps you decide:
+不确定您需要哪种备份？以下图表可帮助您决定：
 
 ![image](../_images/backup-matrix.png)
 
-The following table provides an overview of each type:
+下表提供了每种类型的概述：
 
-| Type           | Version added |  When to use | Supported deployments | Percona Server for MongoDB | MongoDB Community / Enterprise Edition |
+| 类型           | 添加版本 |  何时使用 | 支持的部署 | Percona Server for MongoDB | MongoDB Community / Enterprise Edition |
 | ---------------| ------------ | ----------------------| ------------------ | ---------------------------------------| ----------| 
-| [Logical](logical.md) <br><small>GA</small>|  1.0.0 | - Selective restore of a specific database or a collection in a cluster (starting with version 2.0.0) <br> - Resilient to major / minor version changes in MongoDB and can be used for migration | Sharded clusters and non-sharded replica sets | Yes | Yes | 
-| [Physical](physical.md) <br><small>GA</small> |  2.0.0  | - Full restore of a very large (e.g. Terabytes of data) dataset to a specific point in time with guaranteed data consistency <br> - Faster restores compared to logical ones | Sharded clusters and non-sharded replica sets | Yes (starting with 4.2.15-16, 4.4.6-8 and higher, 5.0.x, 6.0.x and higher) | No | 
-| [Selective](selective-backup.md) <br><small>GA</small> | 2.5.0  | Restore of the desired subset of data without disrupting the operations of your whole cluster| Sharded clusters starting with version 2.0.3. Sharded collections starting with version 2.1.0. | Yes | Yes | 
-| [Incremental](incremental-backup.md) <br><small>GA</small> | 2.1.0 (For PSMDB versions 4.2.24-24, 4.4.18-18, 5.0.2-1, 6.0.2-1 and higher) | Save on disk space for large backups where the data needs to be frequently backed up | Sharded clusters and non-sharded replica sets | Yes  | No |  
-| [Point-in-time recovery](point-in-time-recovery.md) <br><small>GA</small> | 1.3.0 (logical) <br> 2.0.0 (physical manually) <br> 2.2.0 (physical automated)  | Full restore of a database to a specific point in time with guaranteed data consistency | Sharded clusters and non-sharded replica sets | Yes | Yes* (logical only) |
-| [Snapshot-based](snapshots.md) <br><small>GA</small> | 2.6.0 | Restore of a very  large data set (e.g. Terabytes of data) with almost immediate access to data. A drawback is the process is not fully automated | Sharded clusters and non-sharded replica sets | Yes | No | 
-
+| [逻辑备份](logical.md) <br><small>GA</small>|  1.0.0 | - 选择性恢复集群中的特定数据库或集合（从版本 2.0.0 开始） <br> - 对 MongoDB 的主要/次要版本更改具有弹性，可用于迁移 | 分片集群和非分片副本集 | 是 | 是 | 
+| [物理备份](physical.md) <br><small>GA</small> |  2.0.0  | - 将非常大的数据集（例如 TB 级数据）完全恢复到特定时间点，保证数据一致性 <br> - 与逻辑备份相比恢复速度更快 | 分片集群和非分片副本集 | 是（从 4.2.15-16、4.4.6-8 及更高版本、5.0.x、6.0.x 及更高版本开始） | 否 | 
+| [选择性备份](selective-backup.md) <br><small>GA</small> | 2.5.0  | 恢复所需的数据子集，而不中断整个集群的操作| 从版本 2.0.3 开始的分片集群。从版本 2.1.0 开始的分片集合。 | 是 | 是 | 
+| [增量备份](incremental-backup.md) <br><small>GA</small> | 2.1.0（适用于 PSMDB 版本 4.2.24-24、4.4.18-18、5.0.2-1、6.0.2-1 及更高版本） | 为需要频繁备份的大型备份节省磁盘空间 | 分片集群和非分片副本集 | 是  | 否 |  
+| [时间点恢复](point-in-time-recovery.md) <br><small>GA</small> | 1.3.0（逻辑） <br> 2.0.0（物理手动） <br> 2.2.0（物理自动）  | 将数据库完全恢复到特定时间点，保证数据一致性 | 分片集群和非分片副本集 | 是 | 是*（仅逻辑） |
+| [基于快照的备份](snapshots.md) <br><small>GA</small> | 2.6.0 | 恢复非常大的数据集（例如 TB 级数据），几乎可以立即访问数据。缺点是过程不完全自动化 | 分片集群和非分片副本集 | 是 | 否 | 
 

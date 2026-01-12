@@ -1,27 +1,27 @@
-# Percona Backup for MongoDB diagnostics tools
+# Percona Backup for MongoDB 诊断工具
 
-Percona Backup for MongoDB provides diagnostics tools to operate data backups.
+Percona Backup for MongoDB 提供诊断工具来操作数据备份。
 
 ## pbm-speed-test
 
-**pbm-speed-test** allows field-testing compression and backup upload speed of logical backups. You can use it:
+**pbm-speed-test** 允许现场测试逻辑备份的压缩和备份上传速度。您可以使用它：
 
-* To check performance before starting a backup
+* 在启动备份之前检查性能
 
-* To find out what slows down the running backup
+* 找出什么减慢了正在运行的备份
 
-By default, **pbm-speed-test** operates with fake semi random data documents. To
-run **pbm-speed-test** on a real collection, provide a valid MongoDB connection URI string for the `--mongodb-uri` flag.
+默认情况下，**pbm-speed-test** 使用假的半随机数据文档进行操作。要
+在真实集合上运行 **pbm-speed-test**，请为 `--mongodb-uri` 标志提供有效的 MongoDB 连接 URI 字符串。
 
-Run **pbm-speed-test** for the full set of available commands.
+运行 **pbm-speed-test** 以获取可用命令的完整集合。
 
-### Compression test
+### 压缩测试
 
 ```bash
 pbm-speed-test compression --compression=s2 --size-gb 10
 ```
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.bash .no-copy}
     Test started ....
@@ -29,20 +29,20 @@ pbm-speed-test compression --compression=s2 --size-gb 10
     Avg upload rate = 1217.13MB/s.
     ```
 
-**pbm-speed-test compression** uses the compression library from the config
-file and sends a fake semi random data document (1 GB by default) to the
-black hole storage. (Use the `pbm config` command to change the compression library).
+**pbm-speed-test compression** 使用配置文件中的压缩库
+并将假的半随机数据文档（默认 1 GB）发送到
+黑洞存储。（使用 `pbm config` 命令更改压缩库）。
 
-To test compression on a real collection, pass the
-`--sample-collection` flag with the `<my_db.my_collection>` value.
+要在真实集合上测试压缩，传递
+`--sample-collection` 标志，值为 `<my_db.my_collection>`。
 
-Run `pbm-speed-test compression --help` for the full set of supported flags:
+运行 `pbm-speed-test compression --help` 以获取支持标志的完整集合：
 
 ```bash
 pbm-speed-test compression --help
 ```
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     usage: pbm-speed-test compression
@@ -62,13 +62,13 @@ pbm-speed-test compression --help
                                      Compression level (specific to the compression type)
                                      <none>/<gzip>/<snappy>/<lz4>/<s2>/<pgzip>/<zstd>
 
-### Upload speed test
+### 上传速度测试
 
 ```bash
 pbm-speed-test storage --compression=s2
 ```
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```
     Test started
@@ -76,20 +76,20 @@ pbm-speed-test storage --compression=s2
     Avg upload rate = 1744.43MB/s.
     ```
 
-`pbm-speed-test storage` sends the semi random data (1 GB by default) to the
-remote storage defined in the config file. Pass the `--size-gb` flag to change the
-data size.
+`pbm-speed-test storage` 将半随机数据（默认 1 GB）发送到
+配置文件中定义的远程存储。传递 `--size-gb` 标志以更改
+数据大小。
 
-To run the test with the real collection’s data instead of the semi random data,
-pass the `--sample-collection` flag with the `<my_db.my_collection>` value.
+要使用真实集合的数据而不是半随机数据运行测试，
+传递 `--sample-collection` 标志，值为 `<my_db.my_collection>`。
 
-Run `pbm-speed-test storage --help` for the full set of available flags:
+运行 `pbm-speed-test storage --help` 以获取可用标志的完整集合：
 
 ```bash
 pbm-speed-test storage --help
 ```
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     usage: pbm-speed-test storage
@@ -98,12 +98,3 @@ pbm-speed-test storage --help
 
     Flags:
           --help                     Show context-sensitive help (also try --help-long and --help-man).
-          --mongodb-uri=MONGODB-URI  MongoDB connection string
-      -c, --sample-collection=SAMPLE-COLLECTION
-                                     Set collection as the data source
-      -s, --size-gb=SIZE-GB          Set data size in GB. Default 1
-          --compression=s2           Compression type <none>/<gzip>/<snappy>/<lz4>/<s2>/<pgzip>/<zstd>
-          --compression-level=COMPRESSION-LEVEL
-                                    Compression level (specific to the compression type)
-
-

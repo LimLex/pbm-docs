@@ -1,111 +1,111 @@
-# Restore from a physical backup
+# 从物理备份恢复
 
 --8<-- "restore-intro.md"
 
-## Considerations
+## 注意事项
 
-1. Disable point-in-time recovery. A restore and point-in-time recovery oplog slicing are incompatible operations and cannot be run simultaneously. 
+1. 禁用时间点恢复。恢复和时间点恢复 oplog 切片是不兼容的操作，不能同时运行。 
 
     ```bash
     pbm config --set pitr.enabled=false
     ```
 
-2. The Percona Server for MongoDB version for both backup and restore data must be within the same major release.
-3. Make sure all nodes in the cluster are healthy (i.e. report either PRIMARY or SECONDARY). Each `pbm-agent` needs to be able to connect to its local node and run queries in order to perform the restore.
-4. For PBM versions before 2.1.0, physical restores are not supported for deployments with arbiter nodes.
+2. 备份和恢复数据的 Percona Server for MongoDB 版本必须在同一主要版本内。
+3. 确保集群中的所有节点都健康（即报告 PRIMARY 或 SECONDARY）。每个 `pbm-agent` 需要能够连接到其本地节点并运行查询以执行恢复。
+4. 对于 PBM 2.1.0 之前的版本，不支持具有仲裁节点的部署的物理恢复。
 
-## Before you start
+## 开始之前
 
-1. Shut down all `mongos` nodes as the database won't be available while the restore is in progress. 
-2. Shut down all `pmm-agent` and other clients that can do the write operations to the database. This is required to ensure data consistency after the restore.
-3. Stop the arbiter nodes manually since there's no `pbm-agent` on these nodes to do that automatically.
-4. Check that the `systemctl` restart policy for the `pbm-agent.service` and `mongod.service` processes is not set to `always` or `on-success`:
+1. 关闭所有 `mongos` 节点，因为恢复进行时数据库将不可用。 
+2. 关闭所有 `pmm-agent` 和其他可以对数据库执行写入操作的客户端。这是确保恢复后数据一致性所必需的。
+3. 手动停止仲裁节点，因为这些节点上没有 `pbm-agent` 来自动执行此操作。
+4. 检查 `pbm-agent.service` 和 `mongod.service` 进程的 `systemctl` 重启策略未设置为 `always` 或 `on-success`：
 
     ```bash
     sudo systemctl show mongod.service | grep Restart
     sudo systemctl show pbm-agent.service | grep Restart
     ```
 
-    ??? example "Sample output"
+    ??? example "示例输出"
 
         ```{.text .no-copy}
         Restart=no
         RestartUSec=100ms
         ```
     
-    During physical restores, the database must not be automatically restarted as this is controlled by the `pbm-agent`.
+    在物理恢复期间，数据库不得自动重启，因为这由 `pbm-agent` 控制。
    
-## Restore a database
+## 恢复数据库
 
-1. List the backups 
+1. 列出备份 
 
     ```bash
     pbm list
     ```
 
-2. Make a restore
+2. 进行恢复
 
     ```bash
     pbm restore <backup_name>
     ```
 
-    During the physical restore, `pbm-agent` processes stop the `mongod` nodes, clean up the data directory and copy the data from the storage onto every node. During this process, the database is restarted several times. 
+    在物理恢复期间，`pbm-agent` 进程停止 `mongod` 节点，清理数据目录，并将数据从存储复制到每个节点。在此过程中，数据库会重启几次。 
 
-    You can [track the restore progress](restore-progress.md) using the `pbm describe-restore` command. Don't run any other commands since they may interrupt the restore flow and cause the issues with the database.
+    您可以使用 `pbm describe-restore` 命令[跟踪恢复进度](restore-progress.md)。不要运行任何其他命令，因为它们可能会中断恢复流程并导致数据库问题。
 
-    A restore has the `Done` status when it succeeded on all nodes. If it failed on some nodes, it has the `partlyDone` status but you can still start the cluster. The failed nodes will receive the data via the initial sync. For either status, proceed with the [post-restore steps](#post-restore-steps). Learn more about partially done restores in the [Partially done physical restores](../troubleshoot/restore-partial.md) chapter. 
+    当恢复在所有节点上成功时，恢复状态为 `Done`。如果它在某些节点上失败，状态为 `partlyDone`，但您仍然可以启动集群。失败的节点将通过初始同步接收数据。对于任一状态，请继续执行[恢复后步骤](#post-restore-steps)。在[部分完成的物理恢复](../troubleshoot/restore-partial.md) 章节中了解有关部分完成恢复的更多信息。 
 
-### Post-restore steps
+### 恢复后步骤
 
-After the restore is complete, do the following:
+恢复完成后，执行以下操作：
 
-1. Remove the contents of the datadir on any arbiter nodes
-2. Restart all `mongod` nodes
+1. 删除任何仲裁节点上数据目录的内容
+2. 重启所有 `mongod` 节点
 
     !!! note
 
-        You may see the following message in the `mongod` logs after the cluster restart:
+        集群重启后，您可能会在 `mongod` 日志中看到以下消息：
 
         ```{.text .no-copy}
         "s":"I",  "c":"CONTROL",  "id":20712,   "ctx":"LogicalSessionCacheReap","msg":"Sessions collection is not set up; waiting until next sessions reap interval","attr":{"error":"NamespaceNotFound: config.system.sessions does not exist"}}}}
         ```
 
-        This is expected behavior of periodic checks upon the database start. During the restore, the `config.system.sessions` collection is dropped but Percona Server for MongoDB recreates it eventually. It is a normal procedure. No action is required from your end.
+        这是数据库启动时定期检查的预期行为。在恢复期间，`config.system.sessions` 集合被删除，但 Percona Server for MongoDB 最终会重新创建它。这是正常过程。您无需执行任何操作。
 
-3. Restart all `pbm-agents`
+3. 重启所有 `pbm-agents`
 
-4. Run the following command to resync the backup list with the storage:
+4. 运行以下命令以与存储重新同步备份列表：
 
     ```bash
     pbm config --force-resync -w
     ``` 
 
-5. Start the balancer and start `mongos` nodes.
+5. 启动平衡器并启动 `mongos` 节点。
 
-6. We recommend to make a fresh backup to serve as the new base for future restores.
-7. [Enable point-in-time recovery](../features/point-in-time-recovery.md#enable-point-in-time-recovery) if required.
+6. 我们建议创建新备份作为未来恢复的新基础。
+7. 如果需要，[启用时间点恢复](../features/point-in-time-recovery.md#enable-point-in-time-recovery)。
      
 
-## Define a `mongod` binary location
+## 定义 `mongod` 二进制文件位置
 
-!!! admonition "Version added: [2.0.4](../release-notes/2.0.4.md)"
+!!! admonition "版本添加：[2.0.4](../release-notes/2.0.4.md)"
 
-During physical restores, Percona Backup for MongoDB performs several restarts of the database. By default, it uses the location of the `mongod` binaries from the `$PATH` variable to access the database. If you have defined the custom path to the `mongod` binaries, make Percona Backup for MongoDB aware of it: 
+在物理恢复期间，Percona Backup for MongoDB 会多次重启数据库。默认情况下，它使用 `$PATH` 变量中 `mongod` 二进制文件的位置来访问数据库。如果您定义了 `mongod` 二进制文件的自定义路径，请让 Percona Backup for MongoDB 知道它： 
 
-=== ":octicons-file-code-24: Configuration file"
+=== ":octicons-file-code-24: 配置文件"
 
     ```yaml
     restore:
         mongodLocation: /path/to/mongod
     ```
 
-=== ":material-console: Command line"
+=== ":material-console: 命令行"
 
     ```bash
     pbm config --set restore.mongodLocation=/path/to/mongod/
     ```
 
-If you have different paths to `mongod` binaries on every node of your cluster / replica set, use the `mongodLocationMap` option to specify your custom paths for each node.
+如果您在集群/副本集的每个节点上有不同的 `mongod` 二进制文件路径，请使用 `mongodLocationMap` 选项为每个节点指定您的自定义路径。
 
 ```yaml
 restore:
@@ -114,19 +114,19 @@ restore:
        "node03:27017": /another/path/to/mongod
 ```
 
-When running in Docker, include Percona Backup for MongoDB files together with your MongoDB binaries. See [Run Percona Backup for MongoDB in a Docker container](https://docs.percona.com/percona-backup-mongodb/install/docker.html) for more information.
+在 Docker 中运行时，将 Percona Backup for MongoDB 文件与 MongoDB 二进制文件一起包含。有关更多信息，请参阅[在 Docker 容器中运行 Percona Backup for MongoDB](https://docs.percona.com/percona-backup-mongodb/install/docker.html)。
 
-### Parallel data download
+### 并行数据下载
 
-!!! admonition "Version added: [2.1.0](../release-notes/2.1.0.md)"
+!!! admonition "版本添加：[2.1.0](../release-notes/2.1.0.md)"
 
-Percona Backup for MongoDB downloads data chunks from the S3 storage concurrently during physical restore. Read more about benchmarking results in the [Speeding up MongoDB restores in PBM](https://www.percona.com/blog/speeding-up-database-restores-in-pbm) blog post by *Andrew Pogrebnoi*.
+Percona Backup for MongoDB 在物理恢复期间并发从 S3 存储下载数据块。在 *Andrew Pogrebnoi* 的 [在 PBM 中加速 MongoDB 恢复](https://www.percona.com/blog/speeding-up-database-restores-in-pbm) 博客文章中了解更多关于基准测试结果的信息。
 
-Here's how it works:
+工作原理如下：
 
-During the physical restore, Percona Backup for MongoDB starts the workers. The number of workers equals to the number of CPU cores by default. Each worker has a memory buffer allocated for it. The buffer is split into spans for the size of the data chunk. The worker acquires the span to download a data chunk and stores it into the buffer. When the buffer is full, the worker waits for the free span to continue the download.   
+在物理恢复期间，Percona Backup for MongoDB 启动工作线程。默认情况下，工作线程数量等于 CPU 核心数。每个工作线程都分配了一个内存缓冲区。缓冲区被分割为数据块大小的跨度。工作线程获取跨度以下载数据块并将其存储到缓冲区中。当缓冲区已满时，工作线程等待空闲跨度以继续下载。   
 
-You can fine-tune the parallel download depending on your hardware resources and database load. Edit the PBM configuration file and specify the following settings:
+您可以根据硬件资源和数据库负载微调并行下载。编辑 PBM 配置文件并指定以下设置：
 
 ```yaml
 restore:
@@ -135,20 +135,21 @@ restore:
    downloadChunkMb: 32
 ```
 
-* `numDownloadWorkers` - the number of workers to download data from the storage. By default, it equals to the number of CPU cores
-* `maxDownloadBufferMb` - the maximum size of memory buffer to store the downloaded data chunks for decompression and ordering. It is calculated as `numDownloadWorkers * downloadChunkMb * 16`
-* `downloadChunkMb` is the size of the data chunk to download (by default, 32 MB)
+* `numDownloadWorkers` - 从存储下载数据的工作线程数。默认情况下，它等于 CPU 核心数
+* `maxDownloadBufferMb` - 用于存储下载的数据块以进行解压缩和排序的内存缓冲区的最大大小。计算为 `numDownloadWorkers * downloadChunkMb * 16`
+* `downloadChunkMb` 是要下载的数据块的大小（默认情况下，32 MB）
 
 
-## Next steps
+## 下一步
 
-[Point-in-time recovery](../usage/pitr-physical.md){.md-button}
+[时间点恢复](../usage/pitr-physical.md){.md-button}
 
-## Useful links 
+## 有用的链接 
 
-* [View restore progress](../usage/restore-progress.md)
-* [Restore into a new environment](../features/restore-new-env.md)
-* [Restore into a cluster under a different name](../features/restore-remapping.md)
+* [查看恢复进度](../usage/restore-progress.md)
+* [恢复到新环境](../features/restore-new-env.md)
+* [恢复到不同名称的集群](../features/restore-remapping.md)
+
 
 
 

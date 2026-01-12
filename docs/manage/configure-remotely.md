@@ -1,36 +1,36 @@
-# Percona Backup for MongoDB configuration via pipelines
+# 通过管道配置 Percona Backup for MongoDB
 
-!!! admonition "Version added: 2.0.1"
+!!! admonition "版本添加：2.0.1"
 
-To apply or update the configuration, Percona Backup for MongoDB reads the configuration file on the filesystem. When you run PBM remotely (in a cloud as Docker containers or pods in Kubernetes), you must upload the configuration file to the remote host's filesystem every time you update it.  
+要应用或更新配置，Percona Backup for MongoDB 会读取文件系统上的配置文件。当您远程运行 PBM（在云中作为 Docker 容器或 Kubernetes 中的 pod）时，每次更新配置文件时都必须将其上传到远程主机的文件系统。  
 
-To simplify the configuration management, you can manage the configuration file locally and use the UNIX pipeline to pass the file's contents to Percona Backup for MongoDB on a remote host/running in a container. 
+为了简化配置管理，您可以在本地管理配置文件，并使用 UNIX 管道将文件内容传递给远程主机/在容器中运行的 Percona Backup for MongoDB。 
 
-Here’s how to do it:
+操作方法如下：
 
-1. Create/update the configuration file (for example, `/etc/pbm_config.yaml`)
-2. Create an environment variable for the path to the configuration file
+1. 创建/更新配置文件（例如，`/etc/pbm_config.yaml`）
+2. 为配置文件路径创建环境变量
 
     ```bash
     export CONFIG_PATH="/etc/pbm_config.yaml"
     ```
 
-3. Pass the configuration file contents to Percona Backup for MongoDB. For example, if you run Percona Backup for MongoDB in Docker, use one of the following commands:
+3. 将配置文件内容传递给 Percona Backup for MongoDB。例如，如果您在 Docker 中运行 Percona Backup for MongoDB，请使用以下命令之一：
    
-    * Connect to the existing container and pass the configuration:
+    * 连接到现有容器并传递配置：
 
         ```bash
         cat "$CONFIG_PATH" | docker compose exec -T $SERVICE_NAME pbm config --file="-"
         ```
 
-        Replace the `$SERVICE_NAME` with your [service name](https://docs.docker.com/compose/compose-file/#services-top-level-element).
+        将 `$SERVICE_NAME` 替换为您的[服务名称](https://docs.docker.com/compose/compose-file/#services-top-level-element)。
 
-    * Create a new container to pass the configuration and exit: 
+    * 创建新容器以传递配置并退出： 
 
         ```bash
         cat "$CONFIG_PATH" | docker run -i --env PBM_MONGODB_URI="mongodb://<PBM_USER>:<PBM_USER_PASSWORD>@<HOST>:<PORT>" --network=$NET_ID $CONTAINER_ID pbm config --file="-"
         ```
 
-        Specify the valid PBM_MONGODB_URI connection string, the ID of the network the container will connect to and the container ID.
+        指定有效的 PBM_MONGODB_URI 连接字符串、容器将连接到的网络 ID 和容器 ID。
 
-As a result, your DBAs spend less time on administering Percona Backup for MongoDB and can focus on other activities instead.
+因此，您的 DBA 花费在管理 Percona Backup for MongoDB 上的时间更少，可以专注于其他活动。

@@ -1,16 +1,16 @@
-# Configure remote backup storage
+# 配置远程备份存储
 
-The easiest way to provide remote backup storage configuration is to specify it in a YAML config file and upload this file to Percona Backup for MongoDB using `pbm` CLI.
+提供远程备份存储配置的最简单方法是在 YAML 配置文件中指定它，然后使用 `pbm` CLI 将此文件上传到 Percona Backup for MongoDB。
 
-The storage configuration itself is out of scope of the present document. We assume that you have configured one of the supported remote backup storages and provisioned access keys with the proper permissions for PBM. See [Remote Backup Storage](../details/storage-configuration.md) for more details.
+存储配置本身不在本文档的范围内。我们假设您已经配置了支持的远程备份存储之一，并为 PBM 提供了具有适当权限的访问密钥。有关更多详细信息，请参阅[远程备份存储](../details/storage-configuration.md)。
 
-## Considerations
+## 注意事项
 
-Percona Backup for MongoDB needs its own dedicated S3 bucket exclusively for backup-related files. Ensure that this bucket is created and managed solely by PBM.
+Percona Backup for MongoDB 需要自己专用的 S3 存储桶，专门用于备份相关文件。确保此存储桶仅由 PBM 创建和管理。
 
-## Procedure {.power-number}
+## 步骤 {.power-number}
 
-1. Create a config file (e.g. `pbm_config.yaml`). You can use the [template configuration file :octicons-link-external-16:](https://github.com/percona/percona-backup-mongodb/blob/v{{release}}/packaging/conf/pbm-conf-reference.yml) and modify it as needed.
+1. 创建配置文件（例如 `pbm_config.yaml`）。您可以使用[模板配置文件 :octicons-link-external-16:](https://github.com/percona/percona-backup-mongodb/blob/v{{release}}/packaging/conf/pbm-conf-reference.yml) 并根据需要进行修改。
 
     === ":material-aws: Amazon AWS"    
 
@@ -103,16 +103,16 @@ Percona Backup for MongoDB needs its own dedicated S3 bucket exclusively for bac
             path: /data/local_backups
         ```    
 
-    Navigate to every storage page for a detailed example configuration file.
+    导航到每个存储页面以获取详细的示例配置文件。
 
-3. Apply the config file to PBM
+3. 将配置文件应用到 PBM
 
     ```bash
     pbm config --file pbm_config.yaml
     ```
 
-To learn more about Percona Backup for MongoDB configuration, see [Percona Backup for MongoDB configuration in a cluster (or non-sharded replica set)](../reference/config.md).
+要了解有关 Percona Backup for MongoDB 配置的更多信息，请参阅[集群（或非分片副本集）中的 Percona Backup for MongoDB 配置](../reference/config.md)。
 
-## Next steps
+## 下一步
 
-[Start `pbm-agent` :material-arrow-right:](start-pbm-agent.md){.md-button}
+[启动 `pbm-agent` :material-arrow-right:](start-pbm-agent.md){.md-button}

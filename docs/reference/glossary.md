@@ -1,135 +1,135 @@
-# Glossary
+# 术语表
 
 ## ACID
      
-Set of properties that guarantee database transactions are processed reliably. Stands for [`Atomicity`](#atomicity), [`Consistency`](#consistency), [`Isolation`](#isolation), [`Durability`](#durability).
+保证数据库事务可靠处理的一组属性。代表 [`原子性`](#atomicity)、[`一致性`](#consistency)、[`隔离性`](#isolation)、[`持久性`](#durability)。
 
 ## Amazon S3
 
-Amazon S3 (Simple Storage Service) is an object storage service provided through a web service interface offered by Amazon Web Services.
+Amazon S3（Simple Storage Service）是通过 Amazon Web Services 提供的 Web 服务接口提供的对象存储服务。
 
-## Atomicity
+## 原子性
 
-Atomicity means that database operations are applied following an "all or nothing" rule. A transaction is either fully applied or not at all.
+原子性意味着数据库操作遵循"全有或全无"规则。事务要么完全应用，要么根本不应用。
 
 ## Blob
     
-A blob stands for Binary Large Object, which includes objects such as images and multimedia files. In other words these are various data files that you store in Microsoft's data storage platform. Blobs are organized in [containers](#container) which are kept in Azure Blob storage under your storage account.
+Blob 代表二进制大对象，包括图像和多媒体文件等对象。换句话说，这些是您存储在 Microsoft 数据存储平台中的各种数据文件。Blob 组织在[容器](#container) 中，这些容器保存在您的存储账户下的 Azure Blob 存储中。
 
 ## Bucket
 
-A bucket is a container on the s3 remote storage that stores backups.
+存储桶是 s3 远程存储上的容器，用于存储备份。
 
 ## Collection
      
-A collection is the way data is organized in MongoDB. It is analogous to a table in relational databases.
+集合是 MongoDB 中组织数据的方式。它类似于关系数据库中的表。
 
-## Completion time
+## 完成时间
 
-Starting with version 2.0.0, the completion time is renamed "restore_to_time"
+从版本 2.0.0 开始，完成时间重命名为 "restore_to_time"
 
-The completion time is the time to which the sharded cluster / non-shared replica set will be returned to after the restore.  It is reflected in the "complete" section of the ``pbm list`` / ``pbm status`` command outputs.
+完成时间是分片集群/非共享副本集在恢复后将返回到的时间。它反映在 ``pbm list`` / ``pbm status`` 命令输出的 "complete" 部分中。
 
-In `logical` backups, the completion time almost coincides with the backup finish time. To define the completion time, Percona Backup for MongoDB waits for the backup snapshot to finish on all cluster nodes. Then it captures the oplog from the backup start time up to that time. 
+在 `logical` 备份中，完成时间几乎与备份完成时间一致。为了定义完成时间，Percona Backup for MongoDB 等待备份快照在所有集群节点上完成。然后它捕获从备份开始时间到该时间的 oplog。 
 
-In `physical` backups, the completion time is only a few seconds after the backup start time. By holding the ``$backupCursor`` open, Percona Backup for MongoDB guarantees that the checkpoint data won't change during the backup. In such a way Percona Backup for MongoDB can define the completion time ahead.
+在 `physical` 备份中，完成时间仅在备份开始时间后几秒。通过保持 ``$backupCursor`` 打开，Percona Backup for MongoDB 保证检查点数据在备份期间不会更改。通过这种方式，Percona Backup for MongoDB 可以提前定义完成时间。
 
-## Consistency
+## 一致性
 
-In the context of backup and restore, consistency means that the data restored will be consistent in a given point in time. Partial or incomplete writes to disk of atomic operations (for example, to table and index data structures separately) won't be served to the client after the restore. The same applies to multi-document transactions that started but didn't complete by the time the backup was finished.
+在备份和恢复的上下文中，一致性意味着恢复的数据将在给定时间点保持一致。原子操作的部分或不完整写入磁盘（例如，分别写入表和索引数据结构）在恢复后不会提供给客户端。这同样适用于已开始但在备份完成时未完成的多文档事务。
 
 ## Container 
    
-A container is like a directory in Azure Blob storage that contains a set of [blobs](#blob).
+容器就像 Azure Blob 存储中包含一组 [blob](#blob) 的目录。
 
-## Durability
+## 持久性
    
-Once a transaction is committed, it will remain so.
+一旦事务被提交，它将保持如此。
 
-## EBS-snapshot
+## EBS 快照
 
-An EBS (Amazon Elastic Block Storage) snapshot is the point-in-time copy of your data, and can be used to enable disaster recovery, migrate data across regions and accounts, and improve backup compliance.
+EBS（Amazon Elastic Block Storage）快照是数据的时间点副本，可用于启用灾难恢复、跨区域和账户迁移数据，以及改善备份合规性。
 
 ## Endpoint
 
-The network address (URL or IP) where an S3-compatible storage service (like MinIO) is accessible.  
+S3 兼容存储服务（如 MinIO）可访问的网络地址（URL 或 IP）。  
 
 ## GCP
    
-GCP (Google Cloud Platform) is the set of services, including storage service, that runs on Google Cloud infrastructure.
+GCP（Google Cloud Platform）是在 Google Cloud 基础设施上运行的服务集合，包括存储服务。
 
-## Isolation
+## 隔离性
 
-The Isolation requirement means that no transaction can interfere with another.
+隔离性要求意味着没有事务可以干扰另一个事务。
 
 ## Jenkins
      
-[Jenkins](http://www.jenkins-ci.org) is a continuous integration system that we use to help ensure the continued quality of the software we produce. It helps us achieve the aims of:
+[Jenkins](http://www.jenkins-ci.org) 是一个持续集成系统，我们使用它来帮助确保我们生产的软件的持续质量。它帮助我们实现以下目标：
 
-* No failed tests in trunk on any platform
-* Aid developers in ensuring merge requests build and test on all platforms,
-* No known performance regressions (without a damn good explanation).
+* 在任何平台上主干中没有失败的测试
+* 帮助开发人员确保合并请求在所有平台上构建和测试，
+* 没有已知的性能回归（没有很好的解释）。
 
 ## MinIO
 
-MinIO is a cloud storage server compatible with [Amazon S3](#amazon-s3), released under Apache License v2.
+MinIO 是与 [Amazon S3](#amazon-s3) 兼容的云存储服务器，在 Apache License v2 下发布。
 
 ## Oplog
   
-Oplog (operations log) is a fixed-size collection that keeps a rolling record of all operations that modify data in the database. 
+Oplog（操作日志）是一个固定大小的集合，它保持修改数据库中数据的所有操作的滚动记录。 
 
-## Oplog slice
+## Oplog 切片
 
-A compressed bundle of [oplog](#oplog) entries stored in the Oplog Store database in MongoDB. The oplog size captures an approximately 10-minute frame. For a snapshot, the oplog size is defined by the time that the slowest replica set member requires to perform mongodump.    
+存储在 MongoDB 的 Oplog Store 数据库中的 [oplog](#oplog) 条目的压缩包。oplog 大小捕获大约 10 分钟的时间范围。对于快照，oplog 大小由最慢的副本集成员执行 mongodump 所需的时间定义。    
 
 ## OpID
 
-A unique identifier of an operation such as backup, restore, resync. When a pbm-agent starts processing an operation, it acquires a lock and an opID. This prevents processing the same operation twice (for example, if there are network issues in distributed systems). Using opID as a log filter allows viewing logs for an operation in progress.
+操作（如备份、恢复、重新同步）的唯一标识符。当 pbm-agent 开始处理操作时，它获取锁和 opID。这防止处理同一操作两次（例如，如果分布式系统中有网络问题）。使用 opID 作为日志过滤器允许查看正在进行的操作的日志。
 
-## Path-style access to the storage
+## 存储的路径样式访问
 
-A method of constructing S3 URLs where the bucket name appears in the path portion of the URL. The URL format is `<https://s3.example.com/bucket-name/object-key>`. Preferred for S3-compatible storage systems like MinIO, especially in environments without wildcard DNS or custom SSL certificates.
+构造 S3 URL 的方法，其中存储桶名称出现在 URL 的路径部分。URL 格式为 `<https://s3.example.com/bucket-name/object-key>`。对于像 MinIO 这样的 S3 兼容存储系统，这是首选，特别是在没有通配符 DNS 或自定义 SSL 证书的环境中。
 
 ## `pbm-agent`
 
-A `pbm-agent` is a PBM process running on the mongod node for backup and restore operations. A pbm-agent instance is required for every mongod node (including replica set secondary members and config server replica set nodes).   
+`pbm-agent` 是在 mongod 节点上运行的用于备份和恢复操作的 PBM 进程。每个 mongod 节点（包括副本集从成员和配置服务器副本集节点）都需要一个 pbm-agent 实例。   
 
 ## pbm CLI
      
-Command-line interface for controlling the backup system. PBM CLI can connect to several clusters so that a user can manage backups on many clusters.
+用于控制备份系统的命令行界面。PBM CLI 可以连接到多个集群，以便用户可以管理许多集群上的备份。
 
-## PBM Control collections
+## PBM 控制集合
    
-PBM Control collections are [collections](#collection) with config, authentication data and backup states. They are stored in the admin db  in the cluster or non-sharded replica set and serve as the communication channel between [`pbm-agent`](#pbm-agent) and [`pbm CLI`](#pbm-cli). `pbm CLI` creates a new `pbmCmd` document for a new operation. `pbm-agents` monitor it and update as they process the operation.
+PBM 控制集合是包含配置、身份验证数据和备份状态的[集合](#collection)。它们存储在集群或非分片副本集的 admin 数据库中，并作为 [`pbm-agent`](#pbm-agent) 和 [`pbm CLI`](#pbm-cli) 之间的通信通道。`pbm CLI` 为新操作创建新的 `pbmCmd` 文档。`pbm-agents` 监控它并在处理操作时更新。
 
 ## Percona Backup for MongoDB
 
-Percona Backup for MongoDB (PBM) is a low-impact backup solution for MongoDB non-sharded replica sets and clusters. It supports both [Percona Server for MongoDB](#percona-server-for-mongodb) and MongoDB Community Edition. 
+Percona Backup for MongoDB (PBM) 是用于 MongoDB 非分片副本集和集群的低影响备份解决方案。它支持 [Percona Server for MongoDB](#percona-server-for-mongodb) 和 MongoDB Community Edition。 
 
 ## Percona Server for MongoDB 
 
-Percona Server for MongoDB is a drop-in replacement for MongoDB Community Edition with enterprise-grade features.
+Percona Server for MongoDB 是具有企业级功能的 MongoDB Community Edition 的即插即用替代品。
 
-## Point-in-Time Recovery
+## 时间点恢复
      
-Point-in-Time Recovery is restoring the database up to a specific moment in time. The data is restored from the backup snapshot and then events that occurred to the data are replayed from oplog. 
+时间点恢复是将数据库恢复到特定时间点。数据从备份快照恢复，然后从 oplog 重放发生在数据上的事件。 
 
-## Replica set
+## 副本集
    
-A replica set is a group of `mongod` nodes that host the same data set.
+副本集是托管相同数据集的一组 `mongod` 节点。
 
-## S3 compatible storage 
+## S3 兼容存储 
 
-This is the storage that is built on the [S3](#amazon-s3) API.
+这是基于 [S3](#amazon-s3) API 构建的存储。
  
-## Server-side encryption
+## 服务器端加密
    
-Server-side encryption is the encryption of data by the remote storage server as it receives it. The data is encrypted when it is written to S3 bucket and decrypted when you access the data. 
+服务器端加密是远程存储服务器在接收数据时对数据进行加密。数据在写入 S3 存储桶时加密，在您访问数据时解密。 
 
-## Technical preview feature
+## 技术预览功能
 
-Technical preview features are not yet ready for enterprise use and are not included in support via SLA. They are included in this release so that users can provide feedback prior to the full release of the feature in a future GA release (or removal of the feature if it is deemed not useful). This functionality can change (APIs, CLIs, etc.) from tech preview to GA. 
+技术预览功能尚未准备好用于企业使用，也不包含在通过 SLA 的支持中。它们包含在此版本中，以便用户可以在未来 GA 版本中完整发布功能（或如果认为功能无用则删除功能）之前提供反馈。此功能可能会从技术预览到 GA 发生变化（API、CLI 等）。 
 
-## Virtual-hosted-style access
+## 虚拟主机样式访问
 
-A method of constructing S3 URLs where the bucket name is part of the domain name. The URL format is `<https://bucket-name.s3.example.com/object-key>`. Required by AWS S3 in newer regions; enables better routing and performance in large-scale deployments.
+构造 S3 URL 的方法，其中存储桶名称是域名的一部分。URL 格式为 `<https://bucket-name.s3.example.com/object-key>`。在新区域中由 AWS S3 要求；在大规模部署中实现更好的路由和性能。

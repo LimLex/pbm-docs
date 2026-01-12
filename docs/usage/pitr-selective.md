@@ -1,24 +1,24 @@
-# Point-in-time recovery from selected databases and collections
+# 从选定数据库和集合进行时间点恢复
 
 !!! important
 
-    Supported only for replica sets.
-    Available for logical backups.
+    仅支持副本集。
+    适用于逻辑备份。
 
-1. Before you start:
+1. 开始之前：
 
-    1. Read [known limitations for selective backups and restores](../features/known-limitations.md#selective-backups-and-restores).
-    2. Check that you [have made a full backup](backup-selective.md) because it serves as the base for point-in-time recovery. Any selective backup is ignored.
+    1. 阅读[选择性备份和恢复的已知限制](../features/known-limitations.md#selective-backups-and-restores)。
+    2. 检查您是否[已创建完整备份](backup-selective.md)，因为它作为时间点恢复的基础。任何选择性备份都会被忽略。
 
-2. To restore the desired database or a collection to a point in time, run the ``pbm restore`` command as follows:
+2. 要将所需数据库或集合恢复到某个时间点，请按如下方式运行 ``pbm restore`` 命令：
 
     ```bash
     pbm restore --base-snapshot <backup_name> --time <timestamp> \
     --ns <db.collection>
     ```
 
-    You can specify the selective backup as the base snapshot for the Point-in-time restore. In this case, Percona Backup for MongoDB restores only the namespace(s) included in this backup to the specified time.    
+    您可以将选择性备份指定为时间点恢复的基础快照。在这种情况下，Percona Backup for MongoDB 仅将此备份中包含的命名空间（数据库或集合）恢复到指定时间。    
 
-    Alternatively, you can use a full backup snapshot and restore the desired namespaces (databases or collections) up to the specific time from it. Specify them as the comma-separated list for the `pbm restore` command.    
+    或者，您可以使用完整备份快照并从中将所需的命名空间（数据库或集合）恢复到特定时间。将它们指定为 `pbm restore` 命令的逗号分隔列表。    
 
-    When point-in-time recovery is started, Percona Backup for MongoDB uses the provided base snapshot, restores the specified namespace(s) and replays oplog on top of it up to the specified time. If no base snapshot is provided, Percona Backup for MongoDB uses the most recent full backup snapshot.
+    启动时间点恢复时，Percona Backup for MongoDB 使用提供的基础快照，恢复指定的命名空间，并在其上重放 oplog 直到指定时间。如果未提供基础快照，Percona Backup for MongoDB 使用最新的完整备份快照。

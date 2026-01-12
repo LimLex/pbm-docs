@@ -1,18 +1,18 @@
-# Point-in-time restore from logical backups
+# 从逻辑备份进行时间点恢复
 
 --8<-- "pitr-preparation.md"
 
-## Procedure
+## 步骤
 
-Run [`pbm restore`](../reference/pbm-commands.md#pbm-restore) and specify the timestamp from the valid range:    
+运行 [`pbm restore`](../reference/pbm-commands.md#pbm-restore) 并指定有效范围内的时间戳：    
 
 ```bash
 pbm restore --time="2022-12-14T14:27:04"
 ```    
 
-The timestamp you specify for the restore must be within the time ranges in the PITR section of `pbm list` output. Percona Backup for MongoDB automatically selects the most recent backup among logical, physical and incremental in relation to the specified timestamp and uses that as the base for the restore.    
+您为恢复指定的时间戳必须在 `pbm list` 输出的 PITR 部分的时间范围内。Percona Backup for MongoDB 自动选择与指定时间戳相关的逻辑、物理和增量备份中最新的备份，并将其用作恢复的基础。    
 
-To illustrate this behavior, let’s use the following `pbm list` output as the example.     
+为了说明此行为，让我们使用以下 `pbm list` 输出作为示例。     
 
 ```{.text .no-copy}
 $ pbm list    
@@ -29,39 +29,38 @@ PITR <off>:
   2025-03-06T08:18:42 - 2025-03-06T08:33:09
 ```    
 
-For timestamp `2025-03-06T08:10:10`, the backup snapshot `2025-03-06T08:02:44Z [restore_to_time: 2025-03-06T08:03:09]` is used as the base for the restore as it is the most recent one.    
+对于时间戳 `2025-03-06T08:10:10`，备份快照 `2025-03-06T08:02:44Z [restore_to_time: 2025-03-06T08:03:09]` 用作恢复的基础，因为它是最新的。    
 
-If you [select a backup snapshot for the restore with the `–-base-snapshot` option](#select-a-backup-snapshot-for-the-restore), the timestamp for the restore must also be later than the selected backup.    
+如果您[使用 `–-base-snapshot` 选项为恢复选择备份快照](#select-a-backup-snapshot-for-the-restore)，恢复的时间戳也必须晚于所选备份。    
 
-!!! admonition "See also"    
+!!! admonition "另请参阅"    
 
-    [Restore a backup](restore.md)    
+    [恢复备份](restore.md)    
 
-### Post-restore steps    
+### 恢复后步骤    
 
-A restore operation changes the time line of oplog events. Therefore, all oplog slices made after the restore time stamp and before the last backup become invalid. After the restore is complete, do the following:    
+恢复操作会更改 oplog 事件的时间线。因此，在恢复时间戳之后和最后一次备份之前创建的所有 oplog 切片都变得无效。恢复完成后，执行以下操作：    
 
-1. Make a new backup to serve as the starting point for oplog updates:    
+1. 创建新备份作为 oplog 更新的起点：    
 
     ```bash
     pbm backup
     ```    
 
-2. Re-enable point-in-time recovery to resume saving oplog slices:    
+2. 重新启用时间点恢复以恢复保存 oplog 切片：    
 
     ```bash
     pbm config --set pitr.enabled=true
     ```
 
-## Select a backup snapshot for the restore
+## 为恢复选择备份快照
 
-You can recover your database to the specific point in time using any backup snapshot, and not only the most recent one. Run the `pbm restore` command with the `--base-snapshot=<backup_name>` flag where you specify the desired backup snapshot.
+您可以使用任何备份快照（而不仅仅是最新的）将数据库恢复到特定时间点。使用 `--base-snapshot=<backup_name>` 标志运行 `pbm restore` 命令，在其中指定所需的备份快照。
 
-To restore from any backup snapshot, Percona Backup for MongoDB requires continuous oplog. After the backup snapshot is made and point-in-time recovery is re-enabled, it copies the oplog saved with the backup snapshot and creates oplog slices from the end time of the latest slice to the new starting point thus making the oplog continuous.
+要从任何备份快照恢复，Percona Backup for MongoDB 需要连续的 oplog。创建备份快照并重新启用时间点恢复后，它会复制与备份快照一起保存的 oplog，并从最新切片的结束时间到新起点创建 oplog 切片，从而使 oplog 连续。
 
-## Useful links
+## 有用的链接
 
-* [Restore a backup](restore.md)
-* [Replay oplog from arbitrary start time](oplog-replay.md)
-
+* [恢复备份](restore.md)
+* [从任意开始时间重放 oplog](oplog-replay.md)
 

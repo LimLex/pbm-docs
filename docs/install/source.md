@@ -1,49 +1,48 @@
-# Build from source code
+# 从源代码构建
 
 --8<-- "pbm-install-nodes.md"
 
-## Before you start
+## 开始之前
 
-Check the [system requirements](../system-requirements.md) and [supported MongoDB versions](../details/versions.md).
+检查[系统要求](../system-requirements.md) 和[支持的 MongoDB 版本](../details/versions.md)。
 
-## Prerequisites 
+## 先决条件 
 
-To build Percona Backup for MongoDB from source, you need the following:
+要从源代码构建 Percona Backup for MongoDB，您需要以下内容：
 
-* Go 1.19 or above. [Install and set up Go tools :octicons-link-external-16:](https://golang.org/doc/install)
+* Go 1.19 或更高版本。[安装和设置 Go 工具 :octicons-link-external-16:](https://golang.org/doc/install)
 * make
 * git
-* `krb5-devel` for Red Hat Enterprise Linux / CentOS or `libkrb5-dev` for Debian / Ubuntu. This package is required for Kerberos authentication in Percona Server for MongoDB.
+* Red Hat Enterprise Linux / CentOS 的 `krb5-devel` 或 Debian / Ubuntu 的 `libkrb5-dev`。此包是 Percona Server for MongoDB 中 Kerberos 身份验证所必需的。
 
-## Procedure
+## 步骤
 
-Here's how to build Percona Backup for MongoDB:
+以下是构建 Percona Backup for MongoDB 的方法：
 {.power-number}
 
-1. Clone the repository
+1. 克隆仓库
 
     ```bash
     git clone https://github.com/percona/percona-backup-mongodb
     ```
 
-2. Go to the project directory and build it
+2. 转到项目目录并构建它
 
     ```bash
     cd percona-backup-mongodb
     make build
     ```
 
-After **make** completes, you can find `pbm` and `pbm-agent` binaries
-in the `./bin` directory. 
+**make** 完成后，您可以在 `./bin` 目录中找到 `pbm` 和 `pbm-agent` 二进制文件。 
 
-3. Check that Percona Backup for MongoDB has been built correctly and is ready for use. 
+3. 检查 Percona Backup for MongoDB 是否已正确构建并可以使用。 
 
     ```bash
     cd bin
     ./pbm version
     ```
 
-    ??? example "Output"    
+    ??? example "输出"    
 
     ```{.text .no-copy}
     Version:   [pbm version number]
@@ -56,32 +55,32 @@ in the `./bin` directory.
 
     !!! tip    
 
-        Instead of specifying the path to pbm binaries, you can add it to the PATH environment variable:    
+        除了指定 pbm 二进制文件的路径，您还可以将其添加到 PATH 环境变量：    
 
         ```bash
         export PATH=/percona-backup-mongodb/bin:$PATH
         ```
 
-## Post-install steps
+## 安装后步骤
 
-=== ":material-debian: On Debian and Ubuntu"
+=== ":material-debian: 在 Debian 和 Ubuntu 上"
     
-    After the installation, do the following:
+    安装后，执行以下操作：
     {.power-number}
 
-     1. Create the environment file:
+     1. 创建环境文件：
 
          ```bash
          touch /etc/default/pbm-agent
          ```
 
-     2. Create the `pbm-agent.service` systemd unit file.
+     2. 创建 `pbm-agent.service` systemd 单元文件。
 
          ```bash
          sudo vim /lib/systemd/system/pbm-agent.service
          ```
 
-     3. In the `pbm-agent.service` file, specify the following:
+     3. 在 `pbm-agent.service` 文件中，指定以下内容：
 
          ```init
          [Unit]
@@ -102,32 +101,32 @@ in the `./bin` directory.
          
         !!! note
 
-            Make sure that the `ExecStart` directory includes the Percona Backup for MongoDB binaries. Otherwise, copy them from the `./bin` directory of you installation path.
+            确保 `ExecStart` 目录包含 Percona Backup for MongoDB 二进制文件。否则，请从安装路径的 `./bin` 目录复制它们。
 
-     4. Make `systemd` aware of the new service:
+     4. 让 `systemd` 知道新服务：
 
          ```bash
          sudo systemctl daemon-reload
          ```
 
-=== ":material-redhat: On Red Hat Enterprise Linux and derivatives"
+=== ":material-redhat: 在 Red Hat Enterprise Linux 和衍生版本上"
 
-    After the installation, do the following:
+    安装后，执行以下操作：
     {.power-number}
 
-    1. Create the environment file:
+    1. 创建环境文件：
    
         ```bash
         touch /etc/sysconfig/pbm-agent
         ```
 
-    2. Create the `pbm-agent.service` systemd unit file.
+    2. 创建 `pbm-agent.service` systemd 单元文件。
 
         ```bash
         sudo vim /usr/lib/systemd/system/pbm-agent.service
         ```
 
-    3. In the `pbm-agent.service` file, specify the following:
+    3. 在 `pbm-agent.service` 文件中，指定以下内容：
 
          ```init
          [Unit]
@@ -148,14 +147,14 @@ in the `./bin` directory.
          
         !!! note
 
-            Make sure that the `ExecStart` directory includes the Percona Backup for MongoDB binaries. Otherwise, copy them from the `./bin` directory of you installation path.
+            确保 `ExecStart` 目录包含 Percona Backup for MongoDB 二进制文件。否则，请从安装路径的 `./bin` 目录复制它们。
 
-     4. Make `systemd` aware of the new service:
+     4. 让 `systemd` 知道新服务：
 
          ```bash
          sudo systemctl daemon-reload
          ```
 
-## Next steps
+## 下一步
 
-[Initial setup :material-arrow-right:](initial-setup.md){.md-button}
+[初始设置 :material-arrow-right:](initial-setup.md){.md-button}

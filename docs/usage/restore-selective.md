@@ -1,68 +1,68 @@
-# Make a selective restore from a logical backup
+# 从逻辑备份进行选择性恢复
 
 --8<-- "restore-intro.md"
 
-## Before you start
+## 开始之前
 
-You can restore a specific database or a collection either from a full or a selective backup. Read about [known limitations of selective restores](../features/known-limitations.md#selective-backups-and-restores).
+您可以从完整或选择性备份恢复特定数据库或集合。请阅读有关[选择性恢复的已知限制](../features/known-limitations.md#selective-backups-and-restores) 的信息。
 
-## Restore a database
+## 恢复数据库
 
-1. List the backups
+1. 列出备份
 
     ```bash
     pbm list
     ```
     
-2. Run the ``pbm restore`` command in the format:
+2. 以以下格式运行 ``pbm restore`` 命令：
 
     ```bash
     pbm restore <backup_name> --ns <database.collection>
     ```
 
- You can specify several namespaces as a comma-separated list for the `--ns` flag: `<db1.col1>,<db2.*>`. For example, `--ns=customers.payments,invoices.*`.
+ 您可以为 `--ns` 标志指定多个命名空间作为逗号分隔列表：`<db1.col1>,<db2.*>`。例如，`--ns=customers.payments,invoices.*`。
 
-During the restore, Percona Backup for MongoDB retrieves the file for the specified database / collection and restores it.
+在恢复期间，Percona Backup for MongoDB 检索指定数据库/集合的文件并恢复它。
 
-### Restore with users and roles
+### 使用用户和角色恢复
 
-To restore a [custom database with users and roles](../features/selective-backup.md#restore-a-database-with-users-and-roles) from a full backup, add the `--with-users-and-roles` flag to the `pbm restore` command:
+要从完整备份恢复[带有用户和角色的自定义数据库](../features/selective-backup.md#restore-a-database-with-users-and-roles)，请将 `--with-users-and-roles` 标志添加到 `pbm restore` 命令：
 
 ```bash
 pbm restore <backup_name> --ns <database.*> --with-users-and-roles
 ```
 
-### Restore a collection under a different name
+### 以不同名称恢复集合
 
-You can restore a specific collection under a different name alongside the current collection. This is useful when you troubleshoot database issues and need to compare the data in both collections to identify the root of the issue.
+您可以在当前集合旁边以不同名称恢复特定集合。这在您排查数据库问题并需要比较两个集合中的数据以确定问题的根源时很有用。
 
-Note that in version 2.8.0 you can restore a single collection and this collection must be unsharded.
+请注意，在版本 2.8.0 中，您可以恢复单个集合，并且此集合必须是非分片的。
 
-To restore a collection, pass the collection name from the backup for the `--ns-from` flag and the new name for the `--ns-to` flag:
+要恢复集合，请为 `--ns-from` 标志传递备份中的集合名称，为 `--ns-to` 标志传递新名称：
 
 ```bash
 pbm restore <backup_name> --ns-from <database.collection> --ns-to <database.collection_new>
 ```
 
-The new collection has the same data and indexes as the source collection. You must provide a unique name for the collection you restore, otherwise the restore fails.
+新集合具有与源集合相同的数据和索引。您必须为恢复的集合提供唯一名称，否则恢复将失败。
 
-You can restore a collection under a new name up to the specified time. Instead of the backup name, specify the timestamp, the source collection name and the new name as follows:
+您可以以新名称恢复到指定时间。不要使用备份名称，而是按如下方式指定时间戳、源集合名称和新名称：
 
 ```bash
 pbm restore --time=<timestamp> --ns-from <database.collection> --ns-to <database.collection_new>
 ```
 
-## Post-restore steps
+## 恢复后步骤
 
-After the restore is complete, do the following:
+恢复完成后，执行以下操作：
 
-1. Start the balancer and all mongos nodes to reload the sharding metadata.
-2. We recommend to make a fresh backup to serve as the new base for future restores.
+1. 启动平衡器和所有 mongos 节点以重新加载分片元数据。
+2. 我们建议创建新备份作为未来恢复的新基础。
 
-## Next steps
+## 下一步
 
-[Point-in-time recovery](../usage/pitr-selective.md){.md-button}
+[时间点恢复](../usage/pitr-selective.md){.md-button}
 
-## Useful links
+## 有用的链接
 
-* [View restore progress](../usage/restore-progress.md)
+* [查看恢复进度](../usage/restore-progress.md)

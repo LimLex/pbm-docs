@@ -1,37 +1,37 @@
-# `pbm` commands
+# `pbm` 命令
 
-`pbm` CLI is the command line utility to control the backup system. This page describes `pbm` commands available in Percona Backup for MongoDB.
+`pbm` CLI 是用于控制备份系统的命令行实用程序。本页介绍 Percona Backup for MongoDB 中可用的 `pbm` 命令。
 
-For how to get started with Percona Backup for MongoDB, see [Initial setup](../install/initial-setup.md).
+有关如何开始使用 Percona Backup for MongoDB，请参阅[初始设置](../install/initial-setup.md)。
 
 ## pbm backup
 
-Creates a backup snapshot and saves it in the remote backup storage.
+创建备份快照并将其保存在远程备份存储中。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm backup [<flags>]
 ```
 
-For more information about using `pbm backup`, see [Starting a backup](../usage/start-backup.md)
+有关使用 `pbm backup` 的更多信息，请参阅[启动备份](../usage/start-backup.md)
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag           | Description                                           |
 | -------------- | ----------------------------------------------------- |
-| `-t`, `--type` | The type of backup. Supported values: physical, logical (default), incremental, [external](../features/snapshots.md). When not specified, Percona Backup for MongoDB makes a logical backup. |
-| `--base`       | For incremental backups only. Set the backup as the base and start tracking the incremental backup history to calculate and save the difference in data blocks for subsequent incremental backups. |  
-| `--compression`| Create a backup with compression. <br> Supported compression methods: `gzip`, `snappy`, `lz4`, `s2`, `pgzip`, `zstd`. Default: `s2` <br> The `none` value means no compression is done during backup. |
-| `--compression-level` | Configure the compression level from 0 to 10. The default value depends on the compression method used.  |
-| `--num-parallel-collections`| Sets the number of collections to process in parallel during a specific logical backup. When undefined, `pbm-agent` processes the number of parallel collections defined for the `backup.numParallelCollections` configuration parameter. If that is undefined, the default number of collections to process in parallel is the half of the number of logical CPUs. Available starting with version 2.7.0.|
-| `-o`, `--out=text`    | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json` |
-| `--wait`       | Wait for the backup to finish. The flag blocks the shell session.|
-| `--wait-time`  | The time to wait for PBM to report the status of the command execution. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.| 
-| `-l`, `--list-files` | For external backups only. Shows the list of files per node to copy.|
-| `--ns="database.collection"`| Makes a logical backup of the specified namespace - the database and collection(s). To back up all collections in the database, specify the value in the `--ns="database.*"` format. Starting with version 2.8.0, you can pass multiple namespaces as a comma-separated list for the backup. The format is `ns=db1.*,db2.coll2,db3.coll1,db3.collX` .|
+| `-t`, `--type` | 备份类型。支持的值：physical、logical（默认）、incremental、[external](../features/snapshots.md)。未指定时，Percona Backup for MongoDB 创建逻辑备份。 |
+| `--base`       | 仅用于增量备份。将备份设置为基础并开始跟踪增量备份历史，以计算并保存后续增量备份的数据块差异。 |  
+| `--compression`| 使用压缩创建备份。 <br> 支持的压缩方法：`gzip`、`snappy`、`lz4`、`s2`、`pgzip`、`zstd`。默认：`s2` <br> `none` 值表示备份期间不进行压缩。 |
+| `--compression-level` | 配置压缩级别从 0 到 10。默认值取决于使用的压缩方法。  |
+| `--num-parallel-collections`| 设置特定逻辑备份期间并行处理的集合数。未定义时，`pbm-agent` 处理为 `backup.numParallelCollections` 配置参数定义的并行集合数。如果未定义，默认并行处理的集合数是逻辑 CPU 数的一半。从版本 2.7.0 开始可用。|
+| `-o`, `--out=text`    | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json` |
+| `--wait`       | 等待备份完成。该标志会阻塞 shell 会话。|
+| `--wait-time`  | 等待 PBM 报告命令执行状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。| 
+| `-l`, `--list-files` | 仅用于外部备份。显示每个节点要复制的文件列表。|
+| `--ns="database.collection"`| 创建指定命名空间的逻辑备份 - 数据库和集合。要备份数据库中的所有集合，请以 `--ns="database.*"` 格式指定值。从版本 2.8.0 开始，您可以为备份传递多个命名空间作为逗号分隔的列表。格式为 `ns=db1.*,db2.coll2,db3.coll1,db3.collX` 。|
 
-??? "JSON output"
+??? "JSON 输出"
 
     ```json
     {
@@ -42,9 +42,9 @@ The command accepts the following flags:
 
 ## pbm backup-finish
 
-Closes the `backupCursor` and finishes the external backup. Must be run after running `pbm backup -t external`. To learn more, refer to [API for snapshot-based physical backups](../features/snapshots.md).
+关闭 `backupCursor` 并完成外部备份。必须在运行 `pbm backup -t external` 后运行。要了解更多信息，请参阅[基于快照的物理备份 API](../features/snapshots.md)。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm backup-finish [backup-name] 
@@ -52,15 +52,15 @@ pbm backup-finish [backup-name]
 
 ## pbm cancel-backup
 
-Cancels a running backup. The backup is marked as canceled in the backup list.
+取消正在运行的备份。备份在备份列表中标记为已取消。
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                | Description              | 
 | ------------------- | ------------------------ |
-| `-o`, `--out=text`  | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json`         |
+| `-o`, `--out=text`  | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json`         |
 
-??? "JSON output"
+??? "JSON 输出"
 
     ```json
     {
@@ -70,50 +70,50 @@ The command accepts the following flags:
 
 ## pbm cleanup
 
-Deletes outdated backup snapshots and point-in-time recovery oplog slices.
+删除过时的备份快照和时间点恢复 oplog 切片。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm cleanup [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                     | Description               |
 | ------------------------ | ------------------------- |
-| `--older-than=TIMESTAMP` | Deletes backups older than date / time specified in the format:<br> - `%Y-%M-%DT%H:%M:%S` (e.g. 2020-04-20T13:13:20), <br> - `%Y-%M-%D` (e.g. 2020-04-20), <br> - `XXd` (e.g. 30d). Only days are supported|
-| `-w`, `--wait`           | Wait for the cleanup to finish. The flag blocks the shell session|
-| `--wait-time`  | The time to wait for PBM to report the status of the command execution. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.| 
-| `-y`, `--yes`            | Cleans up the data storage without asking for a user's confirmation|
-| `--dry-run`              | Checks for the old data to be deleted without deleting it. Allows to verify what data to delete| 
+| `--older-than=TIMESTAMP` | 删除早于指定日期/时间的备份，格式为：<br> - `%Y-%M-%DT%H:%M:%S`（例如 2020-04-20T13:13:20），<br> - `%Y-%M-%D`（例如 2020-04-20），<br> - `XXd`（例如 30d）。仅支持天数|
+| `-w`, `--wait`           | 等待清理完成。该标志会阻塞 shell 会话|
+| `--wait-time`  | 等待 PBM 报告命令执行状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。| 
+| `-y`, `--yes`            | 在不询问用户确认的情况下清理数据存储|
+| `--dry-run`              | 检查要删除的旧数据而不删除它。允许验证要删除的数据| 
 
 
 ## pbm config
 
-Sets, changes or lists Percona Backup for MongoDB configuration.
+设置、更改或列出 Percona Backup for MongoDB 配置。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm config [<flags>] [<key>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag               | Description                           |
 | ------------------ | ------------------------------------- | 
-| `--force-resync`   | Resync PBM's metadata (backup, point-in-time recovery chunks, restore) stored within PBM control collections with the data from the current storage. <br> Starting with version 2.10.0, PBM retrieves restore metadata from the storage only for the latest restore to improve resync performance. To retrieve the full restore history, also add the `--include-restores` flag. Resync for backup and point-in-time recovery chunks remains unchanged.|            
-| `--list`           | List current settings                  |
-| `--file=FILE`      | Upload the config information from a YAML file   |
-| `--set=SET`        | Set a new config option value. Specify the option in the `<key.name=value>` format.                                    |
-| `-o`, `--out=text` | Shows the output format as either plain text or a JSON object. Supported values: text, json                      |
-| `-w`, `--wait`     | Wait for resync of the backup list with the storage to finish. You can only use this flag together with the `--force-resync` flag.|
-| `--wait-time`  | The time to wait for PBM to report the status of the resync execution. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.| 
-| `--include-restores`| Resync the full restore metadata history from the storage. Use this flag together with the `--force-resync` flag. Note that retrieving the full restore history may affect resync performance. Available starting with version 2.10.0. |
+| `--force-resync`   | 将存储在 PBM 控制集合中的 PBM 元数据（备份、时间点恢复块、恢复）与当前存储中的数据重新同步。 <br> 从版本 2.10.0 开始，PBM 仅从存储中检索最新恢复的恢复元数据以提高重新同步性能。要检索完整的恢复历史，还要添加 `--include-restores` 标志。备份和时间点恢复块的重新同步保持不变。|            
+| `--list`           | 列出当前设置                  |
+| `--file=FILE`      | 从 YAML 文件上传配置信息   |
+| `--set=SET`        | 设置新的配置选项值。以 `<key.name=value>` 格式指定选项。                                    |
+| `-o`, `--out=text` | 显示输出格式为纯文本或 JSON 对象。支持的值：text、json                      |
+| `-w`, `--wait`     | 等待备份列表与存储的重新同步完成。您只能将此标志与 `--force-resync` 标志一起使用。|
+| `--wait-time`  | 等待 PBM 报告重新同步执行状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。| 
+| `--include-restores`| 从存储重新同步完整的恢复元数据历史。将此标志与 `--force-resync` 标志一起使用。请注意，检索完整的恢复历史可能会影响重新同步性能。从版本 2.10.0 开始可用。 |
 
 
-??? "PBM configuration output"
+??? "PBM 配置输出"
 
     ```json
     {
@@ -141,7 +141,7 @@ The command accepts the following flags:
     }
     ```
 
-??? "Setting a config value"   
+??? "设置配置值"   
 
     ```json
     [
@@ -154,67 +154,67 @@ The command accepts the following flags:
 
 ## pbm delete-backup
 
-Deletes the specified backup snapshot or all backup snapshots that are older than the specified time with the option to filter by specific type. The command deletes backups that are not running regardless of the remote backup storage being used.
+删除指定的备份快照或早于指定时间的所有备份快照，可选择按特定类型过滤。该命令删除未运行的备份，无论使用何种远程备份存储。
 
-The following is the command syntax:
+以下是命令语法：
 
 ```bash
 pbm delete-backup [<flags>] [<name>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                     | Description             |
 | ------------------------ | ----------------------- |
-| `--older-than=TIMESTAMP` | Deletes backups older than date / time specified in the format:<br> - `%Y-%M-%DT%H:%M:%S` (e.g. 2023-04-20T13:13:20) or <br> - `%Y-%M-%D` (e.g. 2023-04-20)|
-| `--type=TYPE`           | Deletes backups of the specified type. Must be used together with the `-older-than` flag. Available starting with version 2.4.0|
-| `--force`                | Forcibly deletes backups without asking for user's confirmation. Deprecated. Use the `--yes` flag instead. |
-| `-y`, `--yes`            | Deletes backups without asking for user's confirmation |
-| `--dry-run`              | Prints the list of backup snapshots to be deleted without deleting them. You can use the flag to check what exactly will be deleted. Available starting with version 2.4.0. | 
+| `--older-than=TIMESTAMP` | 删除早于指定日期/时间的备份，格式为：<br> - `%Y-%M-%DT%H:%M:%S`（例如 2023-04-20T13:13:20）或 <br> - `%Y-%M-%D`（例如 2023-04-20）|
+| `--type=TYPE`           | 删除指定类型的备份。必须与 `-older-than` 标志一起使用。从版本 2.4.0 开始可用|
+| `--force`                | 在不询问用户确认的情况下强制删除备份。已弃用。请改用 `--yes` 标志。 |
+| `-y`, `--yes`            | 在不询问用户确认的情况下删除备份 |
+| `--dry-run`              | 打印要删除的备份快照列表而不删除它们。您可以使用该标志检查将删除的确切内容。从版本 2.4.0 开始可用。 | 
 
 ## pbm delete-pitr
 
-Deletes oplog slices produced for Point-in-Time Recovery.
+删除为时间点恢复生成的 oplog 切片。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm delete-pitr [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                     | Description               |
 | ------------------------ | ------------------------- |
-| `-a`, `--all`            | Deletes all oplog slices. Deprecated. Use the `--older-than flag instead`  |
-| `--older-than=TIMESTAMP` | Deletes oplog slices older than date / time specified in the format: <br> - `%Y-%M-%DT%H:%M:%S` (e.g. 2020-04-20T13:13:20) or <br> - `%Y-%M-%D` (e.g. 2020-04-20) <br><br> When you specify a timestamp, Percona Backup for MongoDB rounds it down to align with the completion time of the closest backup snapshot and deletes oplog slices that precede this time. Thus, extra slices remain. This is done to ensure oplog continuity. To illustrate, the PITR time range is `2021-08-11T11:16:21 - 2021-08-12T08:55:25` and backup snapshots are: <br><br> `2021-08-12T08:49:46Z 13.49MB [restore_to_time: 2021-08-12T08:50:06]` <br> `2021-08-11T11:36:17Z 7.37MB [restore_to_time: 2021-08-11T11:36:38]`<br> <br> Say you specify the timestamp `2021-08-11T19:16:21`. The closest backup is `2021-08-11T11:36:17Z 7.37KB [restore_to_time: 2021-08-11T11:36:38]`. PBM rounds down the timestamp to `2021-08-11T11:36:38` and deletes all slices that precede this time. As a result, your PITR time range is `2021-08-11T11:36:38 - 2021-08-12T09:00:25`. <br><br> **NOTE**: Percona Backup for MongoDB doesn’t delete the oplog slices that follow the most recent backup. This is done to ensure point in time recovery from that backup snapshot. For example, if the snapshot is `2021-07-20T07:05:23Z [restore_to_time: 2021-07-21T07:05:44]` and you specify the timestamp `2021-07-20T07:05:45`, Percona Backup for MongoDB deletes only slices that were made before `2021-07-20T07:05:23Z`.|
-| `--force`                | Forcibly deletes oplog slices without asking a user’s confirmation. Deprecated. Use the `-y`/`--yes` flag instead.  |
-| `-o`, `--out=json`       | Shows the output as either the plain text (default) or a JSON object. Supported values: `text`, `json`.   |
-| `--yes`                  | Deletes backups without asking for user's confirmation |
-| `--dry-run`              | Prints the list of oplog slices to be deleted without deleting them. You can use the flag to check what exactly will be deleted. Available starting with version 2.4.0. | 
-| `-w`, `--wait`          | Wait for the deletion operation to complete. |
-| `--wait-time`  | The time to wait for PBM to report the status of the command execution. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.| 
+| `-a`, `--all`            | 删除所有 oplog 切片。已弃用。请改用 `--older-than flag`  |
+| `--older-than=TIMESTAMP` | 删除早于指定日期/时间的 oplog 切片，格式为： <br> - `%Y-%M-%DT%H:%M:%S`（例如 2020-04-20T13:13:20）或 <br> - `%Y-%M-%D`（例如 2020-04-20） <br><br> 当您指定时间戳时，Percona Backup for MongoDB 将其向下舍入以与最接近的备份快照的完成时间对齐，并删除早于该时间的 oplog 切片。因此，会保留额外的切片。这样做是为了确保 oplog 连续性。举例说明，PITR 时间范围是 `2021-08-11T11:16:21 - 2021-08-12T08:55:25`，备份快照是： <br><br> `2021-08-12T08:49:46Z 13.49MB [restore_to_time: 2021-08-12T08:50:06]` <br> `2021-08-11T11:36:17Z 7.37MB [restore_to_time: 2021-08-11T11:36:38]`<br> <br> 假设您指定时间戳 `2021-08-11T19:16:21`。最接近的备份是 `2021-08-11T11:36:17Z 7.37KB [restore_to_time: 2021-08-11T11:36:38]`。PBM 将时间戳向下舍入到 `2021-08-11T11:36:38` 并删除早于该时间的所有切片。结果，您的 PITR 时间范围是 `2021-08-11T11:36:38 - 2021-08-12T09:00:25`。 <br><br> **注意**：Percona Backup for MongoDB 不会删除最新备份之后的 oplog 切片。这样做是为了确保从该备份快照进行时间点恢复。例如，如果快照是 `2021-07-20T07:05:23Z [restore_to_time: 2021-07-21T07:05:44]` 并且您指定时间戳 `2021-07-20T07:05:45`，Percona Backup for MongoDB 仅删除在 `2021-07-20T07:05:23Z` 之前创建的切片。|
+| `--force`                | 在不询问用户确认的情况下强制删除 oplog 切片。已弃用。请改用 `-y`/`--yes` 标志。  |
+| `-o`, `--out=json`       | 显示输出为纯文本（默认）或 JSON 对象。支持的值：`text`、`json`。   |
+| `--yes`                  | 在不询问用户确认的情况下删除备份 |
+| `--dry-run`              | 打印要删除的 oplog 切片列表而不删除它们。您可以使用该标志检查将删除的确切内容。从版本 2.4.0 开始可用。 | 
+| `-w`, `--wait`          | 等待删除操作完成。 |
+| `--wait-time`  | 等待 PBM 报告命令执行状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。| 
 
 
 ## pbm describe-backup
 
-Provides the detailed information about a backup:
+提供有关备份的详细信息：
 
-- backup name
-- type
-- status
-- namespaces - what was backed up during a selective backup
-- size
-- error message for failed backup
-- last write timestamp 
-- last write time - human-readable indication of the last write 
-- last transition time - the timestamp when a backup changed its status
-- cluster information: the replica set name, the backup status on this replica set, whether it is used as a config server replica set, last write timestamp
-- replica set info: name, backup status, last write timestamp and last transition time, `mongod` security options, if encryption is configured.
-- for snapshot-based backups, provides the list of files being copied
-- for logical and selective backups, provides the list of collections included in the backup. Available with version 2.3.0.
+- 备份名称
+- 类型
+- 状态
+- 命名空间 - 选择性备份期间备份的内容
+- 大小
+- 失败备份的错误消息
+- 最后写入时间戳 
+- 最后写入时间 - 最后写入的人类可读指示 
+- 最后转换时间 - 备份更改其状态的时间戳
+- 集群信息：副本集名称、此副本集上的备份状态、是否用作配置服务器副本集、最后写入时间戳
+- 副本集信息：名称、备份状态、最后写入时间戳和最后转换时间、`mongod` 安全选项（如果配置了加密）。
+- 对于基于快照的备份，提供正在复制的文件列表
+- 对于逻辑和选择性备份，提供备份中包含的集合列表。从版本 2.3.0 开始可用。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm describe-backup [<backup-name>] [<flags>] 
@@ -222,15 +222,15 @@ pbm describe-backup [<backup-name>] [<flags>]
 
 | Flag                  | Description                           |
 | --------------------- | ------------------------------------- |
-| `-o`, `--out=text`    | Shows the status as either plain text or a JSON object. Supported values: `text`, `json`|
-| `-l`, `--list-files`  | Shows the list of files being copied for snapshot-based backups |
-| `--with-collections`  | Shows the collections included in the backup. For logical and selective backups only. Available with version 2.3.0.
+| `-o`, `--out=text`    | 显示状态为纯文本或 JSON 对象。支持的值：`text`、`json`|
+| `-l`, `--list-files`  | 显示基于快照的备份正在复制的文件列表 |
+| `--with-collections`  | 显示备份中包含的集合。仅用于逻辑和选择性备份。从版本 2.3.0 开始可用。 |
 
 ### Output
 
-The output document contains the following fields: 
+输出文档包含以下字段： 
 
-??? admonition "JSON output"
+??? admonition "JSON 输出"
 
     ```json
     {
@@ -270,61 +270,61 @@ The output document contains the following fields:
 
 | Field       | Description |
 | ----------- | ----------- |
-| `name`      | The backup name |
-| `opid`      | A unique identifier of an operation |
-| `type`      | The backup type. Supported values: logical, physical, incremental, external |
-| `last_write_ts` | The timestamp of the last write |
-| `last_transition_ts` | The timestamp when a backup changed its status |
-| `last_write_time` | The human-readable indication of the last write |
-| `last_transition_time` | The human-readable indication of the time when a backup changed its status|
-| `namespaces` | The list of namespaces included in the backup. Available for selective backup |
-| `mongodb_version` | The MongoDB version |
-| `fcv` | The feature compatibility version |
-| `pbm_version` | The Percona Backup for MongoDB version |
-| `status` | The backup status. Supported values: running, dumpDone, done, copyReady, error, canceled |
-| `size` | The backup size in bytes |
-| `size_h` | The backup size in human-readable format |
-| `error`  | The error message for a failed backup |
-| `replsets` | The list of replica sets included in the backup. Each replica set has the following fields: <br> - `name` - the replica set name <br> - `status` - the backup status on this replica set <br> - `node` - the node name and port <br> - `last_write_ts` - the timestamp of the last write <br> - `last_transition_ts` - the timestamp when a backup changed its status <br> - `last_write_time` - the human-readable indication of the last write <br> - `last_transition_time` - the human-readable indication of the time when a backup changed its status <br> - `security` - the security options of the `mongod` process <br> - `configsvr` - indicates that this is a config server replica set |
+| `name`      | 备份名称 |
+| `opid`      | 操作的唯一标识符 |
+| `type`      | 备份类型。支持的值：logical、physical、incremental、external |
+| `last_write_ts` | 最后写入的时间戳 |
+| `last_transition_ts` | 备份更改其状态的时间戳 |
+| `last_write_time` | 最后写入的人类可读指示 |
+| `last_transition_time` | 备份更改其状态的时间的人类可读指示|
+| `namespaces` | 备份中包含的命名空间列表。用于选择性备份 |
+| `mongodb_version` | MongoDB 版本 |
+| `fcv` | 功能兼容性版本 |
+| `pbm_version` | Percona Backup for MongoDB 版本 |
+| `status` | 备份状态。支持的值：running、dumpDone、done、copyReady、error、canceled |
+| `size` | 备份大小（字节） |
+| `size_h` | 人类可读格式的备份大小 |
+| `error`  | 失败备份的错误消息 |
+| `replsets` | 备份中包含的副本集列表。每个副本集具有以下字段： <br> - `name` - 副本集名称 <br> - `status` - 此副本集上的备份状态 <br> - `node` - 节点名称和端口 <br> - `last_write_ts` - 最后写入的时间戳 <br> - `last_transition_ts` - 备份更改其状态的时间戳 <br> - `last_write_time` - 最后写入的人类可读指示 <br> - `last_transition_time` - 备份更改其状态的时间的人类可读指示 <br> - `security` - `mongod` 进程的安全选项 <br> - `configsvr` - 指示这是配置服务器副本集 |
 
 
 ## pbm describe-restore
 
-Shows the detailed information about the restore:
+显示有关恢复的详细信息：
 
-* Restore name
+* 恢复名称
 * opID
-* The name of the backup from which the database was restored
-* Type
-* Status
-* Start and finish time of the restore
-* Last transition time – the time when the restore process changed its status
-* The name of every replica set, its restore status and the last transition time
+* 从中恢复数据库的备份名称
+* 类型
+* 状态
+* 恢复的开始和完成时间
+* 最后转换时间 – 恢复过程更改其状态的时间
+* 每个副本集的名称、其恢复状态和最后转换时间
 
-For **physical backups only**, the following additional information is provided:
+对于**仅物理备份**，提供以下附加信息：
 
-* The node name
-* Restore status on the node
-* Last transition time
+* 节点名称
+* 节点上的恢复状态
+* 最后转换时间
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm describe-restore [<restore-timestamp>] [<flags>] 
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                     | Description             |
 | ------------------------ | ----------------------- |
-| `-c`, `--config=CONFIG`  | Only for **physical restores**. Points Percona Backup for MongoDB to a configuration file so it can read the restore status from the remote storage. For example, `pbm describe-restore -c /etc/pbm/conf.yaml <restore-name>`.|
-| `-o`, `--out=TEXT`       | Shows the output as either the plain text (default) or a JSON object. Supported values: ``text``, ``json``.|
+| `-c`, `--config=CONFIG`  | 仅用于**物理恢复**。将 Percona Backup for MongoDB 指向配置文件，以便它可以从远程存储读取恢复状态。例如，`pbm describe-restore -c /etc/pbm/conf.yaml <restore-name>`。|
+| `-o`, `--out=TEXT`       | 显示输出为纯文本（默认）或 JSON 对象。支持的值：``text``、``json``。|
 
 ### Output
 
-The output document contains the following fields:
+输出文档包含以下字段：
 
-??? admonition "Selective restore status"
+??? admonition "选择性恢复状态"
 
     ```json
     {
@@ -359,7 +359,7 @@ The output document contains the following fields:
     }
     ```
 
-??? admonition "Physical restore status"
+??? admonition "物理恢复状态"
 
     ```json
     {
@@ -390,73 +390,73 @@ The output document contains the following fields:
 
 | Field       | Description |
 | ----------- | ----------- |
-| `name`      | The restore name |
-| `opid`      | A unique identifier of an operation |
-| `backup`    | The name of the backup from which the database was restored |
-| `type`      | The restore type. Supported values: logical, physical|
-| `status`    | The restore status. Supported values: running, copyReady, done, error |
-| `start`     | The time when the restore started |
-| `finish`    | The time when the restore finished. Available only for successful restores (with the status `done`) | 
-| `error`     | The error message for a failed restore |
-| `last_transition_time` | The human-readable indication of the time when the restore process changed its status |
-| `namespaces` | The list of namespaces included in the restore. Available for selective restore |
-| `replsets`  | The list of replica sets included in the restore. Each replica set has the following fields: <br> - `name` - the replica set name <br> - `status` - the restore status on this replica set <br> - `error` - the error message for failed restore <br> - `last_transition_time` - the human-readable indication of the time when the restore process changed its status <br> - `nodes` - the list of nodes included in the restore. |
-| `replsets.nodes`     | The list of nodes included in the restore. Each node has the following fields: <br> - `name` - the node name and port <br> - `status` - the restore status on the node <br> - `error` - the error message for failed restore <br> - `last_transition_time` - the human-readable indication of the time when the restore process changed its status |
+| `name`      | 恢复名称 |
+| `opid`      | 操作的唯一标识符 |
+| `backup`    | 从中恢复数据库的备份名称 |
+| `type`      | 恢复类型。支持的值：logical、physical|
+| `status`    | 恢复状态。支持的值：running、copyReady、done、error |
+| `start`     | 恢复开始的时间 |
+| `finish`    | 恢复完成的时间。仅用于成功的恢复（状态为 `done`） | 
+| `error`     | 失败恢复的错误消息 |
+| `last_transition_time` | 恢复过程更改其状态的时间的人类可读指示 |
+| `namespaces` | 恢复中包含的命名空间列表。用于选择性恢复 |
+| `replsets`  | 恢复中包含的副本集列表。每个副本集具有以下字段： <br> - `name` - 副本集名称 <br> - `status` - 此副本集上的恢复状态 <br> - `error` - 失败恢复的错误消息 <br> - `last_transition_time` - 恢复过程更改其状态的时间的人类可读指示 <br> - `nodes` - 恢复中包含的节点列表。 |
+| `replsets.nodes`     | 恢复中包含的节点列表。每个节点具有以下字段： <br> - `name` - 节点名称和端口 <br> - `status` - 节点上的恢复状态 <br> - `error` - 失败恢复的错误消息 <br> - `last_transition_time` - 恢复过程更改其状态的时间的人类可读指示 |
 
 ## pbm diagnostic
 
-Generates the report with the detailed information about a specific backup or a restore. You can also use it for other commands. To learn more, refer to the [Diagnostics report](../troubleshoot/pbm-report.md).
+生成有关特定备份或恢复的详细信息的报告。您也可以将其用于其他命令。要了解更多信息，请参阅[诊断报告](../troubleshoot/pbm-report.md)。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm diagnose --path path --name <backup-name> --opid <OPID>
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                | Description                      |
 | ------------------- | -------------------------------- |
-| `--path`            | The path where to save the report. If the directory doesn’t exist, PBM creates it during the report generation. Make sure that the user that runs PBM CLI has write access to the specified path |
-| `--name`            | The name of the required backup or a restore |
-| `--opid`            | The unique Operation ID of the specified command. You can retrieve it from the `pbm logs`, `pbm describe-backup` / `pbm describe-restore` output. |
-| `--archive`         | Creates a .zip archive of the report in the specified path.|
+| `--path`            | 保存报告的路径。如果目录不存在，PBM 在报告生成期间创建它。确保运行 PBM CLI 的用户对指定路径具有写入访问权限 |
+| `--name`            | 所需备份或恢复的名称 |
+| `--opid`            | 指定命令的唯一操作 ID。您可以从 `pbm logs`、`pbm describe-backup` / `pbm describe-restore` 输出中检索它。 |
+| `--archive`         | 在指定路径中创建报告的 .zip 归档文件。|
 
 
 ## pbm help
 
-Returns the help information about `pbm` commands.
+返回有关 `pbm` 命令的帮助信息。
 
 ## pbm list
 
-Provides the list of backups and their states. Backup states are the following:
+提供备份列表及其状态。备份状态如下：
 
-* In progress - A backup is running
-* Canceled - A backup was canceled
-* Error - A backup was finished with an error
-* No status means a backup is complete
+* 进行中 - 备份正在运行
+* 已取消 - 备份已取消
+* 错误 - 备份以错误结束
+* 无状态意味着备份已完成
 
-Only successfully completed backups are listed. To view information about a running or a failed backup, run [`pbm status`](#pbm-status).
+仅列出成功完成的备份。要查看有关正在运行或失败的备份的信息，请运行 [`pbm status`](#pbm-status)。
 
-When Point-in-Time Recovery is enabled, the `pbm list` also provides the list of valid time ranges for recovery and point-in-time recovery status.
+启用时间点恢复时，`pbm list` 还提供恢复的有效时间范围和时间点恢复状态。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm list [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                | Description                      |
 | ------------------- | -------------------------------- |
-| `--restore`         | Shows last N restores. Starting with version 2.0, the output shows restore names instead of backup names, as multiple restores can be done from a single backup.           |
-| `--size=0`          | Shows last N backups.  It also provides the information whether the restore is a selective one.         |
-| `-o`, `--out=text`  | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json`                 |
-| `--unbacked`        | Shows Point-in-Time Recovery oplog slices that were saved without the base backup snapshot. Available starting with version 1.8.0.|
-| `--replset-remapping` | Maps the replica set names for the data restore / oplog replay. The value format is `to_name_1=from_name_1,to_name_2=from_name_2`|
+| `--restore`         | 显示最后 N 个恢复。从版本 2.0 开始，输出显示恢复名称而不是备份名称，因为可以从单个备份进行多个恢复。           |
+| `--size=0`          | 显示最后 N 个备份。它还提供恢复是否为选择性恢复的信息。         |
+| `-o`, `--out=text`  | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json`                 |
+| `--unbacked`        | 显示在没有基础备份快照的情况下保存的时间点恢复 oplog 切片。从版本 1.8.0 开始可用。|
+| `--replset-remapping` | 映射数据恢复/oplog 重放的副本集名称。值格式为 `to_name_1=from_name_1,to_name_2=from_name_2`|
 
-??? "List of backups"
+??? "备份列表"
 
     ```json
     {
@@ -504,9 +504,9 @@ The command accepts the following flags:
     }
     ```
 
-??? "Restore history"
+??? "恢复历史"
  
-    Full restore 
+    完整恢复 
 
     ```json
      {
@@ -518,7 +518,7 @@ The command accepts the following flags:
       }
     ```
 
-    Selective restore
+    选择性恢复
 
     ```json
       {
@@ -533,7 +533,7 @@ The command accepts the following flags:
       }
     ```
 
-    Point-in-time restore
+    时间点恢复
 
     ```json
       {
@@ -546,7 +546,7 @@ The command accepts the following flags:
       }
     ```
 
-    Selective point-in-time restore
+    选择性时间点恢复
 
     ```json
     {
@@ -565,31 +565,31 @@ The command accepts the following flags:
 
 ## pbm logs
 
-Shows log information from all `pbm-agent` processes.
+显示来自所有 `pbm-agent` 进程的日志信息。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm logs [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                    | Description                          |
 | ----------------------- | ------------------------------------ |
-| `-t`, `--tail=20`       | Shows last N entries. By default, the output shows last 20 entries. <br> `0` means to show all log messages. |
-| `-e`, `--event=EVENT`   | Shows logs filtered by a specified event. Supported events:<br> - backup<br> - restore <br> - resyncBcpList <br> - pitr <br> - pitrestore <br> - delete <br>  |
-| `-o`, `--out=text`      | Shows log information as text (default) or in JSON format. <br> Supported values: `text`, `json` |
-| `-n`, `--node=NODE`     | Shows logs for a specified node or a replica set.<br> Specify the node in the format `replset[/host:port]` |
-| `-f`, `--follow`        | Follow log output. Allow to view the logs dynamically |
-| `-s`, `--severity=I`    | Shows logs filtered by severity level.<br> Supported levels are (from low to high): D - Debug, I - Info (default), W - Warning, E - Error, F - Fatal.<br><br> The output includes both the specified severity level and all higher ones |
-| `--timezone`=TIMEZONE   | Timezone of the log output. <br>Supported values: `UTC` (default), `local` or the timezone in the [IANA timezone format](https://en.wikipedia.org/wiki/Tz_database) (e.g. `America/New_York`)
-| `-i`, `--opid=OPID`     | Show logs for an operation in progress. The operation is identified by the OpID |
-| `-x`, `--extra`         | Show extra data in the text format |
+| `-t`, `--tail=20`       | 显示最后 N 个条目。默认情况下，输出显示最后 20 个条目。 <br> `0` 表示显示所有日志消息。 |
+| `-e`, `--event=EVENT`   | 显示按指定事件过滤的日志。支持的事件：<br> - backup<br> - restore <br> - resyncBcpList <br> - pitr <br> - pitrestore <br> - delete <br>  |
+| `-o`, `--out=text`      | 显示日志信息为文本（默认）或 JSON 格式。 <br> 支持的值：`text`、`json` |
+| `-n`, `--node=NODE`     | 显示指定节点或副本集的日志。<br> 以 `replset[/host:port]` 格式指定节点 |
+| `-f`, `--follow`        | 跟随日志输出。允许动态查看日志 |
+| `-s`, `--severity=I`    | 显示按严重性级别过滤的日志。<br> 支持的级别（从低到高）：D - Debug、I - Info（默认）、W - Warning、E - Error、F - Fatal。<br><br> 输出包括指定的严重性级别和所有更高级别 |
+| `--timezone`=TIMEZONE   | 日志输出的时区。 <br>支持的值：`UTC`（默认）、`local` 或 [IANA 时区格式](https://en.wikipedia.org/wiki/Tz_database) 中的时区（例如 `America/New_York`）
+| `-i`, `--opid=OPID`     | 显示正在进行的操作的日志。操作由 OpID 标识 |
+| `-x`, `--extra`         | 以文本格式显示额外数据 |
 
-Find the usage examples in [Viewing backup logs](../usage/logs.md).
+在[查看备份日志](../usage/logs.md) 中查找使用示例。
 
-??? admonition "Logs output"
+??? admonition "日志输出"
   
     ```json
     [
@@ -612,49 +612,49 @@ Find the usage examples in [Viewing backup logs](../usage/logs.md).
 
 ## pbm oplog-replay
 
-Allows to replay the oplog on top of any backup: logical, physical, storage level snapshot (like EBS-snapshot) and restore it to a specific point in time.
+允许在任何备份之上重放 oplog：逻辑、物理、存储级别快照（如 EBS 快照）并将其恢复到特定时间点。
 
-To learn more about the usage, refer to Point-in-Time Recovery oplog replay.
+要了解更多用法，请参阅时间点恢复 oplog 重放。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm oplog-replay [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                    | Description                          |
 | ----------------------- | ------------------------------------ |
-| `start=timestamp`       | The start time for the oplog replay. |
-| `end=timestamp`         | The end time for the oplog replay.   |
-| `--replset-remapping`   | Maps the replica set names for the oplog replay. The value format is `to_name_1=from_name_1,to_name_2=from_name_2`. |
-| `-w`, `--wait`          | Wait for the oplog replay operation to complete. |
-| `--wait-time`  | The time to wait for PBM to report the status of the oplog replay execution. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.| 
+| `start=timestamp`       | oplog 重放的开始时间。 |
+| `end=timestamp`         | oplog 重放的结束时间。   |
+| `--replset-remapping`   | 映射 oplog 重放的副本集名称。值格式为 `to_name_1=from_name_1,to_name_2=from_name_2`。 |
+| `-w`, `--wait`          | 等待 oplog 重放操作完成。 |
+| `--wait-time`  | 等待 PBM 报告 oplog 重放执行状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。| 
 
 
 ## pbm profile add
 
-Saves an external storage configuration to PBM. This information is defined via configuration profiles. 
+将外部存储配置保存到 PBM。此信息通过配置配置文件定义。 
 
-To learn more about configuration profiles, see [Multiple storages for backups](../features/multi-storage.md).
+要了解更多关于配置配置文件的信息，请参阅[多个存储用于备份](../features/multi-storage.md)。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm profile add [<flags>] <profile-name> <path/to/profile.yaml>
 ``` 
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                    | Description                          |
 | ----------------------- | ------------------------------------ |
-| --sync                  | Add a profile defining an external storage and sync the backup list from this storage|
-|--wait                   | Wait for the profile to be added. The flag blocks the shell session.|
-| `--wait-time`  | The time to wait for PBM to report the status of adding the profile and backup sync. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.|
-|-o, --out=text           | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json`|
+| --sync                  | 添加定义外部存储的配置文件并从该存储同步备份列表|
+|--wait                   | 等待配置文件被添加。该标志会阻塞 shell 会话。|
+| `--wait-time`  | 等待 PBM 报告添加配置文件和备份同步状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。|
+|-o, --out=text           | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json`|
 
-??? admonition "Add profile"
+??? admonition "添加配置文件"
 
     ```json
     {
@@ -664,21 +664,21 @@ The command accepts the following flags:
 
 ## pbm profile list
 
-Provides information about [configuration profiles](../features/multi-storage.md#configuration-profiles) added to PBM. 
+提供有关添加到 PBM 的[配置配置文件](../features/multi-storage.md#configuration-profiles) 的信息。 
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm profile list [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                    | Description                          |
 | ----------------------- | ------------------------------------ |
-| `-o`, `--out=text`      | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json` |
+| `-o`, `--out=text`      | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json` |
 
-??? admonition "List profiles"
+??? admonition "列出配置文件"
 
     ```json
     {
@@ -699,23 +699,23 @@ The command accepts the following flags:
 
 ## pbm profile remove
 
-Removes the specified configuration profile from PBM.
+从 PBM 中删除指定的配置配置文件。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm profile remove <profile-name> [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                    | Description                          |
 | ----------------------- | ------------------------------------ |
-| `--wait`                | Wait for the profile to be removed. The flag blocks the shell session.|
-| `--wait-time`  | The time to wait for PBM to report the status of the profile removal. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.|
-| `-o`, `--out=text`      | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json` |
+| `--wait`                | 等待配置文件被删除。该标志会阻塞 shell 会话。|
+| `--wait-time`  | 等待 PBM 报告配置文件删除状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。|
+| `-o`, `--out=text`      | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json` |
 
-??? admonition "Delete profile"
+??? admonition "删除配置文件"
 
     ```json
     {
@@ -725,21 +725,21 @@ The command accepts the following flags:
 
 ## pbm profile show
 
-Shows the external storage configuration according to the specified configuration profile.
+根据指定的配置配置文件显示外部存储配置。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm profile show <profile-name> [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                    | Description                          |
 | ----------------------- | ------------------------------------ |
-| `-o`, `--out=text`      | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json` |
+| `-o`, `--out=text`      | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json` |
 
-??? admonition "Show profile"
+??? admonition "显示配置文件"
 
     ```json
     {
@@ -756,60 +756,60 @@ The command accepts the following flags:
 
 ## pbm profile sync
 
-Syncs the backup list from the external storage according to the specified configuration profile.
+根据指定的配置配置文件从外部存储同步备份列表。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm profile sync <profile-name> [<flags>]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                    | Description                          |
 | ----------------------- | ------------------------------------ |
-| `--all`                 | Syncs backup lists from all the storages.|
-| `--clear`               | Clears the backup list from the storage. To clear the backup list from a specific storage, pass the profile name. When used with `--all`, clears backup lists from all storages. |
-| `--wait`                | Wait for the profile to be synced. The flag blocks the shell session.|
-| `--wait-time`  | The time to wait for PBM to report the status of the profile sync. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.|
-| `-o`, `--out=text`      | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json` |
+| `--all`                 | 从所有存储同步备份列表。|
+| `--clear`               | 清除存储中的备份列表。要清除特定存储中的备份列表，请传递配置文件名称。与 `--all` 一起使用时，清除所有存储中的备份列表。 |
+| `--wait`                | 等待配置文件被同步。该标志会阻塞 shell 会话。|
+| `--wait-time`  | 等待 PBM 报告配置文件同步状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。|
+| `-o`, `--out=text`      | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json` |
 
 
 ## pbm restore
 
-Restores database from a specified backup / to a specified point in time. Depending on the backup type, makes either logical, physical, or a snapshot-based restore.
+从指定的备份/恢复到指定的时间点恢复数据库。根据备份类型，进行逻辑、物理或基于快照的恢复。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm restore [<flags>] [<backup_name>]
 ```
 
-For more information about using `pbm restore`, see [Restoring a backup](../usage/restore.md).
+有关使用 `pbm restore` 的更多信息，请参阅[恢复备份](../usage/restore.md)。
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                | Description                           |
 | ------------------- | ------------------------------------- |
-| `--external`        | Indicates the backup as the one made outside PBM (for example, snapshot-based)       |
-| `--time=TIME`       | Restores the database to the specified point in time. Available for logical restores and if [Point-in-time recovery](../features/point-in-time-recovery.md) is enabled. |
-| `-w`                | Wait for the restore to finish. The flag blocks the shell session. |
-| `--wait-time`  | The time to wait for PBM to report the status of the restore execution. Use this flag together with the `--wait` flag. You can specify the duration in minutes or hours (e.g. 5m, 1h). <br><br>When not set, PBM waits till the command executes. <br><br>If it takes longer than the defined waiting time to execute the command, PBM prints the `Operation is in progress. Check pbm status and logs` error message and unblocks the shell session. The `pbm-agent` continues to execute the command enabling you to track its progress via the `pbm status` command. Available starting with version 2.6.0.|
-| `-o`, `--out=text`  | Shows the output format as either plain text or a JSON object. Supported values: `text`, `json` |
-| `--base-snapshot`   | Restores the database from a specified backup to the specified point in time. Without this flag, the most recent backup preceding the timestamp is used for point in recovery. <br><br> In version 2.3.0, this flag is optional for [point-in-time recovery from physical backups](../usage/pitr-physical.md). <br><br> In version 2.2.0, this flag is mandatory for making a [point-in-time recovery from physical backups](../usage/pitr-physical.md). Without it, PBM looks for a logical backup to restore from.|
-| `--replset-remapping`| Maps the replica set names for the data restore / oplog replay. The value format is `to_name_1=from_name_1,to_name_2=from_name_2`|
-| `--ns=<database.collection>`| Restores the specified namespace(s) - databases and collections. To restore all collections in the database, specify the values as `--ns=<database.*>`. The `--ns` flag accepts several namespaces as the comma-separated list. For example, `--ns=db1.*,db2.coll2,db3.coll1,db3.collX`|
-| `--with-users-and-roles` | Restores users and roles created in custom databases during selective restore. Use this flag with the `--ns` flag. Available starting with version 2.5.0.| 
-| `-c`, `--config`     | The path to the `mongod.conf` file |
-| `--num-parallel-collections`| Sets the number of collections to process in parallel during a specific logical restore. When undefined, `pbm-agent` processes the number of parallel collections defined for the `restore.numParallelCollections` configuration parameter. If that is undefined,  the default number of collections is the half of the number of logical CPUs. Available starting with version 2.7.0.|
-| `--num-insertion-workers-per-collection`| Specifies the number of insertion workers to run concurrently per collection. Increasing the number for large import may increase the speed of the import. Available starting with version 2.8.0.|
-| `--ns-from`="database.collection" |Specifies the name of the collection you want to restore under a new name. It indicates the collection present in the backup that you are targeting for restoration. Available starting with version 2.8.0.|
-| `--ns-to`="database.collection" | Specifies the new name for the collection you are restoring from the original one. Available starting with version 2.8.0.|
-| `--fallback-enabled` | Enables the use of fallback directory for a physical restore. At the restore start, PBM copies the contents of the `dbPath` to a special `.fallback` directory. If a restore is successful, PBM deletes the `.fallback` directory. If the restore ends with an error, PBM triggers the fallback procedure, deleting the downloaded backup files from `dbPath` and copying files from the  `.fallback` directory back, thus reverting the cluster to its initial state before the restore. Disabled by default. Available starting with version 2.10.0|
-| `--allow-partly-done` | Instructs how PBM handles restores with the "partlyDone" status. When enabled, PBM considers restore successful and the failed nodes receive the data via the initial sync. At least one node on each shard must restore successfully to serve as the data source for the remaining nodes. When all nodes within a replica set fail to restore, the restore is considered as failed. <br>When disabled, PBM starts the fallback operation if you use  `--allow-partly-done` together with `--fallback-enabled`. Otherwise, the restore won't start. <br><br>Enabled by default. Available starting with version 2.10.0. <br><br> Note that when you restore from backups made with PBM versions before 2.10.0, you must not set the `--allow-partly-done` flag to `false`: PBM automatically disables the `--fallback-enabled` setting, if it is enabled, and cannot start the restore at all because these two flags cannot be disabled simultaneously |
+| `--external`        | 指示备份是在 PBM 外部创建的（例如，基于快照）       |
+| `--time=TIME`       | 将数据库恢复到指定的时间点。用于逻辑恢复，如果启用了[时间点恢复](../features/point-in-time-recovery.md)。 |
+| `-w`                | 等待恢复完成。该标志会阻塞 shell 会话。 |
+| `--wait-time`  | 等待 PBM 报告恢复执行状态的时间。将此标志与 `--wait` 标志一起使用。您可以指定持续时间（分钟或小时）（例如 5m、1h）。 <br><br>未设置时，PBM 等待直到命令执行。 <br><br>如果执行命令所需的时间超过定义的等待时间，PBM 打印 `Operation is in progress. Check pbm status and logs` 错误消息并解除阻塞 shell 会话。`pbm-agent` 继续执行命令，使您能够通过 `pbm status` 命令跟踪其进度。从版本 2.6.0 开始可用。|
+| `-o`, `--out=text`  | 显示输出格式为纯文本或 JSON 对象。支持的值：`text`、`json` |
+| `--base-snapshot`   | 从指定的备份恢复到指定的时间点。没有此标志时，使用时间戳之前最近的备份进行时间点恢复。 <br><br> 在版本 2.3.0 中，此标志对于[从物理备份进行时间点恢复](../usage/pitr-physical.md) 是可选的。 <br><br> 在版本 2.2.0 中，此标志对于进行[从物理备份进行时间点恢复](../usage/pitr-physical.md) 是必需的。没有它，PBM 查找逻辑备份以从中恢复。|
+| `--replset-remapping`| 映射数据恢复/oplog 重放的副本集名称。值格式为 `to_name_1=from_name_1,to_name_2=from_name_2`|
+| `--ns=<database.collection>`| 恢复指定的命名空间 - 数据库和集合。要恢复数据库中的所有集合，请将值指定为 `--ns=<database.*>`。`--ns` 标志接受多个命名空间作为逗号分隔的列表。例如，`--ns=db1.*,db2.coll2,db3.coll1,db3.collX`|
+| `--with-users-and-roles` | 在选择性恢复期间恢复在自定义数据库中创建的用户和角色。将此标志与 `--ns` 标志一起使用。从版本 2.5.0 开始可用。| 
+| `-c`, `--config`     | `mongod.conf` 文件的路径 |
+| `--num-parallel-collections`| 设置特定逻辑恢复期间并行处理的集合数。未定义时，`pbm-agent` 处理为 `restore.numParallelCollections` 配置参数定义的并行集合数。如果未定义，默认集合数是逻辑 CPU 数的一半。从版本 2.7.0 开始可用。|
+| `--num-insertion-workers-per-collection`| 指定每个集合并发运行的插入工作线程数。对于大型导入，增加数量可能会提高导入速度。从版本 2.8.0 开始可用。|
+| `--ns-from`="database.collection" |指定要在新名称下恢复的集合的名称。它指示备份中存在的您要恢复的集合。从版本 2.8.0 开始可用。|
+| `--ns-to`="database.collection" | 指定您从原始集合恢复的集合的新名称。从版本 2.8.0 开始可用。|
+| `--fallback-enabled` | 为物理恢复启用回退目录的使用。在恢复开始时，PBM 将 `dbPath` 的内容复制到特殊的 `.fallback` 目录。如果恢复成功，PBM 删除 `.fallback` 目录。如果恢复以错误结束，PBM 触发回退过程，从 `dbPath` 删除下载的备份文件并将文件从 `.fallback` 目录复制回来，从而将集群恢复到恢复前的初始状态。默认禁用。从版本 2.10.0 开始可用|
+| `--allow-partly-done` | 指示 PBM 如何处理状态为 "partlyDone" 的恢复。启用时，PBM 认为恢复成功，失败的节点通过初始同步接收数据。每个分片上至少有一个节点必须成功恢复，以作为剩余节点的数据源。当副本集中的所有节点都恢复失败时，恢复被视为失败。 <br>禁用时，如果您将 `--allow-partly-done` 与 `--fallback-enabled` 一起使用，PBM 启动回退操作。否则，恢复不会启动。 <br><br>默认启用。从版本 2.10.0 开始可用。 <br><br> 请注意，当您从使用 PBM 2.10.0 之前版本创建的备份恢复时，不得将 `--allow-partly-done` 标志设置为 `false`：PBM 自动禁用 `--fallback-enabled` 设置（如果已启用），并且根本无法启动恢复，因为这两个标志不能同时禁用 |
 
 
-??? "Restore output"
+??? "恢复输出"
 
     ```json
     {
@@ -818,7 +818,7 @@ The command accepts the following flags:
     }
     ```
 
-??? "Point-in-time restore"
+??? "时间点恢复"
 
     ```json
     {
@@ -828,41 +828,41 @@ The command accepts the following flags:
     ```
 ## pbm restore-finish
 
-Instructs PBM to complete the snapshot-based physical restore. Must be run after running `pbm restore --external`. To learn more, refer to [API for snapshot-based physical backups](../features/snapshots.md).
+指示 PBM 完成基于快照的物理恢复。必须在运行 `pbm restore --external` 后运行。要了解更多信息，请参阅[基于快照的物理备份 API](../features/snapshots.md)。
 
-The command has the following syntax:
+该命令具有以下语法：
 
 ```bash
 pbm restore-finish <restore_name> [flags]
 ```
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                | Description                           |
 | ------------------- | ------------------------------------- |
-| `-c`                | The path to the PBM configuration file. Required to complete the restore.|
+| `-c`                | PBM 配置文件的路径。完成恢复所必需。|
 
 
 ## pbm status
 
-Shows the status of Percona Backup for MongoDB. The output provides the following information:
+显示 Percona Backup for MongoDB 的状态。输出提供以下信息：
 
-* `pbm-agent` processes version, state and node type it is running on (primary or secondary)
-* Currently running backups or restores
-* Backups stored in the remote storage and their status
-* Point-in-Time Recovery status
-* Valid time ranges for point-in-time recovery and the data size
+* `pbm-agent` 进程版本、状态和运行节点类型（主节点或从节点）
+* 当前正在运行的备份或恢复
+* 存储在远程存储中的备份及其状态
+* 时间点恢复状态
+* 时间点恢复的有效时间范围和数据大小
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                   | Description                             |
 | ---------------------- | --------------------------------------- |
-| `-o`, `--out=text`     | Shows the status as either plain text or a JSON object. Supported values: `text`, `json` |
-| `-p`, `--priority`     | Shows the node priorities for the backup and point-in-time recovery oplog slicing. Available starting with version 2.6.0. |
-| `--replset-remapping`  | Maps the replica set names for the data restore / oplog replay. The value format is `to_name_1=from_name_1,to_name_2=from_name_2`|
-| `-s`, `--sections=SECTIONS` | Shows the status for the specified section. You can pass several flags to view the status for multiple sections. Supported values: cluster, pitr, running, backups. |
+| `-o`, `--out=text`     | 显示状态为纯文本或 JSON 对象。支持的值：`text`、`json` |
+| `-p`, `--priority`     | 显示备份和时间点恢复 oplog 切片的节点优先级。从版本 2.6.0 开始可用。 |
+| `--replset-remapping`  | 映射数据恢复/oplog 重放的副本集名称。值格式为 `to_name_1=from_name_1,to_name_2=from_name_2`|
+| `-s`, `--sections=SECTIONS` | 显示指定部分的状态。您可以传递多个标志以查看多个部分的状态。支持的值：cluster、pitr、running、backups。 |
 
-??? admonition "Status information"
+??? admonition "状态信息"
 
     ```json
     {
@@ -936,17 +936,17 @@ The command accepts the following flags:
 
 ## pbm version
 
-Shows the version of Percona Backup for MongoDB.
+显示 Percona Backup for MongoDB 的版本。
 
-The command accepts the following flags:
+该命令接受以下标志：
 
 | Flag                   | Description                    |
 | ---------------------- | ------------------------------ |
-| `--short`              | Shows only version info        |
-| `--commit`             | Shows only git commit info     |
-| `-o`, `--out=text`     | Shows the output as either plain text or a JSON object. Supported values: `text`, `json`|
+| `--short`              | 仅显示版本信息        |
+| `--commit`             | 仅显示 git 提交信息     |
+| `-o`, `--out=text`     | 显示输出为纯文本或 JSON 对象。支持的值：`text`、`json`|
 
-??? "Version information"
+??? "版本信息"
 
     ```json
     {
@@ -958,4 +958,3 @@ The command accepts the following flags:
       "GoVersion": "go1.16.6"
     }
     ```
-

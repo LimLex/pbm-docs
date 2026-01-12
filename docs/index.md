@@ -1,60 +1,60 @@
-# Percona Backup for MongoDB documentation
+# Percona Backup for MongoDB 文档
 
 !!! note ""
 
-    This is the documentation for the latest release, **PBM {{release}}** ([Release Notes](release-notes/{{release}}.md)).
+    这是最新版本 **PBM {{release}}** 的文档（[发布说明](release-notes/{{release}}.md)）。
 
 
-Percona Backup for MongoDB (PBM) is an open source and distributed solution for consistent backups and restores of [MongoDB sharded clusters and replica sets](details/deployments.md) to a specific point in time. Check [supported MongoDB versions](details/versions.md).
+Percona Backup for MongoDB (PBM) 是一个开源分布式解决方案，用于将 [MongoDB 分片集群和副本集](details/deployments.md) 一致地备份和恢复到特定时间点。查看[支持的 MongoDB 版本](details/versions.md)。
 
 
-Here's how you can make backups on a running server and/or restore your database to a specific point in time:
+您可以通过以下方式在运行中的服务器上创建备份和/或将数据库恢复到特定时间点：
 
-* using the [PBM command line interface](reference/pbm-commands.md). 
-* from a web interface [with PBM and Percona Monitoring and Management](pmm.md). 
+* 使用 [PBM 命令行界面](reference/pbm-commands.md)。 
+* 通过 Web 界面 [使用 PBM 和 Percona Monitoring and Management](pmm.md)。 
 
-Read [how PBM works](intro.md). Check [supported MongoDB versions](details/versions.md).
+阅读 [PBM 工作原理](intro.md)。查看[支持的 MongoDB 版本](details/versions.md)。
 
 
-## Why PBM?
+## 为什么选择 PBM？
 
-* Data consistency across clusters and replica sets with [every supported backup type](features/backup-types.md)
-* No notable performance nor operating degradation associated with PBM
-* A variety of [supported storage types](details/storage-configuration.md) means no vendor lock-in
-* Open source solution with [enterprise-grade features](features/comparison.md) 
+* 通过[所有支持的备份类型](features/backup-types.md)实现跨集群和副本集的数据一致性
+* 与 PBM 相关的性能或操作降级不明显
+* 多种[支持的存储类型](details/storage-configuration.md)意味着没有供应商锁定
+* 具有[企业级功能](features/comparison.md)的开源解决方案 
 
-## In this documentation
+## 本文档包含
 
 <div data-grid markdown><div data-banner markdown>
 
-### :material-progress-download: Installation guides { .title }
+### :material-progress-download: 安装指南 { .title }
 
-Ready to try out PBM? Get started quickly with the step-by-step installation instructions.
+准备试用 PBM？通过分步安装说明快速开始。
 
-[Quickstart guides :material-arrow-right:](installation.md){ .md-button }
-
-</div><div data-banner markdown>
-
-### :material-backup-restore: Backup management { .title }
-
-Learn what you can do to maintain your backup strategy.
-
-[Backup management :material-arrow-right:](usage/backup-physical.md){ .md-button }
+[快速入门指南 :material-arrow-right:](installation.md){ .md-button }
 
 </div><div data-banner markdown>
 
-### :fontawesome-solid-gears: Administration { .title }
+### :material-backup-restore: 备份管理 { .title }
 
-Tweak PBM to effectively perform your day-to-day operations.
+了解如何维护您的备份策略。
 
-[Administration :material-arrow-right:](manage/overview.md){.md-button}
+[备份管理 :material-arrow-right:](usage/backup-physical.md){ .md-button }
+
 </div><div data-banner markdown>
 
-### :material-frequently-asked-questions: Diagnostics and FAQ { .title }
+### :fontawesome-solid-gears: 管理 { .title }
 
-Our comprehensive resources will help you overcome challenges, from everyday issues to specific doubts.
+调整 PBM 以有效执行日常操作。
 
-[Run diagnostics :material-arrow-right:](troubleshoot/index.md){.md-button}
+[管理 :material-arrow-right:](manage/overview.md){.md-button}
+</div><div data-banner markdown>
+
+### :material-frequently-asked-questions: 诊断和常见问题 { .title }
+
+我们的综合资源将帮助您克服挑战，从日常问题到具体疑问。
+
+[运行诊断 :material-arrow-right:](troubleshoot/index.md){.md-button}
 
 </div>
 </div>

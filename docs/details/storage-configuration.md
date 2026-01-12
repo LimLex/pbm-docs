@@ -1,45 +1,45 @@
-# Remote backup storage
+# 远程备份存储
 
-Backup storage is a critical component of any database backup strategy. It serves as a secure, reliable place for your MongoDB data backups, ensuring that your data is protected and can be recovered when needed. The choice of backup storage directly impacts your backup strategy's reliability, performance, and cost-effectiveness.
+备份存储是任何数据库备份策略的关键组件。它作为 MongoDB 数据备份的安全、可靠位置，确保您的数据受到保护并在需要时可以恢复。备份存储的选择直接影响备份策略的可靠性、性能和成本效益。
 
-The backup storage serves several purposes:
+备份存储有几个用途：
 
-* Provides a secure location for storing backup data
-* Ensures data durability and availability
-* Allows for backup data portability across different environments
+* 提供存储备份数据的安全位置
+* 确保数据持久性和可用性
+* 允许在不同环境之间传输备份数据
 
-## Supported storage types
+## 支持的存储类型
 
-Percona Backup for MongoDB supports the following storage types:
+Percona Backup for MongoDB 支持以下存储类型：
 
 * [Amazon S3](s3-storage.md)
-* [Google Cloud storage](gcs.md)
-* [MinIO and S3-compatible storage](minio.md)
-* [Filesystem server storage](filesystem-storage.md)
-* [Microsoft Azure Blob storage](azure.md)
-* [Alibaba Cloud OSS storage](oss.md)
+* [Google Cloud Storage](gcs.md)
+* [MinIO 和 S3 兼容存储](minio.md)
+* [文件系统服务器存储](filesystem-storage.md)
+* [Microsoft Azure Blob 存储](azure.md)
+* [阿里云 OSS 存储](oss.md)
 
-## How PBM organizes backups on the storage
+## PBM 如何在存储上组织备份
 
-Percona Backup for MongoDB (PBM) saves backup data to a designated directory on the backup storage. It can be a specific directory you define for the storage or the root folder. 
+Percona Backup for MongoDB (PBM) 将备份数据保存到备份存储上的指定目录。它可以是您为存储定义的特定目录或根文件夹。 
 
-Each backup is prefixed with the UTC starting time for easy identification and consists of:
+每个备份都以 UTC 开始时间作为前缀，以便于识别，并包含：
 
-* A metadata file containing backup information
-* For each replica set:
+* 包含备份信息的元数据文件
+* 对于每个副本集：
 
-  * A compressed mongodump archive of all collections
-  * A compressed BSON file containing the oplog entries for the backup period
+  * 所有集合的压缩 mongodump 归档
+  * 包含备份期间 oplog 条目的压缩 BSON 文件
 
-The oplog entries ensure backup consistency, and the end time of the oplog slice(s) is the data-consistent point in time of a backup snapshot.
+Oplog 条目确保备份一致性，oplog 切片结束时间是备份快照的数据一致时间点。
 
-Using the [`pbm list`](../reference/pbm-commands.md#pbm-list) or [`pbm status`](../reference/pbm-commands.md#pbm-status) commands, you can scan the backup directory to find existing backups, even if you never used PBM on your computer before.
+使用 [`pbm list`](../reference/pbm-commands.md#pbm-list) 或 [`pbm status`](../reference/pbm-commands.md#pbm-status) 命令，您可以扫描备份目录以查找现有备份，即使您以前从未在计算机上使用过 PBM。
 
-## Permissions setup
+## 权限设置
 
-Regardless of the remote backup storage you use, grant the `List/Get/Put/Delete` permissions to this storage for the user identified by the access credentials.
+无论您使用哪种远程备份存储，请为通过访问凭据标识的用户授予对此存储的 `List/Get/Put/Delete` 权限。
 
-The following example shows the permissions configuration to the `pbm-testing` bucket on the AWS S3 storage.
+以下示例显示了 AWS S3 存储上 `pbm-testing` 存储桶的权限配置。
 
 ```json
 {
@@ -67,16 +67,14 @@ The following example shows the permissions configuration to the `pbm-testing` b
 }
 ```
 
-### Storage-specific documentation
+### 特定于存储的文档
 
-Please refer to the documentation of your selected storage for the data access management.
+请参阅您选择的存储的数据访问管理文档。
 
-!!! admonition "See also"
+!!! admonition "另请参阅"
 
-    * AWS documentation: [Controlling access to a bucket with user policies :octicons-link-external-16:](https://docs.aws.amazon.com/AmazonS3/latest/userguide/walkthrough1.html)
-    * Google Cloud Storage documentation: [Overview of access control :octicons-link-external-16:](https://cloud.google.com/storage/docs/access-control)
-    * Microsoft Azure documentation: [Assign an Azure role for access to blob data :octicons-link-external-16:](https://docs.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access?tabs=portal)
-    * MinIO documentation: [Policy Management :octicons-link-external-16:](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html)
-    * Alibaba Cloud documentation: [Permissions and access control :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/user-guide/permissions-and-access-control)
-
-*[AWS KMS]: Amazon Web Services Key Management Service
+    * AWS 文档：[使用用户策略控制对存储桶的访问 :octicons-link-external-16:](https://docs.aws.amazon.com/AmazonS3/latest/userguide/walkthrough1.html)
+    * Google Cloud Storage 文档：[访问控制概述 :octicons-link-external-16:](https://cloud.google.com/storage/docs/access-control)
+    * Microsoft Azure 文档：[分配 Azure 角色以访问 blob 数据 :octicons-link-external-16:](https://docs.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access?tabs=portal)
+    * MinIO 文档：[策略管理 :octicons-link-external-16:](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html)
+    * 阿里云文档：[权限和访问控制 :octicons-link-external-16:](https://www.alibabacloud.com/help/en/oss/user-guide/permissions-and-access-control)

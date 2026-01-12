@@ -1,18 +1,18 @@
-# Multiple endpoints to the same storage
+# 同一存储的多个端点
 
-!!! admonition "Version added: [2.8.0](../release-notes/2.8.0.md)" 
+!!! admonition "版本添加：[2.8.0](../release-notes/2.8.0.md)" 
 
-In environments where `pbm-agents` run on servers that are distributed across several data centers, accessing the same remote backup storage can become challenging. This can be due to complex network configurations or strict policies that prevent direct connections to the outside world. As a result, `pbm-agents` can't use the same URL to reach the storage, which is necessary for Percona Backup for MongoDB to work properly.
+在 `pbm-agents` 运行在分布在多个数据中心的服务器上的环境中，访问相同的远程备份存储可能变得具有挑战性。这可能是由于复杂的网络配置或阻止直接连接到外部世界的严格策略。结果，`pbm-agents` 无法使用相同的 URL 到达存储，这对于 Percona Backup for MongoDB 正常工作来说是必需的。
 
-To address these challenges, you can configure custom endpoint URLs for specific nodes in the PBM configuration. This allows all `pbm-agents` to access the same storage while respecting the network settings of their data centers.
+为了解决这些挑战，您可以在 PBM 配置中为特定节点配置自定义端点 URL。这允许所有 `pbm-agents` 访问相同的存储，同时尊重其数据中心的网络设置。
 
-The supported storage types are: 
+支持的存储类型有： 
 
 * AWS S3 
-* MinIO and S3-compatible storage services 
-* Microsoft Azure Blob storage 
+* MinIO 和 S3 兼容存储服务 
+* Microsoft Azure Blob 存储 
 
-Here's the example of the configuration file with the endpoint map:
+以下是带有端点映射的配置文件示例：
 
 === ":fontawesome-brands-amazon: AWS S3"
 
@@ -27,7 +27,7 @@ Here's the example of the configuration file with the endpoint map:
           ...
     ```
 
-=== ":simple-minio: MinIO and S3-compatible storage"
+=== ":simple-minio: MinIO 和 S3 兼容存储"
 
     ```yaml
     storage:
@@ -40,7 +40,7 @@ Here's the example of the configuration file with the endpoint map:
           ...
     ```
 
-=== ":material-microsoft-azure: Microsoft Azure Blob storage"
+=== ":material-microsoft-azure: Microsoft Azure Blob 存储"
 
     ```yaml
     storage:
@@ -54,8 +54,8 @@ Here's the example of the configuration file with the endpoint map:
     ```
 
 
-You can define specific nodes using the `endpointUrlMap` (for AWS S3 and Azure) or `endpointMap` (for MinIO and S3-compatible storage) parameters. Both parameters are maps of `'host:port'` to endpoint URL, as shown in the earlier examples. Nodes not listed in the map use the endpoint defined by the `endpointUrl` or `endpoint` parameter, respectively. 
+您可以使用 `endpointUrlMap`（对于 AWS S3 和 Azure）或 `endpointMap`（对于 MinIO 和 S3 兼容存储）参数定义特定节点。这两个参数都是 `'host:port'` 到端点 URL 的映射，如前面的示例所示。映射中未列出的节点使用分别由 `endpointUrl` 或 `endpoint` 参数定义的端点。 
 
-For the solution to work, you should also have the mapping mechanism in place. This mechanism should be able to map the custom endpoints to the main endpoint URL of the storage, routing the requests from `pbm-agents` to the storage and back seamlessly.
+为了使解决方案工作，您还应该建立映射机制。此机制应该能够将自定义端点映射到存储的主端点 URL，将来自 `pbm-agents` 的请求无缝路由到存储并返回。
 
-With this ability to control the endpoints for `pbm-agents` to reach the same storage, you reduce the administrative overhead on PBM configuration and ensure its proper functioning. 
+通过这种控制 `pbm-agents` 到达同一存储的端点的能力，您可以减少 PBM 配置的管理开销并确保其正常运行。 

@@ -1,21 +1,21 @@
-# Configure authentication in MongoDB
+# 在 MongoDB 中配置身份验证
 
-Percona Backup for MongoDB uses the authentication and authorization subsystem of MongoDB. This means that to authenticate Percona Backup for MongoDB, you need to:
+Percona Backup for MongoDB 使用 MongoDB 的身份验证和授权子系统。这意味着要验证 Percona Backup for MongoDB，您需要：
 
-* [Create a corresponding `pbm` user](#create-the-pbm-user) in the `admin` database for each replicaset
-* [Set a valid MongoDB connection URI string for **pbm-agent**](#set-the-mongodb-connection-uri-for-pbm-agent) 
-* [Set a valid MongoDB connection URI string for `pbm` CLI](#set-the-mongodb-connection-uri-for-pbm-cli)
+* 为每个副本集在 `admin` 数据库中[创建相应的 `pbm` 用户](#create-the-pbm-user)
+* [为 **pbm-agent** 设置有效的 MongoDB 连接 URI 字符串](#set-the-mongodb-connection-uri-for-pbm-agent) 
+* [为 `pbm` CLI 设置有效的 MongoDB 连接 URI 字符串](#set-the-mongodb-connection-uri-for-pbm-cli)
 
-## Create the `pbm` user
+## 创建 `pbm` 用户
 
 !!! info
 
-    Each PBM agent connects to its local node. To configure authentication, create the required user and role **on the primary node** of each replica set. 
+    每个 PBM 代理都连接到其本地节点。要配置身份验证，请在每个副本集的**主节点**上创建所需的用户和角色。 
 
-    - For a standalone replica set, perform these steps on its primary node.
-    - For a sharded cluster, perform these steps on the primary node of every shard replica set, as well as on the config server replica set.
+    - 对于独立副本集，在其主节点上执行这些步骤。
+    - 对于分片集群，在每个分片副本集的主节点以及配置服务器副本集上执行这些步骤。
     
-1. Create the role that allows any action on any resource.
+1. 创建允许对任何资源执行任何操作的角色。
 
      ```javascript
      db.getSiblingDB("admin").createRole({ "role": "pbmAnyAction",
@@ -28,7 +28,7 @@ Percona Backup for MongoDB uses the authentication and authorization subsystem o
         });
      ```
 
-2. Create the user and assign the role you created to it.
+2. 创建用户并为其分配您创建的角色。
 
      ```javascript
      db.getSiblingDB("admin").createUser({user: "pbmuser",
@@ -43,32 +43,32 @@ Percona Backup for MongoDB uses the authentication and authorization subsystem o
          });
      ```
 
-You can change the `username` and `password` values and specify other options for the `createUser` command as you require. But you must grant this user the roles as shown above.
+您可以根据需要更改 `username` 和 `password` 值，并为 `createUser` 命令指定其他选项。但您必须授予此用户如上所示的角色。
 
 
 !!! tip
 
-    To view all the host+port lists for the shard replica sets in a cluster, run the following command:
+    要查看集群中所有分片副本集的主机+端口列表，请运行以下命令：
 
     ```javascript
     db.getSiblingDB("config").shards.find({}, {host: true, _id: false})
     ```
 
-## Set the MongoDB connection URI for `pbm-agent`
+## 为 `pbm-agent` 设置 MongoDB 连接 URI
 
 !!! info 
     
-    Execute this step on each node where `pbm-agent` is installed.
+    在安装了 `pbm-agent` 的每个节点上执行此步骤。
 
-The `pbm-agent.service` systemd unit file includes the location of the environment file. You set the MongoDB URI connection string for the `PBM_MONGODB_URI` variable within the environment file for every `pbm-agent`. 
+`pbm-agent.service` systemd 单元文件包含环境文件的位置。您在每个 `pbm-agent` 的环境文件中为 `PBM_MONGODB_URI` 变量设置 MongoDB URI 连接字符串。 
 
-??? tip "How to find the environment file"
+??? tip "如何查找环境文件"
 
-    In Ubuntu and Debian, the pbm-agent.service systemd unit file is at the path `/lib/systemd/system/pbm-agent.service`.
+    在 Ubuntu 和 Debian 中，pbm-agent.service systemd 单元文件位于路径 `/lib/systemd/system/pbm-agent.service`。
 
-    In Red Hat and CentOS, the path to this file is `/usr/lib/systemd/system/pbm-agent.service`.
+    在 Red Hat 和 CentOS 中，此文件的路径是 `/usr/lib/systemd/system/pbm-agent.service`。
 
-    **Example of pbm-agent.service systemd unit file**
+    **pbm-agent.service systemd 单元文件示例**
 
     ```init
     [Unit]
@@ -87,67 +87,67 @@ The `pbm-agent.service` systemd unit file includes the location of the environme
     WantedBy=multi-user.target
     ```
    
-=== ":material-debian: On Debian and Ubuntu"    
+=== ":material-debian: 在 Debian 和 Ubuntu 上"    
 
-    Edit the environment file `/etc/default/pbm-agent`. Specify the MongoDB connection URI string using the credentials of the `pbm` user you created previously. Ensure that the pbm-agent connects only to its local mongod node by providing the URI in the following format:
-
-    ```
-    PBM_MONGODB_URI="mongodb://pbmuser:secretpwd@localhost:27017/?authSource=admin"
-    ```
-
-    * Replace <pbmuser:secretpwd> with the actual credentials you assigned to the pbm user.
-    * `localhost:27017` ensures the agent connects only to the local `mongod` instance.
-    * `authSource=admin` points authentication to the `admin` database, where the pbm user was created.
-
-=== ":material-redhat: On Red Hat Enterprise Linux and derivatives"
-
-    Edit the environment file `/etc/sysconfig/pbm-agent` Specify the MongoDB connection URI string using the credentials of the `pbm` user you created previously. Ensure that the pbm-agent connects only to its local mongod node by providing the URI in the following format:
+    编辑环境文件 `/etc/default/pbm-agent`。使用您之前创建的 `pbm` 用户的凭据指定 MongoDB 连接 URI 字符串。通过以下格式提供 URI 确保 pbm-agent 仅连接到其本地 mongod 节点：
 
     ```
     PBM_MONGODB_URI="mongodb://pbmuser:secretpwd@localhost:27017/?authSource=admin"
     ```
 
-    * Replace <pbmuser:secretpwd> with the actual credentials you assigned to the pbm user.
-    * `localhost:27017` ensures the agent connects only to the local `mongod` instance.
-    * `authSource=admin` points authentication to the `admin` database, where the pbm user was created.
+    * 将 <pbmuser:secretpwd> 替换为您分配给 pbm 用户的实际凭据。
+    * `localhost:27017` 确保代理仅连接到本地 `mongod` 实例。
+    * `authSource=admin` 将身份验证指向创建 pbm 用户的 `admin` 数据库。
 
-To improve the security of the file, you can change its owner to the user that is configured in systemd, and set the file permission so that only the owner and root can read from it. 
+=== ":material-redhat: 在 Red Hat Enterprise Linux 和衍生版本上"
+
+    编辑环境文件 `/etc/sysconfig/pbm-agent` 使用您之前创建的 `pbm` 用户的凭据指定 MongoDB 连接 URI 字符串。通过以下格式提供 URI 确保 pbm-agent 仅连接到其本地 mongod 节点：
+
+    ```
+    PBM_MONGODB_URI="mongodb://pbmuser:secretpwd@localhost:27017/?authSource=admin"
+    ```
+
+    * 将 <pbmuser:secretpwd> 替换为您分配给 pbm 用户的实际凭据。
+    * `localhost:27017` 确保代理仅连接到本地 `mongod` 实例。
+    * `authSource=admin` 将身份验证指向创建 pbm 用户的 `admin` 数据库。
+
+为了提高文件的安全性，您可以将其所有者更改为在 systemd 中配置的用户，并设置文件权限，以便只有所有者和 root 可以读取它。 
 
 !!! important
 
-    Each **pbm-agent** process needs to connect to its localhost `mongod` node with a standalone type of connection. Avoid using the replica set URI with **pbm-agent** as it can lead to an unexpected behavior.
+    每个 **pbm-agent** 进程都需要使用独立类型的连接连接到其本地主机 `mongod` 节点。避免对 **pbm-agent** 使用副本集 URI，因为这可能导致意外行为。
     
-    For sharded clusters, **pbm-agent** on each shard member also needs to be able to reach the config server replica set over the network. The agent auto-discovers the config server's URI by querying the `db.system.version` collection. 
+    对于分片集群，每个分片成员上的 **pbm-agent** 还需要能够通过网络访问配置服务器副本集。代理通过查询 `db.system.version` 集合自动发现配置服务器的 URI。 
 
-    Note that the MongoDB connection URI for `pbm-agent` is different from the connection string required by pbm CLI.
+    请注意，`pbm-agent` 的 MongoDB 连接 URI 与 pbm CLI 所需的连接字符串不同。
     
-### Passwords with special characters
+### 包含特殊字符的密码
 
-If the password includes special characters like `#`, `@`, `/` and so on, you must convert these characters using the [percent-encoding mechanism](https://datatracker.ietf.org/doc/html/rfc3986#section-2.1) when passing them to Percona Backup for MongoDB. For example, the password `secret#pwd` should be passed as follows in `PBM_MONGODB_URI`:
+如果密码包含 `#`、`@`、`/` 等特殊字符，在将它们传递给 Percona Backup for MongoDB 时，必须使用[百分比编码机制](https://datatracker.ietf.org/doc/html/rfc3986#section-2.1)转换这些字符。例如，密码 `secret#pwd` 应在 `PBM_MONGODB_URI` 中按如下方式传递：
 
 ```
 PBM_MONGODB_URI="mongodb://pbmuser:secret%23pwd@localhost:27017/?authSource=admin"
 ```
 
-## Set the MongoDB connection URI for `pbm CLI`
+## 为 `pbm CLI` 设置 MongoDB 连接 URI
 
 !!! info 
     
-    Execute this step only on the hosts where you will run `pbm` CLI commands for backup or restore.
+    仅在您将运行 `pbm` CLI 命令进行备份或恢复的主机上执行此步骤。
 
-Set the MongoDB URI connection string for `pbm` CLI as an environment variable in your shell. This allows you to run `pbm` commands without specifying the `--mongodb-uri` flag each time.
+在 shell 中将 MongoDB URI 连接字符串设置为 `pbm` CLI 的环境变量。这允许您运行 `pbm` 命令，而无需每次都指定 `--mongodb-uri` 标志。
 
-=== "Replica set"
+=== "副本集"
    
-    In a non-sharded replica set, point PBM CLI to the replica set. The following command is the example how to define the MongoDB URI connection string for a replica set with the replica set members `mongors1:27017`, `mongors2:27017` and `mongors3:27017`:
+    在非分片副本集中，将 PBM CLI 指向副本集。以下命令是如何为具有副本集成员 `mongors1:27017`、`mongors2:27017` 和 `mongors3:27017` 的副本集定义 MongoDB URI 连接字符串的示例：
 
     ```
     export PBM_MONGODB_URI="mongodb://pbmuser:secretpwd@mongors1:27017,mongors2:27017,mongors3:27017/?authSource=admin&replSetName=xxxx"
     ```
     
-=== "Sharded clusters"
+=== "分片集群"
 
-    In a sharded cluster, point PBM CLI to the config server replica set. The following command is the example how to define the MongoDB URI connection string for a sharded cluster with the config servers `mongocfg1:27017`, `mongocfg2:27017` and `mongocfg3:27017`:
+    在分片集群中，将 PBM CLI 指向配置服务器副本集。以下命令是如何为具有配置服务器 `mongocfg1:27017`、`mongocfg2:27017` 和 `mongocfg3:27017` 的分片集群定义 MongoDB URI 连接字符串的示例：
     
     ```
     export PBM_MONGODB_URI="mongodb://pbmuser:secretpwd@mongocfg1:27017,mongocfg2:27017,mongocfg3:27017/?authSource=admin&replSetName=xxxx"
@@ -155,13 +155,13 @@ Set the MongoDB URI connection string for `pbm` CLI as an environment variable i
 
 !!! important 
    
-    The pbm CLI needs to connect to the replica set that stores PBM Control Collections. The MongoDB connection URI is different from the one required by `pbm-agent`.
+    pbm CLI 需要连接到存储 PBM 控制集合的副本集。MongoDB 连接 URI 与 `pbm-agent` 所需的连接字符串不同。
     
-For more information about the connection string to specify, refer to the [pbm connection string](../details/authentication.md#mongodb-connection-strings) section.
+有关要指定的连接字符串的更多信息，请参阅 [pbm 连接字符串](../details/authentication.md#mongodb-connection-strings) 部分。
 
-If you are using external authentication methods in MongoDB, see [External authentication support in Percona Backup for MongoDB](../details/authentication.md#external-authentication-support-in-percona-backup-for-mongodb) section for configuration guidelines.
+如果您在 MongoDB 中使用外部身份验证方法，请参阅 [Percona Backup for MongoDB 中的外部身份验证支持](../details/authentication.md#external-authentication-support-in-percona-backup-for-mongodb) 部分以获取配置指南。
 
 
-## Next steps
+## 下一步
 
-[Configure backup storage :material-arrow-right:](backup-storage.md){.md-button}
+[配置备份存储 :material-arrow-right:](backup-storage.md){.md-button}

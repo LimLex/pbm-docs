@@ -1,16 +1,11 @@
-# PBM Command Line Utility (`pbm`)
+# PBM 命令行实用程序 (`pbm`)
 
-`pbm` CLI is the command line tool with which you operate Percona Backup for MongoDB. `pbm` provides the **pbm** command that you will use manually in the shell. It will also
-work as a command that can be executed in scripts (for example, by `crond`).
+`pbm` CLI 是您用来操作 Percona Backup for MongoDB 的命令行工具。`pbm` 提供您将在 shell 中手动使用的 **pbm** 命令。它也可以作为可以在脚本中执行的命令（例如，由 `crond` 执行）。
 
-The set of [pbm sub-commands](../reference/pbm-commands.md) enables you to manage backups in your MongoDB environment.
+[pbm 子命令](../reference/pbm-commands.md) 集使您能够管理 MongoDB 环境中的备份。
 
-`pbm` uses [PBM Control collections](control-collections.md) to communicate with `pbm-agent` processes. It starts and monitors backup or restore operations by updating and reading the corresponding PBM control collections for operations, log, etc. Likewise, it modifies the PBM config by saving it in the PBM Control collection for config values.
+`pbm` 使用 [PBM 控制集合](control-collections.md) 与 `pbm-agent` 进程通信。它通过更新和读取操作、日志等相应的 PBM 控制集合来启动和监控备份或恢复操作。同样，它通过将配置保存在用于配置值的 PBM 控制集合中来修改 PBM 配置。
 
-`pbm` CLI does not have its own config and/or cache files. Setting the
-`PBM_MONGODB_URI` environment variable in your shell is a
-configuration-like step that should be done for practical ease though. (Without
-`PBM_MONGODB_URI`, the `--mongodb-uri` command line argument will need to
-be specified each time.)
+`pbm` CLI 没有自己的配置和/或缓存文件。在 shell 中设置 `PBM_MONGODB_URI` 环境变量是一个类似配置的步骤，应该为了实际方便而完成。（如果没有 `PBM_MONGODB_URI`，每次都需要指定 `--mongodb-uri` 命令行参数。）
 
-To learn how to set the `PBM_MONGODB_URI` environment variable, see [Set the MongoDB connection URI for `pbm` CLI](../install/configure-authentication.md#set-the-mongodb-connection-uri-for-pbm-cli). For more information about MongoDB URI connection strings, see [Authentication](authentication.md).
+要了解如何设置 `PBM_MONGODB_URI` 环境变量，请参阅[为 `pbm` CLI 设置 MongoDB 连接 URI](../install/configure-authentication.md#set-the-mongodb-connection-uri-for-pbm-cli)。有关 MongoDB URI 连接字符串的更多信息，请参阅[身份验证](authentication.md)。

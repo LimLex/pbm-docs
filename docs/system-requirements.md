@@ -1,15 +1,15 @@
-# System requirements
+# 系统要求
 
-* At least 1GB RAM is required on every node for `pbm-agents` to operate successfully.
-* At least 2 logical CPU cores are recommended to reduce the 100% CPU saturation risk during backup, restore, or compression operations. 
-* All `pbm-agents` in the cluster must be able to connect to all config server replica set nodes that could become a new primary. In non-sharded replica set deployments, this means connecting to all the nodes that could become a new primary node. To become a primary, a node must meet the following criteria:
+* 每个节点至少需要 1GB RAM 才能成功运行 `pbm-agents`。
+* 建议至少 2 个逻辑 CPU 核心，以降低备份、恢复或压缩操作期间 CPU 饱和到 100% 的风险。 
+* 集群中的所有 `pbm-agents` 必须能够连接到所有可能成为新主节点的配置服务器副本集节点。在非分片副本集部署中，这意味着连接到所有可能成为新主节点的节点。要成为主节点，节点必须满足以下条件：
 
-    * have `priority` greater than `0` and must be able to vote (`votes`: 1)
-    * is not an arbiter (`arbiterOnly: false`)
-    * is not hidden (`hidden: false`)
-    * is not delayed 
+    * `priority` 大于 `0` 并且必须能够投票（`votes`: 1）
+    * 不是仲裁节点（`arbiterOnly: false`）
+    * 不是隐藏节点（`hidden: false`）
+    * 不是延迟节点
 
-* All `pbm-agents` in your deployment must be able to connect to the same [remote backup storage](details/storage-configuration.md) using the same credentials.
-* For backups to be successful, all `pbm-agents` and PBM CLI must be the same version. Otherwise, we cannot guarantee successful backups and data consistency.
+* 部署中的所有 `pbm-agents` 必须能够使用相同的凭据连接到相同的[远程备份存储](details/storage-configuration.md)。
+* 为了备份成功，所有 `pbm-agents` 和 PBM CLI 必须是相同版本。否则，我们无法保证备份成功和数据一致性。
 
-Note that networking issues like connection to the remote backup storage can also affect PBM performance. 
+请注意，网络问题（如连接到远程备份存储）也可能影响 PBM 性能。 

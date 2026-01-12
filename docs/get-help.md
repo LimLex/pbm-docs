@@ -1,27 +1,27 @@
-# Get help from Percona
+# 从 Percona 获取帮助
 
-Our documentation guides are packed with information, but they can't cover everything you need to know about Percona Backup for MongoDB. They also won't cover every scenario you might come across. Don't be afraid to try things out and ask questions when you get stuck.
+我们的文档指南包含大量信息，但它们无法涵盖您需要了解的关于 Percona Backup for MongoDB 的所有内容。它们也不会涵盖您可能遇到的每种情况。不要害怕尝试，遇到困难时请提问。
 
-## Percona's Community Forum
+## Percona 社区论坛
 
-Be a part of a space where you can tap into a wealth of knowledge from other database enthusiasts and experts who work with Percona's software every day. While our service is entirely free, keep in mind that response times can vary depending on the complexity of the question. You are engaging with people who genuinely love solving database challenges.
+加入一个空间，您可以利用其他数据库爱好者和专家的丰富知识，他们每天都在使用 Percona 的软件。虽然我们的服务完全免费，但请记住，响应时间可能会根据问题的复杂性而有所不同。您正在与真正热爱解决数据库挑战的人们互动。
 
-We recommend visiting our [Community Forum](https://forums.percona.com/t/welcome-to-perconas-community-forum/7){:target="_blank"}. It's an excellent place for discussions, technical insights, and support around Percona database software. If you're new and feeling a bit unsure, our [FAQ](https://forums.percona.com/faq){:target="_blank"} and [Guide for New Users](https://forums.percona.com/t/faq-guide-for-new-users/8562){:target="_blank"} ease you in.
+我们建议访问我们的[社区论坛](https://forums.percona.com/t/welcome-to-perconas-community-forum/7){:target="_blank"}。这是讨论、技术见解和围绕 Percona 数据库软件支持的绝佳场所。如果您是新手并感到有点不确定，我们的[常见问题](https://forums.percona.com/faq){:target="_blank"} 和[新用户指南](https://forums.percona.com/t/faq-guide-for-new-users/8562){:target="_blank"} 可以帮助您入门。
 
-If you have thoughts, feedback, or ideas, the community team would like to hear from you at [Any ideas on how to make the forum better?](https://forums.percona.com/t/any-ideas-on-how-to-make-the-forum-better/11522){:target=”_blank”}. We're always excited to connect and improve everyone's experience.
+如果您有想法、反馈或建议，社区团队希望听到您的声音：[关于如何改进论坛的任何想法？](https://forums.percona.com/t/any-ideas-on-how-to-make-the-forum-better/11522){:target="_blank"}。我们总是很高兴与大家联系并改善每个人的体验。
 
-## Percona experts
+## Percona 专家
 
-Percona experts bring years of experience in tackling tough database performance issues and design challenges.
+Percona 专家在解决棘手的数据库性能问题和设计挑战方面拥有多年的经验。
 
 <div data-tf-live="01JKGYFJTGGS7SBK5M26BGT0VX"></div><script src="//embed.typeform.com/next/embed.js"></script>
-We understand your challenges when managing complex database environments. That's why we offer various services to help you simplify your operations and achieve your goals.
+我们了解您在管理复杂数据库环境时面临的挑战。这就是为什么我们提供各种服务来帮助您简化操作并实现目标。
 
-| Service                    | Description                                     |
+| 服务                    | 描述                                     |
 |----------------------------|-------------------------------------------------|
-| 24/7 Expert Support        | Our dedicated team of database experts is available 24/7 to assist you with any database issues. We provide flexible support plans tailored to your specific needs.   |
-| Hands-On Database Management | Our managed services team can take over the day-to-day management of your database infrastructure, freeing up your time to focus on other priorities.               |
-| Expert Consulting          | Our experienced consultants provide guidance on database topics like architecture design, migration planning, performance optimization, and security best practices.  |
-| Comprehensive Training     | Our training programs help your team develop skills to manage databases effectively, offering virtual and in-person courses.                                          |
+| 24/7 专家支持        | 我们专门的数据库专家团队全天候为您提供帮助，解决任何数据库问题。我们提供根据您的特定需求定制的灵活支持计划。   |
+| 实践数据库管理 | 我们的托管服务团队可以接管数据库基础设施的日常管理，让您有时间专注于其他优先事项。               |
+| 专家咨询          | 我们经验丰富的顾问在架构设计、迁移规划、性能优化和安全最佳实践等数据库主题方面提供指导。  |
+| 综合培训     | 我们的培训计划帮助您的团队培养有效管理数据库的技能，提供虚拟和面对面课程。                                          |
 
-We're here to help you every step of the way. Whether you need a quick fix or a long-term partnership, we're ready to provide your expertise and support.
+我们随时为您提供每一步的帮助。无论您需要快速修复还是长期合作伙伴关系，我们都准备好为您提供专业知识和支持。

@@ -1,25 +1,25 @@
-# Manage large backup files upload 
+# 管理大型备份文件上传 
 
-!!! admonition "Version added: [2.11.0](../release-notes/2.11.0.md)"
+!!! admonition "版本添加：[2.11.0](../release-notes/2.11.0.md)"
 
-As your database grows, so do your backups. Eventually, a collection or index  may become so large that its backup file exceeds the maximum object size limit of your cloud or local storage. When this happens, Percona Backup for MongoDB (PBM) can't upload the file, which can disrupt your backup strategy.
+随着数据库的增长，备份也会增长。最终，集合或索引可能变得如此之大，以至于其备份文件超过云或本地存储的最大对象大小限制。发生这种情况时，Percona Backup for MongoDB (PBM) 无法上传文件，这可能会中断您的备份策略。
 
-The following table provides default maximum size limits for the supported backup storages:
+下表提供了支持的备份存储的默认最大大小限制：
 
-| Storage | Default size limit|
+| 存储 | 默认大小限制|
 | :--- | :--- |
 | **AWS S3** | 4.9 TB |
-| **MinIO and S3-compatible storage** | 4.9 TB |
+| **MinIO 和 S3 兼容存储** | 4.9 TB |
 | **GCS** | 4.9 TB |
 | **Azure Blob Storage** | 190 TB |
-| **Alibaba Cloud OSS** | 48.8 TB |
-| **Filesystem storage** | 4.9 TB |
+| **阿里云 OSS** | 48.8 TB |
+| **文件系统存储** | 4.9 TB |
 
-These defaults are sufficient to satisfy the majority of use cases. However, you can configure a new maximum size for backup files for the storage you use. To do this, define the file size in GB for the `maxObjSizeGB` configuration parameter. 
+这些默认值足以满足大多数用例。但是，您可以为使用的存储配置备份文件的新最大大小。为此，为 `maxObjSizeGB` 配置参数定义文件大小（以 GB 为单位）。 
 
-Define new limits with caution, only when you are absolutely sure in your actions. Setting a too low value may cause a single backup file to be split into a too large number of smaller files and this may affect performance.
+请谨慎定义新限制，仅在您绝对确定操作时才这样做。设置过低的值可能会导致单个备份文件被拆分为太多较小的文件，这可能会影响性能。
 
-This is the configuration example for the AWS S3 storage:
+这是 AWS S3 存储的配置示例：
 
 ```yaml
 storage:
@@ -34,14 +34,14 @@ storage:
   maxObjSizeGB: 5018
 ```
 
-## How it works
+## 工作原理
 
-When a backup file exceeds the configured size limit, PBM does the following:
+当备份文件超过配置的大小限制时，PBM 执行以下操作：
 
-* Splits the file into pieces, each of which doesn't exceed the defined size limit. PBM respects your compression settings, so compressed backups stay compressed after the split
-* Names each piece by adding the `pbmpart{number}` token to the filename. This lets PBM identify and manage all the pieces of a single backup.
-* Uploads the pieces to the storage
+* 将文件拆分为多个片段，每个片段不超过定义的大小限制。PBM 尊重您的压缩设置，因此压缩的备份在拆分后保持压缩
+* 通过向文件名添加 `pbmpart{number}` 标记来命名每个片段。这使 PBM 能够识别和管理单个备份的所有片段。
+* 将片段上传到存储
 
-When reading data for an operation like a restore, PBM automatically reverses this process: it retrieves all the pieces from storage, merges them back into a single file, and proceeds with the command. This makes the entire process transparent to your application.
+在读取数据以进行操作（如恢复）时，PBM 会自动反转此过程：它从存储中检索所有片段，将它们合并回单个文件，然后继续执行命令。这使整个过程对您的应用程序透明。
 
-With this ability to set the maximum file size, you can future-proof your backup strategy and gain peace of mind knowing your data is always safe and recoverable. 
+通过这种设置最大文件大小的能力，您可以为备份策略做好未来准备，并放心地知道您的数据始终安全且可恢复。 

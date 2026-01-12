@@ -1,32 +1,32 @@
-# Known limitations for backups and restores
+# 备份和恢复的已知限制
 
-PBM supports various backup and restore types. Some of them have known limitations. This page lists them per backup / restore type and serves as a single source of truth for known limitations.
+PBM 支持各种备份和恢复类型。其中一些有已知限制。此页面按备份/恢复类型列出它们，并作为已知限制的单一真实来源。
 
-## Selective backups and restores
+## 选择性备份和恢复
 
-1. Only **logical** backups and restores are supported.
-2. Selective backups and restores are supported in sharded clusters for non-sharded collections starting with version 2.0.3. Sharded collections are supported starting with version 2.1.0.
-3. Selective restore of sharded collections from either a full logical backup or a selective logical backup is not supported if the distribution of chunks in the backup differs from the distribution of chunks in the existing collection. The supported way to restore in this scenario is to drop the target collection before performing the selective restore, ensuring shard metadata is recreated consistently.
-4. Sharded time series collections are not supported.
-5. Multi-collection transactions are not yet supported for selective restore. However, if you use them and attempt a selective restore, it may break [ACID](../reference/glossary.md#acid) because not all operations with this transaction are restored. PBM applies oplog events that relate only to the specified namespaces(s). Thus, from the transaction's point of view, the data consistency may be broken.
+1. 仅支持**逻辑**备份和恢复。
+2. 从版本 2.0.3 开始，在分片集群中支持非分片集合的选择性备份和恢复。从版本 2.1.0 开始支持分片集合。
+3. 如果备份中的块分布与现有集合中的块分布不同，则不支持从完整逻辑备份或选择性逻辑备份中选择性恢复分片集合。在这种情况下支持的恢复方法是在执行选择性恢复之前删除目标集合，确保一致地重新创建分片元数据。
+4. 不支持分片时间序列集合。
+5. 选择性恢复尚不支持多集合事务。但是，如果您使用它们并尝试选择性恢复，它可能会破坏 [ACID](../reference/glossary.md#acid)，因为不会恢复此事务的所有操作。PBM 仅应用与指定命名空间相关的 oplog 事件。因此，从事务的角度来看，数据一致性可能会被破坏。
 
-    For example, you have a transaction that involves collections A and B. When you restore collection A, PBM replays oplog events only for collection A and ignores those related to collection B. As a result, the state of collection B remains unchanged and is no longer consistent with collection A. 
+    例如，您有一个涉及集合 A 和 B 的事务。当您恢复集合 A 时，PBM 仅重放集合 A 的 oplog 事件，并忽略与集合 B 相关的事件。结果，集合 B 的状态保持不变，不再与集合 A 一致。 
     
-6. System collections in ``admin``, ``config``, and ``local`` databases cannot be backed up and restored selectively. You must make a full backup and restore to include them.
-7. Selective point-in-time recovery is not supported for sharded clusters.
+6. ``admin``、``config`` 和 ``local`` 数据库中的系统集合不能选择性地备份和恢复。您必须进行完整备份和恢复以包含它们。
+7. 分片集群不支持选择性时间点恢复。
 
-## Oplog slicing for point-in-time recovery
+## 时间点恢复的 Oplog 切片
 
-Oplog slicing is an integral part of the point-in-time recovery routine that enables you to restore from a backup up to a specific moment. Read more about [point-in-time recovery](point-in-time-recovery.md).
+Oplog 切片是时间点恢复例程的组成部分，使您能够从备份恢复到特定时刻。有关[时间点恢复](point-in-time-recovery.md) 的更多信息。
 
-**For in MongoDB 5.0 and higher versions**
+**对于 MongoDB 5.0 及更高版本**
 
-If you [reshard :octicons-link-external-16:](https://www.mongodb.com/docs/manual/core/sharding-reshard-a-collection/) a collection, make a fresh backup and re-enable point-in-time recovery oplog slicing to prevent data inconsistency and restore failure.
+如果您[重新分片 :octicons-link-external-16:](https://www.mongodb.com/docs/manual/core/sharding-reshard-a-collection/) 集合，请创建新备份并重新启用时间点恢复 oplog 切片以防止数据不一致和恢复失败。
 
-**For MongoDB 8.0 and higher versions**
+**对于 MongoDB 8.0 及更高版本**
 
-If you [unshard a collection :octicons-link-external-16:](https://www.mongodb.com/docs/v8.0/reference/command/unshardCollection/), make a fresh backup and re-enable point-in-time recovery oplog slicing to prevent data inconsistency and restore failure.
+如果您[取消分片集合 :octicons-link-external-16:](https://www.mongodb.com/docs/v8.0/reference/command/unshardCollection/)，请创建新备份并重新启用时间点恢复 oplog 切片以防止数据不一致和恢复失败。
 
-## Oplog replay from arbitrary start time
+## 从任意开始时间重放 Oplog
 
-The oplog replay fails if you rename the entire database or a collection.
+如果您重命名整个数据库或集合，oplog 重放将失败。

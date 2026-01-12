@@ -1,28 +1,28 @@
-# Percona Backup for MongoDB status
+# Percona Backup for MongoDB 状态
 
-!!! admonition "Version added: [1.4.0](../release-notes/1.4.0.md)"
+!!! admonition "版本添加：[1.4.0](../release-notes/1.4.0.md)"
 
-You can check the status of Percona Backup for MongoDB running in your MongoDB environment using the [`pbm status`](../reference/pbm-commands.md#pbm-status) command.
+您可以使用 [`pbm status`](../reference/pbm-commands.md#pbm-status) 命令检查在 MongoDB 环境中运行的 Percona Backup for MongoDB 的状态。
 
 ```bash
 pbm status
 ```
 
-The output provides the information about:
+输出提供以下信息：
 
-* Your MongoDB deployment and `pbm-agents` running in it: to what `mongod` node each agent is connected, the Percona Backup for MongoDB version it runs and the agent's state
+* 您的 MongoDB 部署和在其中运行的 `pbm-agents`：每个代理连接到哪个 `mongod` 节点、它运行的 Percona Backup for MongoDB 版本以及代理的状态
 
-* The currently running backups / restores, if any
+* 当前正在运行的备份/恢复（如果有）
 
-* Backups stored in the remote backup storage: backup name, type, completion time, size and status (success, ongoing, failed)
+* 存储在远程备份存储中的备份：备份名称、类型、完成时间、大小和状态（成功、进行中、失败）
 
-* [Point-in-time recovery](../features/point-in-time-recovery.md) status (enabled or disabled)
+* [时间点恢复](../features/point-in-time-recovery.md) 状态（启用或禁用）
 
-* Valid time ranges for point-in-time recovery and the data size
+* 时间点恢复的有效时间范围和数据大小
 
-This simplifies troubleshooting since the whole information is provided in one place.
+这简化了故障排除，因为所有信息都在一个地方提供。
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.bash .no-copy}
     pbm status    
@@ -67,66 +67,34 @@ This simplifies troubleshooting since the whole information is provided in one p
         2025-03-16T10:37:13 - 2025-03-16T10:43:26 44.17KB
     ```
 
-## `pbm-agent` logs
+## `pbm-agent` 日志
 
-!!! admonition "Version added: [1.4.0](../release-notes/1.4.0.md)"
+!!! admonition "版本添加：[1.4.0](../release-notes/1.4.0.md)"
 
-To troubleshoot issues with specific events or node(s), use the [`pbm logs`](../reference/pbm-commands.md#pbm-logs) command.  It provides logs of all `pbm-agent` processes in your environment. 
+要排查特定事件或节点的问题，请使用 [`pbm logs`](../reference/pbm-commands.md#pbm-logs) 命令。它提供环境中所有 `pbm-agent` 进程的日志。 
 
-`pbm logs` has the set of filters to refine logs for specific events like `backup`, `restore`, `pitr` or for a specific node, and to manage log verbosity level. For example, to view logs about a specific backup with the Debug verbosity level, run the `pbm logs` command as follows:
+`pbm logs` 有一组过滤器，用于细化特定事件的日志，如 `backup`、`restore`、`pitr` 或特定节点，并管理日志详细级别。例如，要查看具有 Debug 详细级别的特定备份的日志，请按如下方式运行 `pbm logs` 命令：
 
 ```bash
 pbm logs --severity=D --event=backup/2020-10-15T17:42:54Z
 ```
 
-To learn more about available filters and usage examples, refer to [Viewing backup logs](../usage/logs.md).
+要了解有关可用过滤器和使用示例的更多信息，请参阅[查看备份日志](../usage/logs.md)。
 
-## Backup progress tracking
+## 备份进度跟踪
 
-If you have a large logical backup, you can track the backup progress in the logs of the `pbm-agent` that makes it. A line is appended every minute showing bytes copied vs. total size for the current collection.
+如果您有大型逻辑备份，您可以在创建它的 `pbm-agent` 的日志中跟踪备份进度。每分钟追加一行，显示当前集合的已复制字节数与总大小。
 
-Start a backup:
+启动备份：
 
 ```bash
 pbm backup
 ```
 
-Check backup progress:
+检查备份进度：
 
-1. Check what `pbm-agent` makes the backup:
+1. 检查哪个 `pbm-agent` 创建备份：
 
     ```bash
     pbm logs
     ```
-
-2. Connect to the `mongod` server where the `pbm-agent` is running and check its logs
-
-    ```bash
-    journalctl -u pbm-agent.service
-    ```
-
-    ??? example "Sample output"
-
-        ``` {.bash .no-copy}
-        2020/05/06 21:31:12 Backup 2020-05-06T18:31:12Z started on node rs2/localhost:28018
-        2020-05-06T21:31:14.797+0300 writing admin.system.users to archive on stdout
-        2020-05-06T21:31:14.799+0300 done dumping admin.system.users (2 documents)
-        2020-05-06T21:31:14.800+0300 writing admin.system.roles to archive on stdout
-        2020-05-06T21:31:14.807+0300 done dumping admin.system.roles (1 document)
-        2020-05-06T21:31:14.807+0300 writing admin.system.version to archive on stdout
-        2020-05-06T21:31:14.815+0300 done dumping admin.system.version (3 documents)
-        2020-05-06T21:31:14.816+0300 writing test.testt to archive on stdout
-        2020-05-06T21:31:14.829+0300 writing test.testt2 to archive on stdout
-        2020-05-06T21:31:14.829+0300 writing config.cache.chunks.config.system.sessions to archive on stdout
-        2020-05-06T21:31:14.832+0300 done dumping config.cache.chunks.config.system.sessions (1 document)
-        2020-05-06T21:31:14.834+0300 writing config.cache.collections to archive on stdout
-        2020-05-06T21:31:14.835+0300 done dumping config.cache.collections (1 document)
-        2020/05/06 21:31:24 [##......................]   test.testt  130841/1073901  (12.2%)
-        2020/05/06 21:31:24 [##########..............]  test.testt2   131370/300000  (43.8%)
-        2020/05/06 21:31:24
-        2020/05/06 21:31:34 [#####...................]   test.testt  249603/1073901  (23.2%)
-        2020/05/06 21:31:34 [###################.....]  test.testt2   249603/300000  (83.2%)
-        2020/05/06 21:31:34
-        2020/05/06 21:31:37 [########################]  test.testt2  300000/300000  (100.0%)
-        ```
-

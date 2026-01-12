@@ -1,25 +1,25 @@
-# Restore from a snapshot-based backup
+# 从基于快照的备份恢复
 
 --8<-- "restore-intro.md"
 
-## Considerations
+## 注意事项
 
-1. Shut down all `mongos` nodes. If you have set up the automatic restart of the database, disable it.
-2. Stop the arbiter nodes manually since there’s no `pbm-agent` on these nodes to do that automatically.
+1. 关闭所有 `mongos` 节点。如果您设置了数据库的自动重启，请禁用它。
+2. 手动停止仲裁节点，因为这些节点上没有 `pbm-agent` 来自动执行此操作。
    
-## Restore a database
+## 恢复数据库
 
-### Restore from a backup made through PBM
+### 从通过 PBM 创建的备份恢复
 
-The following procedure describes the restore process from backups [made through PBM](backup-external.md). It is also possible to attempt restoring from snapshots made without PBM (this feature is experimental). See [Restore from a backup made outside PBM](#restore-from-a-backup-made-outside-pbm).
+以下过程描述了从[通过 PBM 创建的备份](backup-external.md) 的恢复过程。也可以尝试从没有 PBM 创建的快照恢复（此功能是实验性的）。请参阅[从 PBM 外部创建的备份恢复](#restore-from-a-backup-made-outside-pbm)。
 
-1. To perform a restore, run the following command:
+1. 要执行恢复，请运行以下命令：
 
     ```bash
     pbm restore --external 
     ```    
 
-    Percona Backup for MongoDB stops the database, cleans up data directories on all nodes, provides the restore name and prompts you to copy the data:    
+    Percona Backup for MongoDB 停止数据库，清理所有节点上的数据目录，提供恢复名称并提示您复制数据：    
 
     ```{.text .no-copy}
     Starting restore <restore_name> from '[external]'.................................................................................................................................Ready to copy data to the nodes data directory.
@@ -28,57 +28,57 @@ The following procedure describes the restore process from backups [made through
         No other pbm command is available while the restore is running!
     ``` 
 
-2. Copy the data back. While a backup is made from a single node of a replica set, for the restore you must **copy the data to every node of the corresponding replica set in the cluster**. For example, given a backup of a 3-node replica set `rs1` where backup was taken from `node3`, copy back the data to all 3 nodes in `rs1`.
+2. 复制数据回来。虽然备份是从副本集的单个节点创建的，但对于恢复，您必须**将数据复制到集群中相应副本集的每个节点**。例如，给定 3 节点副本集 `rs1` 的备份，其中备份是从 `node3` 获取的，请将数据复制回 `rs1` 中的所有 3 个节点。
 
-3. After you copied the files to the nodes, complete the restore with the following command:    
+3. 将文件复制到节点后，使用以下命令完成恢复：    
 
     ```bash
     pbm restore-finish <restore_name> -c </path/to/pbm-conf.yaml>
     ```    
 
-    At this stage, Percona Backup for MongoDB reads the metadata from the backup, prepares the data for the cluster / replica set start and ensures its consistency. The database is restored to the timestamp specified in the `restore_to_time` of the metadata.
+    在此阶段，Percona Backup for MongoDB 从备份读取元数据，准备集群/副本集启动的数据并确保其一致性。数据库恢复到元数据的 `restore_to_time` 中指定的时间戳。
 
     !!! note
 
-        If you use a filesystem as the remote backup storage, both `pbm-agent` and `pbm` CLI must have the same permissions to it. To achieve this, run the `pbm restore-finish` command as the `mongod` user:
+        如果您使用文件系统作为远程备份存储，`pbm-agent` 和 `pbm` CLI 都必须对其具有相同的权限。为此，请以 `mongod` 用户身份运行 `pbm restore-finish` 命令：
 
         ```bash
         sudo -u mongod -s pbm restore-finish <restore_name> -c </path/to/pbm-conf.yaml> --mongodb-uri=MONGODB_URI
         ```
 
-4. Optional. You can track the restore progress by running the [`pbm describe-restore`](../reference/pbm-commands.md#pbm-describe-restore) command.
+4. 可选。您可以通过运行 [`pbm describe-restore`](../reference/pbm-commands.md#pbm-describe-restore) 命令跟踪恢复进度。
 
-#### Post-restore steps 
+#### 恢复后步骤 
 
-After the restore is complete, do the following:
+恢复完成后，执行以下操作：
 
-1. Start all `mongod` nodes
+1. 启动所有 `mongod` 节点
 
-2. Start all `pbm-agents`
+2. 启动所有 `pbm-agents`
 
-3. Run the following command to resync the backup list with the storage:
+3. 运行以下命令以与存储重新同步备份列表：
 
     ```bash
     pbm config --force-resync
     ``` 
 
-4. Start the balancer and start `mongos` nodes.
+4. 启动平衡器并启动 `mongos` 节点。
 
-5. Make a fresh backup to serve as the new base for future restores. 
+5. 创建新备份作为未来恢复的新基础。 
 
-### Restore from a backup made outside PBM
+### 从 PBM 外部创建的备份恢复
 
 !!! Warning
 
-    This feature is experimental.
+    此功能是实验性的。
     
 !!! important
 
-    For external backups made through PBM, PBM performs compatibility checks for the backup and the target cluster. If you restore a backup made without PBM, it cannot ensure that the backup was made properly and in a consistent manner. Therefore, the backup compatibility is your responsibility.
+    对于通过 PBM 创建的外部备份，PBM 对备份和目标集群执行兼容性检查。如果您恢复没有 PBM 创建的备份，它无法确保备份是正确且一致地创建的。因此，备份兼容性是您的责任。
 
-To restore an external backup made without PBM, you need to specify the following for the `pbm restore` command:
+要恢复没有 PBM 创建的外部备份，您需要为 `pbm restore` 命令指定以下内容：
 
-* a path to the configuration file of the `mongod` node on the source cluster from where the backup was made. This is the configuration file that PBM will use during the restore. It should contain the [storage options :octicons-link-external-16:](https://www.mongodb.com/docs/manual/reference/configuration-options/#storage-options ) per replica set name, for example:
+* 源集群上创建备份的 `mongod` 节点的配置文件路径。这是 PBM 在恢复期间将使用的配置文件。它应该包含每个副本集名称的[存储选项 :octicons-link-external-16:](https://www.mongodb.com/docs/manual/reference/configuration-options/#storage-options )，例如：
 
    ```yaml
    rs1:
@@ -89,45 +89,46 @@ To restore an external backup made without PBM, you need to specify the followin
            directoryPerDB: true
    ```
 
-   To restore data that was encrypted at rest, make sure data-at-rest encryption settings on the source and target clusters are the same. 
+   要恢复静态加密的数据，请确保源集群和目标集群上的静态数据加密设置相同。 
 
-* a timestamp to restore to
+* 要恢复到的时间戳
 
-To restore from a backup, do the following:
+要从备份恢复，请执行以下操作：
 
-1. Start a restore
+1. 启动恢复
 
     ```bash
     pbm restore --external -c </path/to/mongod.conf> --ts 
     ```
 
-    If the path to the source cluster `mongod.conf` is undefined, PBM tries to retrieve the required configuration options from the `mongod.conf` of the target cluster.    
+    如果源集群 `mongod.conf` 的路径未定义，PBM 会尝试从目标集群的 `mongod.conf` 检索所需的配置选项。    
 
-    If the timestamp to restore to is undefined, PBM looks into the actual data during the restore and defines the most recent common cluster time across all shards. PBM restores the database up to this time.
+    如果要恢复到的时间戳未定义，PBM 会在恢复期间查看实际数据，并定义所有分片上最新的公共集群时间。PBM 将数据库恢复到此时。
 
-2. Next, copy the data files. Note that you must copy the data **to every data-bearing node of your cluster / replica set**.
+2. 接下来，复制数据文件。请注意，您必须将数据复制到**集群/副本集的每个数据承载节点**。
 
-3. Complete the restore by running:
+3. 通过运行以下命令完成恢复：
 
     ```bash
     pbm restore-finish <restore_name> -c </path/to/pbm.conf.yaml>
     ```    
 
-    At this stage, Percona Backup for MongoDB prepares the data for the cluster / replica set start and ensures its consistency. 
+    在此阶段，Percona Backup for MongoDB 准备集群/副本集启动的数据并确保其一致性。 
 
     !!! note
 
-        If you use a filesystem as the remote backup storage, both `pbm-agent` and `pbm` CLI must have the same permissions to it. To achieve this, run the `pbm restore-finish` command as the `mongod` user:
+        如果您使用文件系统作为远程备份存储，`pbm-agent` 和 `pbm` CLI 都必须对其具有相同的权限。为此，请以 `mongod` 用户身份运行 `pbm restore-finish` 命令：
 
         ```bash
         sudo -u mongod -s pbm restore-finish <restore_name> -c </path/to/pbm-conf.yaml> --mongodb-uri=MONGODB_URI
         ```
 
-4. Don't forget to complete the [post-restore steps](#post-restore-steps).
+4. 不要忘记完成[恢复后步骤](#post-restore-steps)。
 
-## Useful links 
+## 有用的链接 
 
-* [View restore progress](../usage/restore-progress.md)
+* [查看恢复进度](../usage/restore-progress.md)
+
 
 
 

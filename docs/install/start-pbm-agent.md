@@ -1,42 +1,42 @@
-# Start the `pbm-agent` process
+# 启动 `pbm-agent` 进程
 
-Start `pbm-agent` on every server with the `mongod` node installed. 
+在安装了 `mongod` 节点的每个服务器上启动 `pbm-agent`。 
 
-=== ":material-console: Using `systemd`"
+=== ":material-console: 使用 `systemd`"
 
-    We recommend to use the packaged service scripts to run `pbm-agent`.
+    我们建议使用打包的服务脚本来运行 `pbm-agent`。
     
     ```bash
     sudo systemctl start pbm-agent
     sudo systemctl status pbm-agent
     ```
 
-=== ":fontawesome-solid-user-gear: Manually"
+=== ":fontawesome-solid-user-gear: 手动"
 
-    You can start a `pbm-agent` manually. You must start a `pbm-agent` as the `mongod` user because the `pbm-agent` requires write access to the MongoDB data directory to make physical restores. 
+    您可以手动启动 `pbm-agent`。您必须以 `mongod` 用户身份启动 `pbm-agent`，因为 `pbm-agent` 需要对 MongoDB 数据目录的写访问权限才能进行物理恢复。 
 
-    The following command starts the `pbm-agent`, redirects the output to a file and puts the process in the background:
+    以下命令启动 `pbm-agent`，将输出重定向到文件并将进程置于后台：
     
     ```bash
     su mongod nohup pbm-agent --mongodb-uri "mongodb://username:password@localhost:27018/" > /data/mdb_node_xyz/pbm-agent.$(hostname -s).27018.log 2>&1 &
     ```
     
-    Replace `username` and `password` with those of your `pbm` user. `/data/mdb_node_xyz/` is the path where `pbm-agent` log files will be written. Make sure you have created this directory and granted write permissions to it for the `mongod` user.
+    将 `username` 和 `password` 替换为您的 `pbm` 用户的凭据。`/data/mdb_node_xyz/` 是 `pbm-agent` 日志文件将写入的路径。确保您已创建此目录并授予 `mongod` 用户写权限。
     
-    Alternatively, you can run `pbm-agent` on a shell terminal temporarily if you want to observe and/or debug the startup from the log messages.
+    或者，如果您想从日志消息中观察和/或调试启动，可以临时在 shell 终端上运行 `pbm-agent`。
 
-## Multiple agents on the same host
+## 同一主机上的多个代理
 
-Let's say you run a config server (listen port `27019`) on the same host as another `mongod` process (listen port `27018`). 
+假设您在与另一个 `mongod` 进程（监听端口 `27018`）相同的主机上运行配置服务器（监听端口 `27019`）。 
 
-In this case there should be two `pbm-agent` processes:
+在这种情况下，应该有两个 `pbm-agent` 进程：
 
-* one process is connected to the `mongod` process (e.g. `“mongodb://username:password@localhost:27018/”`) 
-* another one - to the configsvr node (e.g. `“mongodb://username:password@localhost:27019/”`).
+* 一个进程连接到 `mongod` 进程（例如 `"mongodb://username:password@localhost:27018/"`） 
+* 另一个连接到 configsvr 节点（例如 `"mongodb://username:password@localhost:27019/"`）。
 
-The steps below show how to achieve this:
+以下步骤说明如何实现这一点：
 
-1. Set the MongoDB connection string URI for each agent:
+1. 为每个代理设置 MongoDB 连接字符串 URI：
 
     ```bash
     tee /etc/sysconfig/pbm-agent1 <<EOF
@@ -50,7 +50,7 @@ The steps below show how to achieve this:
     EOF
     ```
 
-2. Prepare service files for each agent:
+2. 为每个代理准备服务文件：
 
     ```bash
     tee /usr/lib/systemd/system/pbm-agent1.service <<EOF
@@ -90,7 +90,7 @@ The steps below show how to achieve this:
     EOF
     ```
 
-3. Reload system units and start `pbm-agent` processes: 
+3. 重新加载系统单元并启动 `pbm-agent` 进程： 
 
     ```bash
     sudo systemctl daemon-reload
@@ -98,11 +98,9 @@ The steps below show how to achieve this:
     sudo systemctl start pbm-agent2
     ```
 
-## How to see the `pbm-agent` log
+## 如何查看 `pbm-agent` 日志
 
-With the packaged `systemd` service, the log output to `stdout` is captured by
-systemd’s default redirection to `systemd-journald`. You can view it with the
-command below. See `man journalctl` for useful options such as `--lines`, `--follow`, etc.
+使用打包的 `systemd` 服务，输出到 `stdout` 的日志由 systemd 的默认重定向到 `systemd-journald` 捕获。您可以使用以下命令查看它。有关 `--lines`、`--follow` 等有用选项，请参阅 `man journalctl`。
 
 ```bash
 journalctl -u pbm-agent.service
@@ -113,12 +111,11 @@ Jan 22 15:59:14 pbm-agent[3579]: pbm agent is listening for the commands
 ...
 ```
 
-If you started `pbm-agent` manually, see the file you redirected `stdout` and `stderr` to.
+如果您手动启动了 `pbm-agent`，请查看您将 `stdout` 和 `stderr` 重定向到的文件。
 
-When a message `pbm agent is listening for the commands` is printed to the
-`pbm-agent` log file, `pbm-agent` confirms that it has connected to its `mongod` node successfully.
+当消息 `pbm agent is listening for the commands` 打印到 `pbm-agent` 日志文件时，`pbm-agent` 确认它已成功连接到其 `mongod` 节点。
 
-## Next steps 
+## 下一步 
 
-[Make a backup :material-arrow-right:](../usage/backup-physical.md){.md-button}
+[创建备份 :material-arrow-right:](../usage/backup-physical.md){.md-button}
 

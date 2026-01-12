@@ -1,18 +1,18 @@
-# Run Percona Backup for MongoDB in a Docker container
+# 在 Docker 容器中运行 Percona Backup for MongoDB
 
-Docker images of Percona Backup for MongoDB are hosted publicly on [Docker Hub :octicons-link-external-16:](https://hub.docker.com/r/percona/percona-backup-mongodb).
+Percona Backup for MongoDB 的 Docker 镜像托管在 [Docker Hub :octicons-link-external-16:](https://hub.docker.com/r/percona/percona-backup-mongodb) 上。
 
-For more information about using Docker, see the [Docker Docs :octicons-link-external-16:](https://docs.docker.com/).
+有关使用 Docker 的更多信息，请参阅 [Docker 文档 :octicons-link-external-16:](https://docs.docker.com/)。
 
-Make sure that you are using the latest version of Docker. The ones provided via apt and yum may be outdated and cause errors.
+确保您使用的是最新版本的 Docker。通过 apt 和 yum 提供的版本可能已过时并导致错误。
 
-By default, Docker will pull the image from Docker Hub if it is not available locally.
+默认情况下，如果本地不可用，Docker 将从 Docker Hub 拉取镜像。
 
-## Prerequisites
+## 先决条件
 
-* You need to deploy MongoDB or Percona Server for MongoDB. See [what MongoDB deployments are supported](../details/deployments.md).
-* [Create the pbm user](configure-authentication.md#create-the-pbm-user) in your deployment. You will need this user credentials to start Percona Backup for MongoDB container. 
-* For physical backups, make sure to use a container that includes both the `mongod` binary as well as the PBM files. Here is an example Dockerfile:
+* 您需要部署 MongoDB 或 Percona Server for MongoDB。请参阅[支持哪些 MongoDB 部署](../details/deployments.md)。
+* 在您的部署中[创建 pbm 用户](configure-authentication.md#create-the-pbm-user)。您将需要此用户凭据来启动 Percona Backup for MongoDB 容器。 
+* 对于物理备份，请确保使用包含 `mongod` 二进制文件以及 PBM 文件的容器。以下是 Dockerfile 示例：
 
    ```bash
    FROM percona/percona-server-mongodb:latest AS mdb
@@ -26,42 +26,42 @@ By default, Docker will pull the image from Docker Hub if it is not available lo
    COPY --from=pbm /usr/bin/pbm* /usr/bin/
    ```
 
-* If you are using a dedicated container for PBM, it should also have read-write access to MongoDB data volume and you should run it under the same user ID as the MongoDB container. 
+* 如果您使用专用的 PBM 容器，它也应该对 MongoDB 数据卷具有读写访问权限，并且您应该在 MongoDB 容器使用的相同用户 ID 下运行它。 
 
-## Start Percona Backup for MongoDB 
+## 启动 Percona Backup for MongoDB 
 
-Start Percona Backup for MongoDB container with the following command:
+使用以下命令启动 Percona Backup for MongoDB 容器：
 
 
 ```bash
 docker run --name <container-name> -e PBM_MONGODB_URI="mongodb://<PBM_USER>:<PBM_USER_PASSWORD>@<HOST>:<PORT>" -d percona/percona-backup-mongodb:<tag>
 ```
 
-Where:
+其中：
 
-* `container-name` is the name you want to assign to your container.
-* `PBM_MONGODB_URI` is a [MongoDB Connection URI :octicons-link-external-16:](https://docs.mongodb.com/manual/reference/connection-string/) string used to connect to MongoDB nodes. See the [Initial setup](initial-setup.md) how to create the PBM user. 
-* `tag` is the tag specifying the version you need. For example, `{{release}}`. Docker identifies the architecture (x86_64 or ARM64) and pulls the respective image. See the [full list of tags](https://hub.docker.com/r/perconalab/percona-backup-mongodb/tags).
+* `container-name` 是您要分配给容器的名称。
+* `PBM_MONGODB_URI` 是用于连接到 MongoDB 节点的 [MongoDB 连接 URI :octicons-link-external-16:](https://docs.mongodb.com/manual/reference/connection-string/) 字符串。请参阅[初始设置](initial-setup.md)如何创建 PBM 用户。 
+* `tag` 是指定您需要的版本的标签。例如，`{{release}}`。Docker 识别架构（x86_64 或 ARM64）并拉取相应的镜像。请参阅[完整标签列表](https://hub.docker.com/r/perconalab/percona-backup-mongodb/tags)。
 
-Note that every MongoDB node (including replica set secondary members and config server replica set nodes) requires a separate instance of Percona Backup for MongoDB. Thus, a typical, 3-node MongoDB replica set requires three instances of Percona Backup for MongoDB.
+请注意，每个 MongoDB 节点（包括副本集从节点和配置服务器副本集节点）都需要单独的 Percona Backup for MongoDB 实例。因此，典型的 3 节点 MongoDB 副本集需要三个 Percona Backup for MongoDB 实例。
 
-## Set up Percona Backup for MongoDB 
+## 设置 Percona Backup for MongoDB 
 
-Percona Backup for MongoDB requires the remote storage where to store data. Use the following commands to configure it:
+Percona Backup for MongoDB 需要存储数据的远程存储。使用以下命令配置它：
 
-1. Start a Bash session:
+1. 启动 Bash 会话：
 	
     ```bash
     docker exec -it <container-name> bash
     ```
 
-2. Create a YAML configuration file:
+2. 创建 YAML 配置文件：
 
 	```bash
 	vi /tmp/pbm_config.yaml
 	```
 	
-3. Specify remote storage parameters in the config file. The following example is for S3-compatible backup storage. Check what [other storages are supported](../details/storage-configuration.md):
+3. 在配置文件中指定远程存储参数。以下示例适用于 S3 兼容的备份存储。查看[支持的其他存储](../details/storage-configuration.md)：
 
 	```yaml
 	storage:
@@ -74,28 +74,8 @@ Percona Backup for MongoDB requires the remote storage where to store data. Use 
 		secret-access-key: <your-secret-key-here>
 	```
 
-4. Upload the config file: 
+4. 上传配置文件： 
 	
 	```bash
 	pbm config --file /tmp/pbm_config.yaml
 	```
-
-	The command output displays your uploaded configuration.
-
-## Run Percona Backup for MongoDB
-
-Percona Backup for MongoDB command line utility (`pbm`) provides the set of commands to control backups: create, restore, cancel backups, etc. 
-
-For example, to start a backup, use the following command:
-
-```bash
-docker exec -it <container-name> pbm backup
-```
-
-where `<container-name>` is the name you assigned to the container and `pbm backup` is the command to start a backup.
-
-In the same way you can run other pbm commands. Find the full list of available commands in [Percona Backup for MongoDB reference](https://docs.percona.com/percona-backup-mongodb/reference/pbm-commands.html).
-
-## Next steps
-
-[List backups :material-arrow-right:](../usage/list-backup.md){.md-button}

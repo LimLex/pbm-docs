@@ -1,8 +1,8 @@
-## Preconditions
+## 先决条件
 
-Run [`pbm status`](../reference/pbm-commands.md#pbm-status) or [`pbm list`](../reference/pbm-commands.md#pbm-list) commands to check that the full backup snapshot exists and there are oplog slices.
+运行 [`pbm status`](../reference/pbm-commands.md#pbm-status) 或 [`pbm list`](../reference/pbm-commands.md#pbm-list) 命令以检查完整备份快照是否存在以及是否有 oplog 切片。
 
-## Before you start
+## 开始之前
 
-1. Stop the balancer and `mongos` nodes.
-2. Make sure no writes are made to the database during restore. 
+1. 停止平衡器和 `mongos` 节点。
+2. 确保在恢复期间不对数据库进行写入。 

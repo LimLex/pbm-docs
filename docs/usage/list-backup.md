@@ -1,19 +1,19 @@
-# List backups
+# 列出备份
 
-Use the `pbm list` command to view all completed backups. 
+使用 `pbm list` 命令查看所有已完成的备份。 
 
 ```bash
 pbm list
 ```
 
-The output provides the following information:
+输出提供以下信息：
 
-* Backup name 
-* Backup type: [logical](../features/logical.md), [physical](../features/physical.md), [selective](../features/selective-backup.md), [incremental](../features/incremental-backup.md). Available starting with version 1.7.0 
-* The time to which the sharded cluster / non-shared replica set will be returned to after the restore. Available starting with version 1.4.0.
-* If [point-in-time recovery](../features/point-in-time-recovery.md) is enabled, its status and the valid time ranges for the restore
+* 备份名称 
+* 备份类型：[逻辑](../features/logical.md)、[物理](../features/physical.md)、[选择性](../features/selective-backup.md)、[增量](../features/incremental-backup.md)。从版本 1.7.0 开始可用 
+* 恢复后分片集群/非共享副本集将返回到的时间。从版本 1.4.0 开始可用
+* 如果启用了[时间点恢复](../features/point-in-time-recovery.md)，其状态和恢复的有效时间范围
 
-??? example "Sample output"
+??? example "示例输出"
 
     ```{.text .no-copy}
     Backup snapshots:
@@ -26,14 +26,14 @@ The output provides the following information:
       2025-03-10T11:05:03Z <logical, selective> [restore_to_time: 2025-03-10T11:05:07]
     ```
 
-## Restore to time
+## 恢复到时间
 
-In logical backups, the completion time almost coincides with the backup finish time. To define the completion time, Percona Backup for MongoDB waits for the backup snapshot to finish on all cluster nodes. Then it captures the oplog from the backup start time up to that time.
+在逻辑备份中，完成时间几乎与备份完成时间一致。为了定义完成时间，Percona Backup for MongoDB 等待备份快照在所有集群节点上完成。然后它捕获从备份开始时间到该时间的 oplog。
 
-In physical backups, the completion time is only a few seconds after the backup start time. By holding the `$backupCursor` open guarantees that the checkpoint data won't change during the backup, and Percona Backup for MongoDB can define the completion time ahead.
+在物理备份中，完成时间仅在备份开始时间后几秒。通过保持 `$backupCursor` 打开，保证检查点数据在备份期间不会更改，Percona Backup for MongoDB 可以提前定义完成时间。
 
 
-## Useful links
+## 有用的链接
 
-* [View detailed information about a backup](describe-backup.md)
-* [Restore to a point-in-time](pitr-physical.md)
+* [查看备份的详细信息](describe-backup.md)
+* [恢复到时间点](pitr-physical.md)

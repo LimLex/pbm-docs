@@ -1,4 +1,4 @@
-# Restore options
+# 恢复选项
 
 ```yaml
 restore:
@@ -16,55 +16,55 @@ restore:
 
 ### restore.batchSize
 
-*Type*: int <br>
-*Default*: 500
+*类型*：int <br>
+*默认*：500
 
-The number of documents to buffer.
+要缓冲的文档数。
 
 ### restore.numInsertionWorkers
 
-*Type*: int <br>
-*Default*: 10
+*类型*：int <br>
+*默认*：10
 
-Specifies the number of insertion workers to run concurrently per collection. 
+指定每个集合并发运行的插入工作线程数。 
 
 ### restore.numParallelCollections
 
-*Type*: int <br>
-*Default*: number of CPU cores / 2
+*类型*：int <br>
+*默认*：CPU 核心数 / 2
 
-The number of collections to process in parallel during a logical restore. The default value is half of the number of CPU cores. By setting the value for this option you define the new default.
-Available starting with version 2.7.0.
+在逻辑恢复期间并行处理的集合数。默认值是 CPU 核心数的一半。通过设置此选项的值，您可以定义新的默认值。
+从版本 2.7.0 开始可用。
 
 ### restore.numDownloadWorkers
 
-*Type*: int <br>
-*Default*: number of CPU cores
+*类型*：int <br>
+*默认*：CPU 核心数
 
-The number of workers that request data chunks from the storage during the restore. The default value equals to the number of CPU cores.
+在恢复期间从存储请求数据块的工作线程数。默认值等于 CPU 核心数。
 
 ### restore.maxDownloadBufferMb
 
-*Type*: int <br>
+*类型*：int <br>
  
 
-The maximum size of the in-memory buffer that is used to download files from the S3 storage. When unspecified or set to 0, the size cannot exceed the value calculated as `numDownloadWorkers * downloadChunkMb * 16` MB. By default, the number of CPU cores * 32 * 16 MB.
+用于从 S3 存储下载文件的内存缓冲区的最大大小。未指定或设置为 0 时，大小不能超过计算为 `numDownloadWorkers * downloadChunkMb * 16` MB 的值。默认情况下，CPU 核心数 * 32 * 16 MB。
 
 ### restore.downloadChunkMb
 
-*Type*: int <br>
-*Default*: 32
+*类型*：int <br>
+*默认*：32
 
-The size of the data chunk in MB to download from the S3 storage.
+从 S3 存储下载的数据块大小（以 MB 为单位）。
 
 ### restore.mongodLocation
 
-*Type*: string
+*类型*：字符串
 
-The custom path to `mongod` binaries. When undefined, Percona Backup for MongoDB uses the default path to make database restarts during physical restore.
+`mongod` 二进制文件的自定义路径。未定义时，Percona Backup for MongoDB 使用默认路径在物理恢复期间进行数据库重启。
 
 ### restore.mongodLocationMap
 
-*Type*: array of strings
+*类型*：字符串数组
 
-The list of custom paths to `mongod` binaries on every node. Percona Backup for MongoDB uses the values to make restarts of the database during physical restore. 
+每个节点上 `mongod` 二进制文件的自定义路径列表。Percona Backup for MongoDB 使用这些值在物理恢复期间进行数据库重启。 

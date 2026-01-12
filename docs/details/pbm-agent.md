@@ -1,17 +1,17 @@
 # pbm-agent
 
-A `pbm-agent` is a process that runs backup, restore, delete, and other operations available with Percona Backup for MongoDB.
+`pbm-agent` 是运行备份、恢复、删除和 Percona Backup for MongoDB 提供的其他操作的进程。
 
-A `pbm-agent` instance must run for **every** `mongod` instance that is not an arbiter node. This includes replica set nodes that are currently secondaries and config server replica set nodes in a sharded cluster.
+`pbm-agent` 实例必须为**每个**非仲裁节点的 `mongod` 实例运行。这包括当前为从节点的副本集节点和分片集群中的配置服务器副本集节点。
 
-An operation is triggered when the [`pbm` CLI](../reference/glossary.md#pbm-cli) makes an update to the [PBM Control collection](../reference/glossary.md#pbm-control-collections). All `pbm-agents` monitor changes to the PBM control collections, but only one `pbm-agent` in each replica set will be elected to execute an operation. The elections are done by a random choice among secondary nodes. If no secondary nodes respond, then the `pbm-agent` on the primary node is elected for an operation.
+当 [`pbm` CLI](../reference/glossary.md#pbm-cli) 更新 [PBM 控制集合](../reference/glossary.md#pbm-control-collections) 时，会触发操作。所有 `pbm-agents` 都监控 PBM 控制集合的更改，但每个副本集中只有一个 `pbm-agent` 会被选出来执行操作。选举是通过在从节点中随机选择完成的。如果没有从节点响应，则选择主节点上的 `pbm-agent` 执行操作。
 
-The elected `pbm-agent` acquires a lock for an operation. This prevents mutually exclusive operations like backup and restore to be executed simultaneously.
+被选中的 `pbm-agent` 获取操作的锁。这防止了像备份和恢复这样的互斥操作同时执行。
 
-??? info "Nomination and election process within PBM"
+??? info "PBM 内的提名和选举过程"
 
-    If the `pbm-agent` running on the primary node of the replica set or on the primary node of the config replica set fails, the backup will not start as these agents are responsible for internal nomination process. You must therefore ensure that all the `pbm-agent` processes are up and running.
+    如果运行在副本集主节点或配置副本集主节点上的 `pbm-agent` 失败，备份将不会启动，因为这些代理负责内部提名过程。因此，您必须确保所有 `pbm-agent` 进程都在运行。
 
-When the operation is complete, the `pbm-agent` releases the lock and updates the PBM control collections.
+操作完成后，`pbm-agent` 释放锁并更新 PBM 控制集合。
 
-A single `pbm-agent` is involved with only one cluster (or non-sharded replica set). The `pbm` CLI utility can connect to any cluster to which it has network access, so it is possible for one user to list and launch backups or restores on many clusters.
+单个 `pbm-agent` 仅涉及一个集群（或非分片副本集）。`pbm` CLI 实用程序可以连接到其具有网络访问权限的任何集群，因此一个用户可以列出并在许多集群上启动备份或恢复。

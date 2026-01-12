@@ -1,34 +1,34 @@
-# How Percona Backup for MongoDB works
+# Percona Backup for MongoDB 工作原理
 
-Even in a highly-available architecture, such as with MongoDB replication, backups are still required even though losing one server is not fatal. Be it a complete or partial data disaster, you can use PBM (Percona Backup for MongoDB) to go back in time to the best available backup snapshot.
+即使在高度可用的架构中（例如使用 MongoDB 复制），备份仍然是必需的，尽管丢失一台服务器不会致命。无论是完全还是部分数据灾难，您都可以使用 PBM（Percona Backup for MongoDB）回到过去的最佳可用备份快照。
 
-Percona Backup for MongoDB is a command line interface tool. It provides [the set of commands](reference/pbm-commands.md) to manage backup and restore operations in your database.
+Percona Backup for MongoDB 是一个命令行界面工具。它提供[一组命令](reference/pbm-commands.md)来管理数据库中的备份和恢复操作。
 
-[What backup to choose?](features/backup-types.md){.md-button}
+[选择哪种备份？](features/backup-types.md){.md-button}
 
-## Usage example
+## 使用示例
 
-Let's have a look at how Percona Backup for MongoDB works.
+让我们看看 Percona Backup for MongoDB 是如何工作的。
 
-With [Percona Backup for MongoDB up and running](installation.md) in your environment, make a backup:
+在您的环境中[启动并运行 Percona Backup for MongoDB](installation.md) 后，创建备份：
 
 ```bash
 pbm backup --type=logical
 ```
 
-To save all events that occurred to the data between backups, enable the point-in-time recovery routine that saves oplog slices:
+要保存备份之间发生的所有数据事件，请启用保存 oplog 切片的时间点恢复例程：
 
 ```bash
 pbm config --set pitr.enabled=true
 ```
 
-Now, imagine that your web application’s update was released on February 7 at 03:00 UTC. By 15:23 UTC, someone realizes that this update has a bug that is wiping the historical data of any user who logged in. To remediate this negative impact on data, it’s time to roll back up to the time of the application’s update - up to February 7, 03:00 UTC.
+现在，假设您的 Web 应用程序更新于 2 月 7 日 03:00 UTC 发布。到 15:23 UTC，有人意识到此更新有一个错误，正在清除任何登录用户的历史数据。为了补救对数据的负面影响，是时候回滚到应用程序更新的时间 - 即 2 月 7 日 03:00 UTC。
 
 ```bash
 pbm list
 ```
 
-??? admonition "Sample output"
+??? admonition "示例输出"
     
     ```{.text .no-copy}
     Backup snapshots:
@@ -39,27 +39,27 @@ pbm list
         2024-02-11T14:22:41Z [complete: 2024-02-11T14:23:01]
     ```
 
-The output lists the valid time ranges for the restore. The desired time (February 7, 03:00 UTC) falls within the `2024-02-03T08:08:36Z-2024-02-09T12:20:23Z` range, so let’s restore the database up to that time.
+输出列出了恢复的有效时间范围。所需时间（2 月 7 日 03:00 UTC）落在 `2024-02-03T08:08:36Z-2024-02-09T12:20:23Z` 范围内，因此让我们将数据库恢复到该时间。
 
 ```bash
 pbm restore --time 2024-02-07T02:59:59
 ```
 
-To be on the safe side, it is a good practice to make a fresh backup after the restore is complete.
+为了安全起见，在恢复完成后创建新备份是一个好习惯。
 
 ```bash
 pbm backup
 ```
 
-This backup refreshes the timeline and serves as the base for saving oplog slices. The point-in-time recovery routine is re-enabled automatically. It copies the slices taken during the backup and continues oplog slicing from the latest timestamp to ensure oplog continuity.
+此备份刷新时间线，并作为保存 oplog 切片的基础。时间点恢复例程会自动重新启用。它复制备份期间拍摄的切片，并从最新时间戳继续 oplog 切片，以确保 oplog 连续性。
 
-## Next steps
+## 下一步
 
-Ready to try it out? 
+准备试试吗？ 
 
-[Quickstart](installation.md){.md-button}
+[快速入门](installation.md){.md-button}
 
-## Useful links
+## 有用的链接
 
-* [PBM architecture](details/architecture.md)
-* [Backup types](features/backup-types.md)
+* [PBM 架构](details/architecture.md)
+* [备份类型](features/backup-types.md)

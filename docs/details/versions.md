@@ -1,49 +1,50 @@
-# Supported MongoDB versions
+# 支持的 MongoDB 版本
 
-Percona Backup for MongoDB is compatible with:
+Percona Backup for MongoDB 与以下版本兼容：
 
-* MongoDB Community / Enterprise Edition with [MongoDB Replication :octicons-link-external-16:](https://docs.mongodb.com/manual/replication/) enabled. Percona Backup for MongoDB supports only *logical backups*.
-* Percona Server for MongoDB for all [supported backup types](../features/backup-types.md). For logical backups, make sure [MongoDB Replication :octicons-link-external-16:](https://docs.mongodb.com/manual/replication/) is enabled. For physical and incremental backups, make sure WiredTiger is set as the storage engine.
+* 启用了 [MongoDB 复制 :octicons-link-external-16:](https://docs.mongodb.com/manual/replication/) 的 MongoDB Community / Enterprise Edition。Percona Backup for MongoDB 仅支持*逻辑备份*。
+* Percona Server for MongoDB 支持所有[支持的备份类型](../features/backup-types.md)。对于逻辑备份，请确保启用了 [MongoDB 复制 :octicons-link-external-16:](https://docs.mongodb.com/manual/replication/)。对于物理和增量备份，请确保将 WiredTiger 设置为存储引擎。
 
-Refer to the compatibility matrices below to check which MongoDB versions your current PBM release supports for backups and restores. 
+请参考下面的兼容性矩阵，检查您当前的 PBM 版本支持哪些 MongoDB 版本进行备份和恢复。 
 
 !!! note ""
 
-    End-of-life MongoDB versions may work with PBM, but they are not tested for compatibility. Consider upgrading to the newer MongoDB or Percona Server for MongoDB version. 
+    已停止支持的 MongoDB 版本可能与 PBM 一起工作，但未测试兼容性。请考虑升级到较新的 MongoDB 或 Percona Server for MongoDB 版本。 
 
-## Percona Server for MongoDB compatibility matrix
+## Percona Server for MongoDB 兼容性矩阵
 
-The following table lists the Percona Server for MongoDB versions supported for each backup type.
+下表列出了每种备份类型支持的 Percona Server for MongoDB 版本。
 
-Each entry indicates the PBM version that introduces changes in the supported Percona Server for MongoDB versions.
+每个条目表示在支持的 Percona Server for MongoDB 版本中引入更改的 PBM 版本。
 
-The Restore compatibility column indicates if you can restore from the backup made with the previous version of PBM.
+恢复兼容性列指示您是否可以从使用先前版本的 PBM 创建的备份恢复。
 
-| PBM version | Logical | Physical |Incremental physical | Restore backward compatibility|
+| PBM 版本 | 逻辑 | 物理 |增量物理 | 恢复向后兼容性|
 | ----------- |---------|----------|---------------------|---------------------|
-| **2.11.0 - {{release}}** | [7.0.x], [8.0.x] | [7.0.x], [8.0.x] | [7.0.x], [8.0.x] | Yes |
-| **2.8.0 - 2.10.0**  | [6.0.x], [7.0.x], [8.0.x] | [6.0.x], [7.0.x], [8.0.x] | [6.0.x], [7.0.x], [8.0.x] | Yes |
-| **2.6.0 - 2.7.0** | [5.0.x], [6.0.x], [7.0.x] | [5.0.x], [6.0.x], [7.0.x] | [5.0.14-12], [6.0.3-2] and higher, [7.0.x] | Yes |
-| **2.2.0 - 2.5.0** | [4.4.x] and higher| [4.4.6-8] and higher, 5.0.x, 6.0.x| [4.4.18-18], [5.0.14-12], [6.0.3-2] and higher| Yes |
-| **2.1.0** | 4.4.x and higher | [4.4.6-8], [5.0.x], [6.0.x]| [4.2.24-24], [4.4.18-18], [5.0.14-12], [6.0.3-2] and higher| No. A fresh backup is required|
-| **1.7.0** | 4.2 and higher| tech preview: [4.2.15-16], [4.4.6-8], 5.0 and higher| | Yes
-| **1.6.1** | 3.6 and higher | N/A |N/A |N/A |Yes
+| **2.11.0 - {{release}}** | [7.0.x], [8.0.x] | [7.0.x], [8.0.x] | [7.0.x], [8.0.x] | 是 |
+| **2.8.0 - 2.10.0**  | [6.0.x], [7.0.x], [8.0.x] | [6.0.x], [7.0.x], [8.0.x] | [6.0.x], [7.0.x], [8.0.x] | 是 |
+| **2.6.0 - 2.7.0** | [5.0.x], [6.0.x], [7.0.x] | [5.0.x], [6.0.x], [7.0.x] | [5.0.14-12], [6.0.3-2] 及更高版本, [7.0.x] | 是 |
+| **2.2.0 - 2.5.0** | [4.4.x] 及更高版本| [4.4.6-8] 及更高版本, 5.0.x, 6.0.x| [4.4.18-18], [5.0.14-12], [6.0.3-2] 及更高版本| 是 |
+| **2.1.0** | 4.4.x 及更高版本 | [4.4.6-8], [5.0.x], [6.0.x]| [4.2.24-24], [4.4.18-18], [5.0.14-12], [6.0.3-2] 及更高版本| 否。需要新备份|
+| **1.7.0** | 4.2 及更高版本| 技术预览: [4.2.15-16], [4.4.6-8], 5.0 及更高版本| | 是
+| **1.6.1** | 3.6 及更高版本 | 不适用 |不适用 |不适用 |是
 
-## MongoDB Community / Enterprise Edition compatibility matrix
+## MongoDB Community / Enterprise Edition 兼容性矩阵
 
-This table lists the supported MongoDB Community and Enterprise Edition versions for logical backups. Each entry indicates the new PBM version that introduces changes in the supported MongoDB versions. 
+此表列出了逻辑备份支持的 MongoDB Community 和 Enterprise Edition 版本。每个条目表示在支持的 MongoDB 版本中引入更改的新 PBM 版本。 
 
-The Restore compatibility column indicates if you can restore from the backup made with the previous version of PBM.
+恢复兼容性列指示您是否可以从使用先前版本的 PBM 创建的备份恢复。
 
-| PBM version | Logical backups | Restore backward compatibility|
+| PBM 版本 | 逻辑备份 | 恢复向后兼容性|
 | ----------- |-----------------| ----------------------------- |
-| **2.11.0 - {{release}}** | 7.0.x and higher | Yes |
-| **2.8.0 - 2.10.0**  | 6.0.x and higher | Yes |
-| **2.6.0 - 2.7.0** | 5.0.x and higher | Yes |
-| **2.2.0 - 2.5.0** | 4.4.x and higher | Yes |
-| **2.1.0** | 4.4.x and higher| No. A fresh backup is required|
-| **1.7.0** | 4.2 and higher| Yes
-| **1.6.1** | 3.6 and higher|Yes
+| **2.11.0 - {{release}}** | 7.0.x 及更高版本 | 是 |
+| **2.8.0 - 2.10.0**  | 6.0.x 及更高版本 | 是 |
+| **2.6.0 - 2.7.0** | 5.0.x 及更高版本 | 是 |
+| **2.2.0 - 2.5.0** | 4.4.x 及更高版本 | 是 |
+| **2.1.0** | 4.4.x 及更高版本| 否。需要新备份|
+| **1.7.0** | 4.2 及更高版本| 是
+| **1.6.1** | 3.6 及更高版本|是
+
 
 
 
